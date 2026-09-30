@@ -1,0 +1,67 @@
+{
+  "name": "gonzalo-vega-portfolio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3000",
+    "build": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && vite build && node scripts/prerender.mjs",
+    "preview": "vite preview",
+    "lint": "eslint . && tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "screenshots": "tsx scripts/screenshots.ts",
+    "optimize:foto": "node scripts/optimize-foto.mjs",
+    "postinstall": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "@fontsource/fraunces": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/plus-jakarta-sans": "^5.3.0",
+    "@tailwindcss/vite": "^4.1.14",
+    "@vercel/node": "^5.8.27",
+    "@vitejs/plugin-react": "^5.0.4",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "react-router-dom": "^7.18.1",
+    "resend": "^6.18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.14.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0",
+    "playwright": "^1.61.1",
+    "prettier": "^3.4.2",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.1.14",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^6.2.3"
+  },
+  "description": "Personal portfolio of **Gonzalo Daniel Vega**, Full Stack Developer with product sense. Bilingual (es/en), built as an SPA with per-route prerendering: projects, a field journal, an interactive credential badge with a scannable QR, and a contact form that delivers to the inbox.",
+  "main": "eslint.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielVega1221/Portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanielVega1221/Portfolio/issues"
+  },
+  "homepage": "https://github.com/DanielVega1221/Portfolio#readme"
+}
