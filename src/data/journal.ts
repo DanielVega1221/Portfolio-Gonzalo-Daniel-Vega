@@ -1,4 +1,4 @@
-﻿import { JournalEntry } from '../types';
+import { JournalEntry } from '../types';
 
 /*
  * CÓMO ESCRIBIR ENTRADAS DEL JOURNAL

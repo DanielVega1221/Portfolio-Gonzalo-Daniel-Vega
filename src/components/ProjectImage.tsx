@@ -7,6 +7,7 @@ interface ProjectImageProps {
   type: 'personal' | 'real' | 'tool' | 'particular' | 'career';
   projectId: string;
   url?: string;
+  screenshot?: string;
   className?: string;
 }
 
@@ -21,9 +22,11 @@ function getTypeLabel(type: ProjectImageProps['type'], lang: 'es' | 'en') {
   return labels[type]?.[lang] || type.toUpperCase();
 }
 
-export default function ProjectImage({ title, subtitle, chapterNumber, type, projectId, url, className = '' }: ProjectImageProps) {
+export default function ProjectImage({ title, subtitle, chapterNumber, type, projectId, url, screenshot, className = '' }: ProjectImageProps) {
   const { lang } = useLanguage();
-  const screenshotPath = url ? `/projects/${projectId}.jpg` : null;
+  // `screenshot` cubre los proyectos sin sitio web publico; si no, la captura
+  // automatica que vivia en la URL del proyecto.
+  const screenshotPath = screenshot ?? (url ? `/projects/${projectId}.jpg` : null);
 
   return (
     <div className={`relative w-full aspect-[16/10] overflow-hidden bg-[#efede8] border border-[#e5e2de] rounded-sm group-hover:border-[#1a1a1a]/30 transition-colors ${className}`}>

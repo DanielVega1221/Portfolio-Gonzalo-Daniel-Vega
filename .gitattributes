@@ -1,0 +1,6 @@
+# El repo guarda LF en todos sus archivos, pero el instalador de Git for Windows
+# deja core.autocrlf=true en el config global, que reescribe LF -> CRLF al descargar.
+# Eso ensucia los diffs y hace que dos maquinas con configs distintas checkouten el
+# mismo archivo de forma diferente. Fijar LF aca lo resuelve por repo.
+# `text=auto` deja que git detecte binarios (png, webp, mp3, pdf) y no los toque.
+* text=auto eol=lf

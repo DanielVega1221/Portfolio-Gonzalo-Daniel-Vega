@@ -124,6 +124,7 @@ export default function Home() {
                       type={project.type}
                       projectId={project.id}
                       url={project.url}
+                      screenshot={project.screenshot}
                       className="border-0 rounded-none"
                     />
                     <div className="p-4">

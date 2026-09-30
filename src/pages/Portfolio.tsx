@@ -158,6 +158,7 @@ export default function Portfolio() {
                       type={project.type}
                       projectId={project.id}
                       url={project.url}
+                      screenshot={project.screenshot}
                       className="shadow-xs hover:shadow-md transition-shadow duration-300"
                     />
                   </Link>

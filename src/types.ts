@@ -7,7 +7,7 @@ export interface CaseStudy {
   tagline: string;
   type: 'personal' | 'real' | 'tool' | 'particular' | 'career';
   url?: string;
-  screenshot?: string;
+  screenshot?: string; // Portada propia cuando el proyecto no tiene sitio web publico
   pointOfDeparture: string; // El punto de partida
   investigation: string; // Qué investigué
   insight: string; // Qué entendí

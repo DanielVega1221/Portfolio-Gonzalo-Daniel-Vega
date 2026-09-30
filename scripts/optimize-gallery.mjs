@@ -22,6 +22,7 @@ const FOLDER_MAP = {
   'ducksale': 'ducksale',
   'Comercial Río Hondo': 'comercial-rio-hondo',
   'ISDEP': 'isdep',
+  'Electropower': 'electropower',
 };
 
 async function main() {

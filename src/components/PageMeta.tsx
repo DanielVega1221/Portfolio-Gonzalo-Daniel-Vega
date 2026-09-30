@@ -5,9 +5,6 @@ import { getProjectEn } from '../data/projects-en-lookup';
 import { journalEntries } from '../data/journal';
 import { SITE_URL as BASE_URL } from '../data/site';
 
-// Projects whose cover .jpg is not published; fall back to the portrait photo.
-const NO_COVER_PROJECTS = new Set(['content-studio']);
-
 type Lang = 'es' | 'en';
 
 interface PageMetaInfo {
@@ -147,13 +144,17 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
     const id = base.replace('/proyectos/', '');
     const project = lang === 'en' ? (getProjectEn(id) || caseStudies.find(p => p.id === id)) : caseStudies.find(p => p.id === id);
     if (project) {
-      const hasCover = !NO_COVER_PROJECTS.has(id);
+      // La portada se resuelve siempre contra los datos en español: `screenshot` es
+      // la captura propia del proyecto y `url` la captura automatica. No cambia con
+      // el idioma, asi que no tiene por qué leerse del set en inglés.
+      const esProject = caseStudies.find(p => p.id === id);
+      const cover = esProject?.screenshot ?? (esProject?.url ? `/projects/${id}.jpg` : null);
       return {
         title: `${project.title} — Gonzalo Daniel Vega`,
         description: `${project.tagline} | ${project.tools.join(', ')}`,
-        image: hasCover ? `${BASE_URL}/projects/${id}.jpg` : `${BASE_URL}/foto.png`,
-        imageWidth: hasCover ? 1280 : 400,
-        imageHeight: hasCover ? 800 : 400,
+        image: cover ? `${BASE_URL}${cover}` : `${BASE_URL}/foto.png`,
+        imageWidth: cover ? 1280 : 400,
+        imageHeight: cover ? 800 : 400,
         type: 'website',
       };
     }

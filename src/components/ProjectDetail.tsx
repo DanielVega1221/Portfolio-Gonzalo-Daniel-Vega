@@ -142,6 +142,7 @@ export default function ProjectDetail() {
           type={projectData.type}
           projectId={projectData.id}
           url={projectData.url}
+          screenshot={projectData.screenshot}
           className="shadow-xs"
         />
         <div className="flex justify-between items-center mt-3 text-[11px] font-mono text-[#888] px-1 uppercase tracking-widest">
