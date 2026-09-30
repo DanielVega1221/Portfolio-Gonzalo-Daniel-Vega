@@ -277,6 +277,7 @@ export default function DevBadge({
                   <img
                     src={profile.avatarUrl}
                     alt={profile.name}
+                    draggable={false}
                     width={400}
                     height={360}
                     loading="lazy"
@@ -318,8 +319,7 @@ export default function DevBadge({
                     </div>
                   </div>
 
-                  {/* Echoes the pull-quote treatment used on the page */}
-                  <p className="my-1 pl-2.5 border-l-2 border-[#a84432] text-center font-serif text-[10.5px] italic leading-snug text-[#2a2a2a] text-pretty">
+                  <p className="my-1 text-center font-serif text-[10.5px] italic leading-snug text-[#2a2a2a] text-pretty">
                     "{profile.shortQuote}"
                   </p>
 
