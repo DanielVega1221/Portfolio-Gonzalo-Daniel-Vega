@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000",
-    "build": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && vite build && node scripts/prerender.mjs",
+    "build": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && node scripts/build-og-image.mjs && vite build && node scripts/prerender.mjs",
+    "build:skip-prerender": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && node scripts/build-og-image.mjs && vite build",
+    "prerender": "node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "eslint . && tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
@@ -48,7 +50,7 @@
     "typescript-eslint": "^8.18.2",
     "vite": "^6.2.3"
   },
-  "description": "Personal portfolio of **Gonzalo Daniel Vega**, Full Stack Developer with product sense. Bilingual (es/en), built as an SPA with per-route prerendering: projects, a field journal, an interactive credential badge with a scannable QR, and a contact form that delivers to the inbox.",
+  "description": "Personal portfolio of Gonzalo Daniel Vega, Full Stack Developer with product sense. Bilingual (es/en), built as an SPA with per-route prerendering: 15 documented projects, a field journal, an interactive credential badge with a scannable QR, and a contact form that delivers to the inbox.",
   "main": "eslint.config.js",
   "directories": {
     "doc": "docs"
@@ -57,9 +59,16 @@
     "type": "git",
     "url": "git+https://github.com/DanielVega1221/Portfolio.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "portfolio",
+    "full-stack",
+    "react",
+    "typescript",
+    "tailwind",
+    "catamarca"
+  ],
+  "author": "Gonzalo Daniel Vega",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/DanielVega1221/Portfolio/issues"
   },

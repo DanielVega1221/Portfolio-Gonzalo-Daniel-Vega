@@ -79,9 +79,9 @@ export default function Portfolio() {
       <section id="portfolio-view" className="space-y-16">
         <div className="max-w-3xl space-y-4">
           <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.portfolio.chapter)}</p>
-          <h2 className="text-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#1a1a1a] tracking-tight leading-tight">
+          <h1 className="text-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#1a1a1a] tracking-tight leading-tight">
             {t(ui.portfolio.title)}
-          </h2>
+          </h1>
           <p className="text-[#555] font-light text-base md:text-lg leading-relaxed">
             {t(ui.portfolio.desc)}
           </p>
@@ -98,6 +98,7 @@ export default function Portfolio() {
                   resetDisplay();
                 }}
                 placeholder={t(ui.portfolio.searchPlaceholder)}
+                aria-label={t(ui.portfolio.searchLabel)}
                 className="w-full bg-[#fffef0] border border-[#e5e2de] pl-10 pr-4 py-2.5 text-sm font-mono rounded-sm focus:outline-none focus:border-[#a84432] text-[#1a1a1a] transition-colors"
               />
           </div>
@@ -105,7 +106,9 @@ export default function Portfolio() {
           <div className="md:col-span-7 flex flex-wrap gap-2 justify-start md:justify-end">
             {filterOptions.map((filter) => (
               <button
+                type="button"
                 key={filter.id}
+                aria-pressed={typeFilter === filter.id}
                 onClick={() => {
                   setTypeFilter(filter.id);
                   resetDisplay();
@@ -128,6 +131,7 @@ export default function Portfolio() {
               <HelpCircle className="mx-auto text-[#a84432] mb-4" size={32} />
               <p className="font-mono text-sm text-[#777]">{t(ui.portfolio.emptyTitle)}</p>
               <button
+                type="button"
                 onClick={() => {
                   setSearchQuery('');
                   setTypeFilter('all');
@@ -248,6 +252,7 @@ export default function Portfolio() {
           {filteredProjects.length > 0 && hasMore && (
             <div className="flex justify-center pt-4">
               <button
+                type="button"
                 onClick={() => setDisplayCount(d => d + 6)}
                 className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#f9f7f2] bg-[#a84432] hover:bg-[#a84432]/90 px-6 py-3 rounded-sm transition-colors"
               >

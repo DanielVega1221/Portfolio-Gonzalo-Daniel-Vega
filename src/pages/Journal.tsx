@@ -6,6 +6,7 @@ import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
 import { journalEntries } from '../data/journal';
+import { formatEntryDate, readingTimeLabel } from '../lib/journalMeta';
 
 export default function Journal() {
   const { lang } = useLanguage();
@@ -30,9 +31,9 @@ export default function Journal() {
       <section id="journal-view" className="space-y-16">
         <div className="max-w-3xl space-y-4">
           <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.journal.chapter)}</p>
-          <h2 className="text-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#1a1a1a] tracking-tight leading-tight">
+          <h1 className="text-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#1a1a1a] tracking-tight leading-tight">
             {t(ui.journal.title)}
-          </h2>
+          </h1>
           <p className="text-[#555] font-light text-base md:text-lg leading-relaxed">
             {t(ui.journal.desc)}
           </p>
@@ -60,8 +61,8 @@ export default function Journal() {
                     <span>{t(ui.journal.noteLabel)}001</span>
                   </div>
                   <p className="font-semibold text-[#444] uppercase">{lang === 'en' && entry.categoryEn ? entry.categoryEn : entry.category}</p>
-                  <p className="flex items-center gap-1"><Calendar size={11} /> {entry.date}</p>
-                  <p className="flex items-center gap-1"><Clock size={11} /> {lang === 'en' && entry.readingTimeEn ? entry.readingTimeEn : entry.readingTime}</p>
+                  <p className="flex items-center gap-1"><Calendar size={11} /> {formatEntryDate(entry.date, lang)}</p>
+                  <p className="flex items-center gap-1"><Clock size={11} /> {readingTimeLabel(entry, lang)}</p>
                 </div>
 
                 <div className="lg:col-span-9 space-y-4">
@@ -105,8 +106,8 @@ export default function Journal() {
                     <span>{t(ui.journal.noteLabel)}{String(entries.length - idx).padStart(3, '0')}</span>
                   </div>
                   <p className="font-semibold text-[#444] uppercase">{lang === 'en' && entry.categoryEn ? entry.categoryEn : entry.category}</p>
-                  <p className="flex items-center gap-1"><Calendar size={11} /> {entry.date}</p>
-                  <p className="flex items-center gap-1"><Clock size={11} /> {lang === 'en' && entry.readingTimeEn ? entry.readingTimeEn : entry.readingTime}</p>
+                  <p className="flex items-center gap-1"><Calendar size={11} /> {formatEntryDate(entry.date, lang)}</p>
+                  <p className="flex items-center gap-1"><Clock size={11} /> {readingTimeLabel(entry, lang)}</p>
                 </div>
 
                 <div className="lg:col-span-9 space-y-4">

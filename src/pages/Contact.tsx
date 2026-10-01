@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion } from 'motion/react';
 import { Check, AlertTriangle } from 'lucide-react';
 import { useT } from '../i18n/useT';
+import { useLanguage } from '../i18n/useLanguage';
 import { ui } from '../i18n/translations';
 
 export default function Contact() {
@@ -12,7 +13,11 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const feedbackTimerRef = useRef<number | null>(null);
+  const honeypotRef = useRef<HTMLInputElement | null>(null);
   const t = useT();
+  // El acuse de recibo se manda en el idioma en que estaba la página. El servidor
+  // no tiene forma de saberlo.
+  const { lang } = useLanguage();
 
   useEffect(() => {
     return () => {
@@ -48,11 +53,19 @@ export default function Contact() {
           email: contactEmail,
           reason: t(ui.contact.reasons[contactReasonIdx]),
           message: contactMessage,
+          lang,
+          // Va vacío en un envío humano; el servidor lo descarta si llega lleno.
+          website: honeypotRef.current?.value ?? '',
         }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || t(ui.contact.errorFallback));
+        const code = data.error as keyof typeof ui.contact.errorCodes | undefined;
+        // Código conocido -> mensaje en el idioma del visitante. Lo que no
+        // exista en el diccionario cae al texto genérico, así una respuesta
+        // inesperada del servidor nunca muestra JSON crudo.
+        const known = code ? ui.contact.errorCodes[code] : undefined;
+        throw new Error(known ? t(known) : t(ui.contact.errorGeneric));
       }
       setFeedback({ type: 'success', text: t(ui.contact.success) });
       setContactName('');
@@ -78,9 +91,9 @@ export default function Contact() {
       <section id="contact-view" className="max-w-xl mx-auto space-y-12">
         <div className="space-y-4 text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.contact.chapter)}</p>
-          <h2 className="text-serif text-3xl md:text-4xl font-light text-[#1a1a1a] tracking-tight leading-tight">
+          <h1 className="text-serif text-3xl md:text-4xl font-light text-[#1a1a1a] tracking-tight leading-tight">
             {t(ui.contact.title)}
-          </h2>
+          </h1>
           <p className="text-[#555] font-light text-sm md:text-base leading-relaxed">
             {t(ui.contact.desc)}
           </p>
@@ -165,6 +178,24 @@ export default function Contact() {
               >
                 {isSubmitting ? t(ui.contact.submitting) : t(ui.contact.submit)}
               </button>
+            </div>
+
+            {/* Honeypot. Invisible para una persona y letal para un bot que
+                recorre el DOM buscando campos: llega al endpoint y el servidor
+                lo descarta sin enviar nada. Va fuera de pantalla y no se marca
+                como autocomplete porque un autocompletador legítimo lo llenaría
+                y descartaría el mensaje de verdad. */}
+            <div aria-hidden="true" className="absolute left-[-9999px] top-0 h-0 w-0 overflow-hidden">
+              <label htmlFor="contact-website">Website</label>
+              <input
+                id="contact-website"
+                ref={honeypotRef}
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                defaultValue=""
+              />
             </div>
           </form>
         </div>

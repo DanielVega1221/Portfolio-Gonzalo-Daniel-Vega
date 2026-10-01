@@ -1,5 +1,6 @@
 import { lazy, Suspense, type ReactNode } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { MotionConfig } from 'motion/react';
 import { LanguageProvider } from './i18n/LanguageContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
@@ -45,13 +46,18 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <LanguageProvider>
-          <PageMeta />
-          <Routes>
-            {buildRoutes('')}
-            {buildRoutes('/en')}
-          </Routes>
-        </LanguageProvider>
+        {/* Sin esto, todas las animaciones de Motion corren igual: el
+            prefers-reduced-motion del CSS no las alcanza porque Motion anima
+            con estilos inline, y StudioTapes tiene rotaciones infinitas. */}
+        <MotionConfig reducedMotion="user">
+          <LanguageProvider>
+            <PageMeta />
+            <Routes>
+              {buildRoutes('')}
+              {buildRoutes('/en')}
+            </Routes>
+          </LanguageProvider>
+        </MotionConfig>
       </BrowserRouter>
     </ErrorBoundary>
   );

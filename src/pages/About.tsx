@@ -24,9 +24,9 @@ export default function About() {
         <div className="lg:col-span-5 space-y-8">
           <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.about.chapter)}</p>
 
-          <h2 className="text-serif text-4xl sm:text-5xl font-light text-[#1a1a1a] tracking-tight leading-[1.1]">
+          <h1 className="text-serif text-4xl sm:text-5xl font-light text-[#1a1a1a] tracking-tight leading-[1.1]">
             {t(ui.about.headline)}
-          </h2>
+          </h1>
 
           <p className="text-sm font-mono text-[#666] uppercase tracking-wider leading-relaxed">
             {t(ui.about.tag)}

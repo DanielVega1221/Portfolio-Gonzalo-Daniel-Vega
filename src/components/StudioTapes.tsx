@@ -5,6 +5,7 @@ import { ui } from '../i18n/translations';
 import { motion, AnimatePresence, type PanInfo } from 'motion/react';
 import { studioTapes, Tape } from '../data/studioTapes';
 import { safeGet, safeSet, safeRemove } from '../lib/safeStorage';
+import { useFocusTrap } from '../lib/useFocusTrap';
 
 // Procedural Analog Sound Synthesizer for buttons, tapes, and ambient warm tape hiss
 class AnalogSynth {
@@ -215,6 +216,7 @@ export default function StudioTapes() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const insertTimerRef = useRef<number | null>(null);
+  const drawerRef = useRef<HTMLDivElement | null>(null);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -237,6 +239,10 @@ export default function StudioTapes() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen]);
+
+  // El cajon declara `aria-modal` pero sin esto el Tab se iba a los controles de
+  // transporte de fondo, que quedan visibles detras del panel.
+  useFocusTrap(drawerRef, isOpen);
 
   // Clear insertion timer on unmount
   useEffect(() => {
@@ -559,6 +565,7 @@ export default function StudioTapes() {
       {/* 1. BOTTOM RIGHT FLOATING BUTTON */}
       <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
         <button
+          type="button"
           onClick={() => {
             synth.playClick();
             setIsOpen(!isOpen);
@@ -597,6 +604,7 @@ export default function StudioTapes() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={drawerRef}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -629,12 +637,12 @@ export default function StudioTapes() {
 
                 <div className="flex items-center gap-3 md:gap-4">
                   <button
+                    type="button"
                     onClick={() => {
                       synth.playClick();
                       setIsOpen(false);
                     }}
                     aria-label={t(ui.a11y.close)}
-                    autoFocus
                     className="w-5 h-5 md:w-6 md:h-6 rounded-full border border-[#1a1a1a]/10 flex items-center justify-center text-[#666] hover:text-[#1a1a1a] hover:bg-[#1a1a1a]/5 text-[9px] md:text-[10px] transition-all"
                     id="close-drawer-btn"
                   >
@@ -662,7 +670,7 @@ export default function StudioTapes() {
                       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,13,0)_95%,rgba(0,0,0,0.35)_95%)] bg-[size:100%_4px] pointer-events-none rounded-sm" />
                       
                       <div className="flex justify-between items-center text-[8px] text-amber-600/60 uppercase tracking-widest font-semibold">
-                        <span>SIGNAL SYSTEM</span>
+                        <span>{t(ui.studioTapes.signal)}</span>
                         <span className="flex items-center gap-1">
                           <span className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-amber-400 animate-pulse shadow-[0_0_6px_#f59e0b]' : 'bg-neutral-800'}`} />
                           {isPlaying ? t(ui.studioTapes.play) : t(ui.studioTapes.standby)}
@@ -675,14 +683,16 @@ export default function StudioTapes() {
                             {activeTape.subtitle}
                           </div>
                           <div className="flex justify-between items-center text-[9px] text-amber-500/80 pt-0.5 border-t border-amber-950/40">
-                            <span className="opacity-70 font-sans tracking-wide">Tape: {activeTape.title}</span>
+                            <span className="opacity-70 font-sans tracking-wide">
+                              {t(ui.studioTapes.tape)} {activeTape.title}
+                            </span>
                             <span className="font-mono bg-amber-950/30 px-1 py-0.5 rounded-[1px] text-amber-400 font-bold tracking-widest">
                               {formatTime(currentTime)}
                             </span>
                           </div>
                           {audioError && (
                             <div className="text-[8px] text-red-400 font-mono uppercase tracking-wider mt-1">
-                              ⚠ {t(ui.studioTapes.noFile)}
+                              {t(ui.studioTapes.noFile)}
                             </div>
                           )}
                         </div>
@@ -801,6 +811,7 @@ export default function StudioTapes() {
                     {/* Control Buttons */}
                     <div className="grid grid-cols-4 gap-1.5 md:gap-2 pt-1 md:pt-1.5">
                       <button onClick={handlePlay} disabled={!activeTape || isPlaying}
+                        type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
                           isPlaying ? 'bg-amber-950/60 text-amber-400 border-amber-600/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-0.5 font-bold' 
                           : activeTape ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white' 
@@ -809,6 +820,7 @@ export default function StudioTapes() {
                       ><span className={`text-[7px] md:text-[8px] ${isPlaying ? 'text-amber-400' : 'text-[#a84432]'}`}>▲</span> {t(ui.studioTapes.playBtn)}</button>
 
                       <button onClick={handlePause} disabled={!activeTape || !isPlaying}
+                        type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
                           !isPlaying && activeTape && currentTime > 0 ? 'bg-amber-950/60 text-amber-400 border-amber-600/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-0.5 font-bold' 
                           : activeTape && isPlaying ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white'
@@ -817,6 +829,7 @@ export default function StudioTapes() {
                       ><span className="text-[7px] md:text-[8px] text-amber-500">❚❚</span> {t(ui.studioTapes.pauseBtn)}</button>
 
                       <button onClick={handleStop} disabled={!activeTape}
+                        type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
                           activeTape ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white' 
                           : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
@@ -824,6 +837,7 @@ export default function StudioTapes() {
                       ><span className="text-[6px] md:text-[7px]">■</span> {t(ui.studioTapes.stopBtn)}</button>
 
                       <button onClick={handleEject} disabled={!activeTape}
+                        type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
                           activeTape ? 'bg-[#3a1a16] text-[#ffa399] border-[#5d2b22] hover:bg-[#4d211c] hover:border-[#703328] active:translate-y-0.5 shadow-md' 
                           : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'

@@ -16,24 +16,37 @@ interface PageMetaInfo {
   type: 'website' | 'article';
 }
 
+/**
+ * Preview para las rutas que no tienen una imagen propia (home, secciones y
+ * notas del journal). Es 1200x630 porque el sitio declara
+ * twitter:card="summary_large_image": con el 400x400 anterior la plataforma
+ * recortaba la foto a un cuadrado chico y la mitad del preview quedaba vacía.
+ * Los proyectos siguen usando su portada real de 1280x800, y
+ * scripts/build-og-image.mjs genera este archivo en cada build.
+ */
+const SITE_PREVIEW = {
+  image: `${BASE_URL}/og-cover.png`,
+  imageWidth: 1200,
+  imageHeight: 630,
+};
+
+const SITE_PREVIEW_ALT =
+  'Gonzalo Daniel Vega, Full Stack Developer en Catamarca, Argentina';
+
 const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
   '/': {
     es: {
       title: 'Gonzalo Daniel Vega — Full Stack Developer',
       description:
         'Portfolio profesional. Full Stack Developer con criterio de producto. React, Next.js, TypeScript, Node.js. De Catamarca, Argentina.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
     en: {
       title: 'Gonzalo Daniel Vega — Full Stack Developer',
       description:
         'Professional portfolio. Full Stack Developer with a product mindset. React, Next.js, TypeScript, Node.js. From Catamarca, Argentina.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
   },
@@ -42,18 +55,14 @@ const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
       title: 'Proyectos — Gonzalo Daniel Vega | Full Stack Developer',
       description:
         '15 proyectos de desarrollo web: demos conceptuales, herramientas, clientes reales. React, Next.js, Astro, Node.js, TypeScript, PostgreSQL.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
     en: {
       title: 'Projects — Gonzalo Daniel Vega | Full Stack Developer',
       description:
         '15 web development projects: concept demos, tools, real clients. React, Next.js, Astro, Node.js, TypeScript, PostgreSQL.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
   },
@@ -62,18 +71,14 @@ const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
       title: 'Journal — Gonzalo Daniel Vega | Notas de Campo',
       description:
         'Notas de campo sobre desarrollo web, arquitectura de software, experiencia de usuario y criterio técnico.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
     en: {
       title: 'Journal — Gonzalo Daniel Vega | Field Notes',
       description:
         'Field notes on web development, software architecture, user experience, and technical judgment.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
   },
@@ -82,18 +87,14 @@ const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
       title: 'Sobre mí — Gonzalo Daniel Vega | Full Stack Developer',
       description:
         'Full Stack Developer. Estudiante de Ingeniería en Informática. UXnicorp. Catamarca, Argentina.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
     en: {
       title: 'About me — Gonzalo Daniel Vega | Full Stack Developer',
       description:
         'Full Stack Developer. Computer Engineering student. UXnicorp. Catamarca, Argentina.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
   },
@@ -102,18 +103,14 @@ const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
       title: 'Contacto — Gonzalo Daniel Vega | Full Stack Developer',
       description:
         'Escribime para charlar sobre tu proyecto, idea o problema técnico. Respondo personalmente.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
     en: {
       title: 'Contact — Gonzalo Daniel Vega | Full Stack Developer',
       description:
         'Write to me to talk about your project, idea, or technical problem. I reply personally.',
-      image: `${BASE_URL}/foto.png`,
-      imageWidth: 400,
-      imageHeight: 400,
+      ...SITE_PREVIEW,
       type: 'website',
     },
   },
@@ -152,9 +149,9 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
       return {
         title: `${project.title} — Gonzalo Daniel Vega`,
         description: `${project.tagline} | ${project.tools.join(', ')}`,
-        image: cover ? `${BASE_URL}${cover}` : `${BASE_URL}/foto.png`,
-        imageWidth: cover ? 1280 : 400,
-        imageHeight: cover ? 800 : 400,
+        image: cover ? `${BASE_URL}${cover}` : SITE_PREVIEW.image,
+        imageWidth: cover ? 1280 : SITE_PREVIEW.imageWidth,
+        imageHeight: cover ? 800 : SITE_PREVIEW.imageHeight,
         type: 'website',
       };
     }
@@ -171,9 +168,9 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
       return {
         title: `${title} — Gonzalo Daniel Vega`,
         description,
-        image: `${BASE_URL}/foto.png`,
-        imageWidth: 400,
-        imageHeight: 400,
+        image: SITE_PREVIEW.image,
+        imageWidth: SITE_PREVIEW.imageWidth,
+        imageHeight: SITE_PREVIEW.imageHeight,
         type: 'article',
       };
     }
@@ -185,6 +182,20 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
   if (base === '/dialogo') return localized('/dialogo');
 
   return localized('/');
+}
+
+/**
+ * Texto alternativo del preview. Para un proyecto es su nombre (la imagen es su
+ * portada); para el resto, la tarjeta de presentación del sitio.
+ */
+function imageAltFor(pathname: string, meta: PageMetaInfo): string {
+  const base = roundPath(pathname);
+  if (base.startsWith('/proyectos/')) {
+    const project = caseStudies.find(p => p.id === base.slice('/proyectos/'.length));
+    if (project) return `Portada de ${project.title}`;
+  }
+  if (meta.image === SITE_PREVIEW.image) return SITE_PREVIEW_ALT;
+  return meta.title;
 }
 
 function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
@@ -291,12 +302,17 @@ export default function PageMeta() {
     upsertMeta('property', 'og:image', meta.image);
     upsertMeta('property', 'og:image:width', String(meta.imageWidth));
     upsertMeta('property', 'og:image:height', String(meta.imageHeight));
+    // Sin alt, el preview se publica como imagen vacia: los lectores de
+    // pantalla no tienen nada que leer y las plataformas lo adivinan.
+    const imageAlt = imageAltFor(pathname, meta);
+    upsertMeta('property', 'og:image:alt', imageAlt);
     upsertMeta('property', 'og:type', meta.type);
     upsertMeta('property', 'og:locale', lang === 'es' ? 'es_AR' : 'en_US');
     upsertMeta('property', 'og:locale:alternate', lang === 'es' ? 'en_US' : 'es_AR');
     upsertMeta('name', 'twitter:title', meta.title);
     upsertMeta('name', 'twitter:description', meta.description);
     upsertMeta('name', 'twitter:image', meta.image);
+    upsertMeta('name', 'twitter:image:alt', imageAlt);
 
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', canonicalUrl);

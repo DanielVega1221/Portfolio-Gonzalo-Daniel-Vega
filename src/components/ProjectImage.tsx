@@ -1,44 +1,55 @@
-import { useLanguage } from '../i18n/useLanguage';
+import { useState } from 'react';
+import { useT } from '../i18n/useT';
+import { ui } from '../i18n/translations';
+import type { CaseStudy } from '../types';
 
 interface ProjectImageProps {
   title: string;
   subtitle: string;
   chapterNumber: string;
-  type: 'personal' | 'real' | 'tool' | 'particular' | 'career';
+  type: CaseStudy['type'];
   projectId: string;
   url?: string;
   screenshot?: string;
+  /** Only for the first card above the fold: that one is the LCP candidate. */
+  priority?: boolean;
   className?: string;
 }
 
-function getTypeLabel(type: ProjectImageProps['type'], lang: 'es' | 'en') {
-  const labels: Record<string, { es: string; en: string }> = {
-    real: { es: 'CLIENTE', en: 'CLIENT' },
-    tool: { es: 'HERRAMIENTA', en: 'TOOL' },
-    personal: { es: 'DEMO', en: 'DEMO' },
-    particular: { es: 'PARTICULAR', en: 'PRIVATE' },
-    career: { es: 'CARRERA', en: 'CAREER' },
-  };
-  return labels[type]?.[lang] || type.toUpperCase();
-}
+// El badge de la card usa el mismo diccionario que los filtros de /proyectos.
+// Antes tenia su propio mapa interno ("CLIENTE" / "HERRAMIENTA" / "DEMO"), y el
+// mismo proyecto seitania con dos palabras distintas segun donde se lo mire.
+const TYPE_LABELS: Record<CaseStudy['type'], keyof typeof ui.portfolio.filters> = {
+  real: 'real',
+  tool: 'tool',
+  personal: 'personal',
+  particular: 'particular',
+  career: 'career',
+};
 
-export default function ProjectImage({ title, subtitle, chapterNumber, type, projectId, url, screenshot, className = '' }: ProjectImageProps) {
-  const { lang } = useLanguage();
+export default function ProjectImage({ title, subtitle, chapterNumber, type, projectId, url, screenshot, priority = false, className = '' }: ProjectImageProps) {
+  const t = useT();
   // `screenshot` cubre los proyectos sin sitio web publico; si no, la captura
   // automatica que vivia en la URL del proyecto.
   const screenshotPath = screenshot ?? (url ? `/projects/${projectId}.jpg` : null);
+  // Si el archivo no llega, caemos al placeholder tipografico: antes se
+  // dibujaba el icono de imagen rota del navegador.
+  const [coverFailed, setCoverFailed] = useState(false);
+  const showCover = screenshotPath !== null && !coverFailed;
 
   return (
     <div className={`relative w-full aspect-[16/10] overflow-hidden bg-[#efede8] border border-[#e5e2de] rounded-sm group-hover:border-[#1a1a1a]/30 transition-colors ${className}`}>
-      {screenshotPath ? (
+      {showCover ? (
         <img
           src={screenshotPath}
           alt={title}
           width={640}
           height={400}
           className="w-full h-full object-cover object-top"
-          loading="lazy"
+          loading={priority ? 'eager' : 'lazy'}
           decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
+          onError={() => setCoverFailed(true)}
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-[#efede8] to-[#e5e2de]">
@@ -54,8 +65,8 @@ export default function ProjectImage({ title, subtitle, chapterNumber, type, pro
         </div>
       )}
 
-      <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#777] bg-[#f9f7f2]/90 backdrop-blur-xs px-2 py-1 border border-[#e5e2de] rounded-xs">
-        {getTypeLabel(type, lang)}
+      <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#555] bg-[#f9f7f2]/90 backdrop-blur-xs px-2 py-1 border border-[#e5e2de] rounded-xs max-w-[60%] truncate">
+        {t(ui.portfolio.filters[TYPE_LABELS[type]])}
       </div>
 
       <div className="absolute top-3 right-3 font-mono text-xs font-bold text-[#a84432] bg-[#f9f7f2]/90 backdrop-blur-xs w-7 h-7 rounded-full border border-[#e5e2de] flex items-center justify-center">

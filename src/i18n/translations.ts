@@ -1,3 +1,5 @@
+import type { CriteriaLevel } from '../types';
+
 export const ui = {
   // ── Accessibility labels ──
   a11y: {
@@ -16,11 +18,15 @@ export const ui = {
     journal: { es: 'Journal', en: 'Journal' },
     about: { es: 'Sobre mí', en: 'About' },
     contact: { es: 'Contacto', en: 'Contact' },
+    openMenu: { es: 'Abrir menú', en: 'Open menu' },
+    closeMenu: { es: 'Cerrar menú', en: 'Close menu' },
+    switchLang: { es: 'Cambiar a inglés', en: 'Switch to Spanish' },
   },
 
   // ── Footer ──
   footer: {
-    copyright: { es: '© 2026 Gonzalo Daniel Vega.', en: '© 2026 Gonzalo Daniel Vega.' },
+    // {year} lo reemplaza Layout: un año fijo en la traducción se queda viejo.
+    copyright: { es: '© {year} Gonzalo Daniel Vega.', en: '© {year} Gonzalo Daniel Vega.' },
     made: { es: 'Desarrollado con criterio.', en: 'Built with purpose.' },
     cv: { es: 'CV', en: 'CV' },
   },
@@ -31,7 +37,7 @@ export const ui = {
     editorial: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
     heroTitle: { es: 'Construyo software que resuelve problemas reales.', en: 'I build software that solves real problems.' },
     heroTag: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
-    heroBody: { es: '5 clientes reales. Resultados medibles. Desarrollo a medida.', en: '5 real clients. Measurable results. Custom development.' },
+    heroBody: { es: '5 proyectos con clientes reales. Decisiones, límites y resultados documentados.', en: '5 projects with real clients. Decisions, limits and results documented.' },
     exchange: { es: 'PROYECTOS DESTACADOS', en: 'FEATURED PROJECTS' },
     exchangeDesc: { es: 'Tres proyectos que muestran mi forma de trabajar.', en: 'Three projects that show how I work.' },
     featuredViewAll: { es: 'Ver todos los proyectos (15) →', en: 'View all projects (15) →' },
@@ -163,21 +169,22 @@ export const ui = {
   badge: {
     lanyardText: { es: 'PORTFOLIO 2026', en: 'PORTFOLIO 2026' },
     headerLabel: { es: 'DEVELOPER', en: 'DEVELOPER' },
-    openToWork: { es: 'Open to work', en: 'Open to work' },
+    openToWork: { es: 'Disponible', en: 'Open to work' },
     role: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
     company: { es: 'UXnicorp', en: 'UXnicorp' },
     location: { es: 'Catamarca, AR', en: 'Catamarca, AR' },
-    cvTitle: { es: 'CURRICULUM VITAE', en: 'CURRICULUM VITAE' },
-    scanLabel: { es: 'ESCANEA EL CV', en: 'SCAN THE CV' },
-    openResume: { es: 'Descargar Curriculum Vitae', en: 'Download Resume' },
+    cvTitle: { es: 'CURRÍCULUM VITAE', en: 'CURRICULUM VITAE' },
+    scanLabel: { es: 'ESCANEÁ EL CV', en: 'SCAN THE CV' },
+    openResume: { es: 'Descargar currículum', en: 'Download resume' },
     linkedinLabel: { es: 'LinkedIn', en: 'LinkedIn' },
     emailLabel: { es: 'Email', en: 'Email' },
     linkedinCta: { es: 'Ver perfil', en: 'View profile' },
     copyEmail: { es: 'Copiar', en: 'Copy' },
     copiedEmail: { es: '¡Email copiado!', en: 'Email copied!' },
+    copyEmailFailed: { es: 'No se pudo copiar', en: 'Copy failed' },
     flipFront: { es: 'Clic para voltear', en: 'Click to flip' },
     flipBack: { es: 'Clic para volver', en: 'Click to go back' },
-    flipAria: { es: 'Voltear credencial para ver Curriculum Vitae y LinkedIn', en: 'Flip the badge to see the resume and LinkedIn' },
+    flipAria: { es: 'Voltear la credencial para ver el currículum y LinkedIn', en: 'Flip the badge to see the resume and LinkedIn' },
     shakeAria: { es: 'Sacudir la credencial', en: 'Shake the badge' },
   },
 
@@ -202,8 +209,21 @@ export const ui = {
     submitting: { es: 'Enviando...', en: 'Sending...' },
     success: { es: 'Mensaje enviado correctamente. ¡Gracias por escribir!', en: 'Message sent successfully. Thanks for writing!' },
     errorReason: { es: 'Seleccioná un motivo para escribir.', en: 'Select a reason to write.' },
-    errorFallback: { es: 'Error al enviar', en: 'Error sending' },
     errorGeneric: { es: 'Error al enviar el mensaje. Intentá de nuevo.', en: 'Error sending message. Try again.' },
+    // El endpoint devuelve códigos estables en vez de texto: el cliente los
+    // traduce acá. Antes se pintaba en pantalla el mensaje crudo del servidor,
+    // siempre en español, y en inglés llegaba a leerse "rate_limited".
+    errorCodes: {
+      rate_limited: { es: 'Demasiados envíos seguidos. Probá de nuevo en un rato.', en: 'Too many submissions in a row. Try again in a while.' },
+      email_invalid: { es: 'Revisá el email: no parece una dirección válida.', en: 'Check the email address: it does not look valid.' },
+      message_required: { es: 'El mensaje no puede quedar vacío.', en: 'The message cannot be empty.' },
+      method_not_allowed: { es: 'Método no permitido.', en: 'Method not allowed.' },
+      invalid_body: { es: 'No pudimos leer el formulario. Probá de nuevo.', en: 'We could not read the form. Try again.' },
+      invalid_json: { es: 'No pudimos leer el formulario. Probá de nuevo.', en: 'We could not read the form. Try again.' },
+      delivery_failed: { es: 'No pudimos entregar el mensaje. Te dejo el email por si querés responder directo.', en: 'We could not deliver the message. Here is my email in case you want to reply directly.' },
+      sender_unverified: { es: 'El envío está en modo de prueba y todavía no acepta destinatarios externos. Te dejo el email por si querés responder directo.', en: 'Sending is still in test mode and does not accept outside recipients yet. Here is my email in case you want to reply directly.' },
+      service_unavailable: { es: 'El servicio está temporalmente caído. Te dejo el email por si querés responder directo.', en: 'The service is temporarily down. Here is my email in case you want to reply directly.' },
+    },
     casualTitle: { es: '¿Querés charlar de manera casual o simplemente intercambiar ideas?', en: 'Want to chat casually or just exchange ideas?' },
     casualDesc: { es: 'Me encanta conversar. Si te pinta hablar de tecnología, de proyectos, de la vida o de lo que sea, escribime sin compromiso.', en: 'I love to chat. If you feel like talking about tech, projects, life, or whatever, write to me — no strings attached.' },
     casualBtn: { es: 'Charlar por WhatsApp', en: 'Chat on WhatsApp' },
@@ -217,16 +237,20 @@ export const ui = {
   // ── Portfolio ──
   portfolio: {
     chapter: { es: 'CAPÍTULO II — ARCHIVOS Y PROYECTOS', en: 'CHAPTER II — FILES & PROJECTS' },
-    title: { es: 'Registro de Proyectos Realizados', en: 'Record of Completed Projects' },
+    title: { es: 'Registro de Proyectos', en: 'Project Log' },
     desc: { es: 'No todos los proyectos nacen del mismo lugar. Algunos surgen de la curiosidad. Otros de problemas reales. Y otros de cosas que necesitaba resolver para mí. Los separo así porque cada uno muestra una forma distinta de pensar.', en: "Not all projects come from the same place. Some arise from curiosity. Others from real problems. And others from things I needed to solve for myself. I separate them like this because each one shows a different way of thinking." },
     searchPlaceholder: { es: 'Buscar por herramienta, problema, tecnología...', en: 'Search by tool, problem, technology...' },
+    searchLabel: { es: 'Buscar proyectos', en: 'Search projects' },
+    // Un solo vocabulario para toda la pagina: antes los filtros decia
+    // "Clientes UXnicorp" mientras el badge de la card decia "CLIENTE", y para
+    // el visitante eran dos etiquetas distintas del mismo proyecto.
     filters: {
       all: { es: 'Todos', en: 'All' },
-      personal: { es: 'Demos conceptuales', en: 'Conceptual Demos' },
-      tool: { es: 'Herramientas', en: 'Tools' },
-      real: { es: 'Clientes UXnicorp', en: 'UXnicorp Clients' },
-      particular: { es: 'Clientes particulares', en: 'Private Clients' },
-      career: { es: 'Carrera personal', en: 'Personal Career' },
+      personal: { es: 'Demos conceptuales', en: 'Conceptual demos' },
+      tool: { es: 'Herramientas propias', en: 'Own tools' },
+      real: { es: 'Clientes reales', en: 'Real clients' },
+      particular: { es: 'Clientes individuales', en: 'Individual clients' },
+      career: { es: 'Trayectoria', en: 'Career' },
     },
     chapterLabel: { es: 'CAPÍTULO /', en: 'CHAPTER /' },
     yearLabel: { es: 'Año', en: 'Year' },
@@ -249,21 +273,22 @@ export const ui = {
     synthesis: { es: 'LA SÍNTESIS', en: 'THE SYNTHESIS' },
     synthesisText: { es: 'Comprender este pilar transformó por completo la dirección táctica del proyecto, permitiendo depurar el ruido innecesario y enfocarse en valor estricto.', en: 'Understanding this pillar completely transformed the tactical direction of the project, allowing unnecessary noise to be filtered out and focusing on strict value.' },
     tactics: { es: 'TÁCTICAS', en: 'TACTICS' },
-    tacticsTitle: { es: 'Análisis de Tradeoffs: Opciones sobre la mesa', en: 'Tradeoff Analysis: Options on the table' },
+    tacticsTitle: { es: 'Análisis de compromisos: opciones sobre la mesa', en: 'Tradeoff Analysis: options on the table' },
     tacticsSub: { es: 'Construir software a medida requiere evaluar escenarios honestamente. Ninguna arquitectura es perfecta, cada decisión tiene un precio:', en: 'Building custom software requires honestly evaluating scenarios. No architecture is perfect — every decision has a price:' },
     option: { es: 'OPCIÓN', en: 'OPTION' },
     determination: { es: 'DETERMINACIÓN', en: 'DETERMINATION' },
     decisionTitle: { es: 'La Decisión: El camino elegido', en: 'The Decision: The path chosen' },
     workedWell: { es: 'LO QUE FUNCIONÓ DE VERDAD', en: 'WHAT ACTUALLY WORKED' },
-    tradeoffs: { es: 'LIMITACIONES Y TRADEOFFS', en: 'LIMITATIONS & TRADEOFFS' },
+    tradeoffs: { es: 'LIMITACIONES Y COMPROMISOS', en: 'LIMITATIONS & TRADE-OFFS' },
     differentTitle: { es: 'DE LA BITÁCORA PERSONAL DE GONZALO: ¿QUÉ HARÍA DIFERENTE HOY?', en: "FROM GONZALO'S PERSONAL LOGBOOK: WHAT WOULD I DO DIFFERENTLY TODAY?" },
     differentSub: { es: 'Anotación retrospectiva posterior al lanzamiento', en: 'Retrospective note after launch' },
+    demonstratesTitle: { es: 'QUÉ DEMUESTRA ESTE PROYECTO', en: 'WHAT THIS PROJECT DEMONSTRATES' },
     ficha: { es: 'FICHA TÉCNICA', en: 'TECHNICAL SHEET' },
     project: { es: 'PROYECTO', en: 'PROJECT' },
     rubro: { es: 'RUBRO / PROPÓSITO', en: 'INDUSTRY / PURPOSE' },
     year: { es: 'AÑO DE EJECUCIÓN', en: 'EXECUTION YEAR' },
     scope: { es: 'ALCANCE DEL PROYECTO', en: 'PROJECT SCOPE' },
-    tools: { es: 'CONSECUENCIAS TECNOLÓGICAS', en: 'TECHNOLOGICAL CONSEQUENCES' },
+    tools: { es: 'HERRAMIENTAS', en: 'TECH STACK' },
     links: { es: 'ENLACES', en: 'LINKS' },
     viewProject: { es: 'Ver proyecto', en: 'View project' },
     repoFront: { es: 'Repositorio frontend', en: 'Frontend repository' },
@@ -288,7 +313,7 @@ export const ui = {
     play: { es: 'PLAY', en: 'PLAY' },
     standby: { es: 'STANDBY', en: 'STANDBY' },
     noTape: { es: '[ SIN CINTA CARGADA ]', en: '[ NO TAPE LOADED ]' },
-    tape: { es: 'Tape:', en: 'Tape:' },
+    tape: { es: 'Cinta:', en: 'Tape:' },
     inserting: { es: 'INSERTANDO...', en: 'INSERTING...' },
     slot: { es: 'RANURA DE ENTRADA', en: 'ENTRY SLOT' },
     slotHint: { es: 'Selecciona una cinta de abajo', en: 'Select a tape below' },
@@ -313,7 +338,7 @@ export const ui = {
     title: { es: 'Notas de Campo & Ensayos', en: 'Field Notes & Essays' },
     desc: { es: 'Una compilación de reflexiones técnicas honestas, análisis heurísticos y aprendizajes sobre arquitectura de software, experiencia de usuario habitable y dirección de arte digital.', en: 'A collection of honest technical reflections, heuristic analysis, and learnings about software architecture, livable user experience, and digital art direction.' },
     readMore: { es: 'Leer nota de campo →', en: 'Read field note →' },
-    noteLabel: { es: 'NOTE #', en: 'NOTE #' },
+    noteLabel: { es: 'NOTA N.º ', en: 'NOTE #' },
     comingSoon: { es: 'Próximamente', en: 'Coming soon' },
     comingSoonSub: {
       es: 'Estoy preparando las primeras notas de campo.',
@@ -324,7 +349,7 @@ export const ui = {
     backToJournal: { es: 'Volver al Journal', en: 'Back to Journal' },
     backToNotes: { es: 'Volver a Notas de Campo', en: 'Back to Field Notes' },
     journalHeader: { es: 'JOURNAL TÉCNICO // G. D. VEGA', en: 'TECHNICAL JOURNAL // G. D. VEGA' },
-    notebook: { es: 'CUADERNO No. 01', en: 'NOTEBOOK No. 01' },
+    notebook: { es: 'CUADERNO N.º', en: 'NOTEBOOK No.' },
     abstract: { es: 'ABSTRACT / SÍNTESIS', en: 'ABSTRACT / SYNTHESIS' },
     author: { es: 'AUTOR DE LA NOTA', en: 'FIELD NOTE AUTHOR' },
     authorName: { es: 'Gonzalo Daniel Vega', en: 'Gonzalo Daniel Vega' },
@@ -344,3 +369,22 @@ export const ui = {
     backHome: { es: 'Volver al inicio', en: 'Back to home' },
   },
 } as const;
+
+/**
+ * Traduccion de `CaseStudy.criteriaLevel`. Los datos guardan el valor en
+ * espanol (se escribieron una sola vez y asi se leen en el codigo), pero antes
+ * de este mapa se renderizaban tal cual: las 15 paginas en ingles mostraban
+ * "Sistema en Produccion", "Produccion Real", "Herramienta Interna".
+ *
+ * La clave es el valor exacto del union `CriteriaLevel`; si se agrega uno nuevo
+ * a ese union, TypeScript obliga a declararlo aca.
+ */
+export const criteriaLabels: Record<CriteriaLevel, { es: string; en: string }> = {
+  'Demo Conceptual': { es: 'Demo conceptual', en: 'Conceptual demo' },
+  'Demo Funcional': { es: 'Demo funcional', en: 'Functional demo' },
+  'Herramienta Interna': { es: 'Herramienta interna', en: 'Internal tool' },
+  'Herramienta Personal': { es: 'Herramienta personal', en: 'Personal tool' },
+  'Recurso Abierto': { es: 'Recurso abierto', en: 'Open resource' },
+  'Sistema en Producción': { es: 'Sistema en producción', en: 'System in production' },
+  'Producción Real': { es: 'Producción real', en: 'Real production' },
+};

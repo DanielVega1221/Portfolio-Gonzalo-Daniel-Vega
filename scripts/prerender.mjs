@@ -131,7 +131,25 @@ async function prerender() {
   console.log('\nPrerender complete.');
 }
 
-prerender().catch(err => {
-  console.log(`Prerender skipped: ${err.message.split('\n')[0]}`);
-  process.exit(0);
-});
+/**
+ * Cualquier error inesperado tiene que tumbar el build.
+ *
+ * Antes el catch final imprimia "Prerender skipped" y salia con codigo 0 para
+ * *cualquier* fallo, incluido que Chromium no arrancara. El resultado era un
+ * deploy verde con las 48 rutas sirviendo el index.html vacio del SPA: sin
+ * title, sin og:image, sin canonical, y sin contenido para los buscadores. Un
+ * error silencioso de infraestructura que se ve como un despliegue exitoso.
+ *
+ * Saltear es posible pero explicito: SKIP_PRERENDER=1 npm run build.
+ */
+const SKIP = process.env.SKIP_PRERENDER === '1';
+
+if (SKIP) {
+  console.log('SKIP_PRERENDER=1: se omite el prerender a proposito. El build NO lleva contenido estatico por ruta.');
+} else {
+  prerender().catch((err) => {
+    console.error(`\nPrerender fallo: ${err.message}`);
+    console.error('Para saltearlo a proposito: SKIP_PRERENDER=1 npm run build');
+    process.exit(1);
+  });
+}

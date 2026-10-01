@@ -23,5 +23,6 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "exclude": ["dist", "node_modules", "api"]
+  "include": ["src", "api", "vite.config.ts"],
+  "exclude": ["dist", "node_modules"]
 }

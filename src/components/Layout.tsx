@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
-// GITHUB: import { profile } from '../data/profile';  <- Importar de nuevo al reactivar el link del footer.
+import { profile } from '../data/profile';
 import {
   Library, Layers, BookOpen, User, Mail,
   Menu, X,
@@ -42,15 +42,22 @@ export default function Layout() {
 
           <div className="md:hidden">
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-[#555] hover:text-[#1a1a1a]"
-              aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="primary-navigation"
+              aria-label={mobileMenuOpen ? t(ui.nav.closeMenu) : t(ui.nav.openMenu)}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
 
-          <nav className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-wrap justify-center gap-1 sm:gap-2`} role="navigation">
+          <nav
+            id="primary-navigation"
+            className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-wrap justify-center gap-1 sm:gap-2`}
+            role="navigation"
+          >
             {navItems.map((item) => {
               const IconComp = item.icon;
               const linkTo = localizePath(item.path, lang);
@@ -71,7 +78,12 @@ export default function Layout() {
                 </Link>
               );
             })}
-            <button onClick={toggleLang} className="font-mono text-xs uppercase tracking-wider text-[#555] hover:text-[#a84432] transition-colors cursor-pointer ml-2" aria-label={lang === 'es' ? 'Switch to English' : 'Cambiar a español'}>
+            <button
+              type="button"
+              onClick={toggleLang}
+              className="font-mono text-xs uppercase tracking-wider text-[#555] hover:text-[#a84432] transition-colors cursor-pointer ml-2"
+              aria-label={t(ui.nav.switchLang)}
+            >
               {lang === 'es' ? 'EN' : 'ES'}
             </button>
           </nav>
@@ -86,12 +98,12 @@ export default function Layout() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-[#555] font-mono">
           <div>
             <p>
-              {t(ui.footer.copyright)}
+              {t(ui.footer.copyright).replace('{year}', String(new Date().getFullYear()))}
             </p>
             <p className="text-xs text-[#444] mt-1">{t(ui.footer.made)}</p>
           </div>
           <div className="flex gap-4">
-            <a href="https://www.linkedin.com/in/gonzalo-daniel-vega/" target="_blank" rel="noopener noreferrer" className="hover:text-[#a84432] transition-colors">LINKEDIN</a>
+            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-[#a84432] transition-colors">LINKEDIN</a>
             {/* GITHUB: sacar este comentario para volver a mostrar el link del footer.
             {(
               <>
@@ -102,7 +114,7 @@ export default function Layout() {
             <span>•</span>
             <a href={lang === 'es' ? '/cv-es.pdf' : '/cv-en.pdf'} target="_blank" rel="noopener noreferrer" className="hover:text-[#a84432] transition-colors">{t(ui.footer.cv)}</a>
             <span>•</span>
-            <a href="mailto:dvega6442@gmail.com" className="hover:text-[#a84432] transition-colors">EMAIL</a>
+            <a href={`mailto:${profile.email}`} className="hover:text-[#a84432] transition-colors">EMAIL</a>
           </div>
         </div>
       </footer>

@@ -5,6 +5,7 @@ import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
 import { journalEntries } from '../data/journal';
+import { formatEntryDate, readingTimeLabel, notebookNumber, fieldNotebookLabel } from '../lib/journalMeta';
 
 export default function JournalDetail() {
   const { lang } = useLanguage();
@@ -18,6 +19,7 @@ export default function JournalDetail() {
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
         <p className="font-mono text-sm text-[#777]">{t(ui.journal.notFound)}</p>
         <button
+          type="button"
           onClick={() => navigate(localizePath('/journal', lang))}
           className="mt-4 font-mono text-xs text-[#a84432] underline uppercase tracking-wider"
         >
@@ -98,6 +100,7 @@ export default function JournalDetail() {
     >
       <div className="flex justify-between items-center border-b border-[#1a1a1a]/10 pb-6 mb-12">
         <button
+          type="button"
           onClick={onBack}
           className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#a84432] hover:text-[#1a1a1a] transition-colors cursor-pointer"
         >
@@ -111,18 +114,20 @@ export default function JournalDetail() {
 
       <div className="space-y-6 mb-12">
         <div className="flex flex-wrap items-center gap-4 font-mono text-xs text-[#777]">
-          <span className="text-[#a84432] font-semibold tracking-widest">{t(ui.journal.notebook)}</span>
+          <span className="text-[#a84432] font-semibold tracking-widest">
+            {t(ui.journal.notebook)} {notebookNumber(entry.id)}
+          </span>
           <span className="opacity-30">•</span>
           <span className="bg-[#1a1a1a]/5 px-2 py-0.5 rounded-xs text-[11px] uppercase font-semibold text-[#555]">
             {lang === 'en' && entry.categoryEn ? entry.categoryEn : entry.category}
           </span>
           <span className="opacity-30">•</span>
           <span className="flex items-center gap-1">
-            <Calendar size={12} className="opacity-70" /> {entry.date}
+            <Calendar size={12} className="opacity-70" /> {formatEntryDate(entry.date, lang)}
           </span>
           <span className="opacity-30">•</span>
           <span className="flex items-center gap-1">
-            <Clock size={12} className="opacity-70" /> {lang === 'en' && entry.readingTimeEn ? entry.readingTimeEn : entry.readingTime}
+            <Clock size={12} className="opacity-70" /> {readingTimeLabel(entry, lang)}
           </span>
         </div>
 
@@ -164,13 +169,14 @@ export default function JournalDetail() {
 
       <div className="flex justify-between items-center text-xs font-mono">
         <button
+          type="button"
           onClick={onBack}
           className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#a84432] hover:text-[#1a1a1a] transition-colors cursor-pointer"
         >
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
           {t(ui.journal.backToJournal)}
         </button>
-        <span className="text-[#999]">{t(ui.journal.fieldNotebook)}</span>
+        <span className="text-[#999]">{fieldNotebookLabel(entry, lang)}</span>
       </div>
     </motion.article>
   );

@@ -1,3 +1,19 @@
+/**
+ * Nivel de entrega del proyecto. Es un union y no un `string` a proposito: los
+ * 7 valores viven en español en los datos (asi se escribieron una vez) pero se
+ * renderizan traducidos via i18n/translations.ts. Con `string` libre, un valor
+ * nuevo se colaba en las 15 paginas del sitio sin traduccion y salia en
+ * español en la version inglesa.
+ */
+export type CriteriaLevel =
+  | 'Demo Conceptual'
+  | 'Demo Funcional'
+  | 'Herramienta Interna'
+  | 'Herramienta Personal'
+  | 'Recurso Abierto'
+  | 'Sistema en Producción'
+  | 'Producción Real';
+
 export interface CaseStudy {
   id: string;
   title: string;
@@ -16,8 +32,8 @@ export interface CaseStudy {
   workedWell: string; // Lo que funcionó
   tradeoffs: string; // Límites y tradeoffs
   differentToday: string; // Qué haría distinto hoy
-  demonstrates?: string; // Qué demuestra o Aprendizajes
-  criteriaLevel?: string; // Nivel de entrega: Demo, Producción, etc.
+  demonstrates?: string; // Qué demuestra o aprendizajes
+  criteriaLevel?: CriteriaLevel; // Nivel de entrega: demo, herramienta, producción
   criteriaInsight?: string; // Frase de criterio única por proyecto
   metric?: string; // Resultado en formato Antes/Después (solo si aplica)
   repoFront?: string; // Repositorio frontend
@@ -29,9 +45,8 @@ export interface JournalEntry {
   id: string;
   title: string;
   titleEn?: string;
+  /** ISO 'YYYY-MM-DD'. Se formatea al renderizar con formatEntryDate(). */
   date: string;
-  readingTime: string;
-  readingTimeEn?: string;
   category: string;
   categoryEn?: string;
   tagline: string;

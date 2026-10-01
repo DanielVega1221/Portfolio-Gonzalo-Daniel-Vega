@@ -18,16 +18,19 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="__SITE_URL__" />
     <meta property="og:site_name" content="Gonzalo Daniel Vega" />
-    <meta property="og:image" content="__SITE_URL__/foto.png" />
-    <meta property="og:image:width" content="400" />
-    <meta property="og:image:height" content="400" />
+    <meta property="og:image" content="__SITE_URL__/og-cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Gonzalo Daniel Vega, Full Stack Developer en Catamarca, Argentina" />
     <meta property="og:locale" content="es_AR" />
+    <meta property="og:locale:alternate" content="en_US" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Gonzalo Daniel Vega — Full Stack Developer" />
     <meta name="twitter:description" content="Full Stack Developer con criterio de producto. Construyo software que entiende el negocio antes que la tecnología." />
-    <meta name="twitter:image" content="__SITE_URL__/foto.png" />
+    <meta name="twitter:image" content="__SITE_URL__/og-cover.png" />
+    <meta name="twitter:image:alt" content="Gonzalo Daniel Vega, Full Stack Developer en Catamarca, Argentina" />
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -38,7 +41,7 @@
       "jobTitle": "Full Stack Developer",
       "description": "Full Stack Developer con criterio de producto. Construyo software que entiende el negocio antes que la tecnología.",
       "url": "__SITE_URL__",
-      "image": "__SITE_URL__/foto.png",
+      "image": "__SITE_URL__/og-cover.png",
       "sameAs": [
         "https://www.linkedin.com/in/gonzalo-daniel-vega/",
         "https://github.com/DanielVega1221"
@@ -70,8 +73,12 @@
     }
     </script>
 
-    <!-- Fonts -->
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- iOS no lee SVG: sin esto Safari agrega una captura de pagina entera
+         como icono, con el fondo del sitio y la barra del navegador. -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="GDV" />
   </head>
   <body>
     <div id="root"></div>

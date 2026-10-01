@@ -31,15 +31,19 @@ Personal portfolio of **Gonzalo Daniel Vega**, Full Stack Developer with product
 ```bash
 npm install           # installs dependencies + Playwright Chromium (postinstall)
 npm run dev           # dev server at http://localhost:3000
-npm run build         # sitemap -> optimize foto -> vite build -> prerender
+npm run build         # sitemap -> optimize foto -> og image -> vite build -> prerender
+npm run build:skip-prerender  # same without the Playwright pass (no static HTML per route)
+npm run prerender     # re-run only the prerender against the current dist/
 npm run preview       # serve the built site locally
-npm run lint          # ESLint + typecheck (tsc --noEmit)
+npm run lint          # ESLint (src + api + scripts) + typecheck (tsc --noEmit)
 npm run format        # Prettier over src
 npm run screenshots   # (re)capture published project covers as 1280x800 jpg
 npm run optimize:foto # optimize the profile photo to webp
 ```
 
-The build is fully reproducible: it generates and validates `sitemap.xml` (**fails** if a project has no published cover and no explicit fallback declared), optimizes the profile photo, compiles with Vite, then prerenders all 48 URLs (24 pages × es/en) with Playwright so crawlers receive static HTML.
+The build is fully reproducible: it generates and validates `sitemap.xml` (**fails** if a project has no published cover and no explicit fallback declared, or if `src/data/gallery.ts` claims screenshots that are not on disk), optimizes the profile photo, composes the 1200x630 social preview and the iOS touch icon, compiles with Vite, then prerenders all 48 URLs (24 pages × es/en) with Playwright so crawlers receive static HTML.
+
+Any failure in that last step fails the build. A prerender that quietly skips leaves a deploy that looks green while serving an empty shell with no title, no `og:image` and no content — so skipping has to be asked for explicitly with `npm run build:skip-prerender`.
 
 ## Running the contact form locally
 
@@ -49,20 +53,31 @@ The build is fully reproducible: it generates and validates `sitemap.xml` (**fai
 cp .env.example .env.local   # then fill in RESEND_API_KEY
 ```
 
-Messages go straight to the author's inbox; nothing is stored server-side. Note that the default `onboarding@resend.dev` sender only delivers to the account owner's own email until a domain is verified in Resend.
+A submission sends two emails: the message itself to the author's inbox, and a receipt to the visitor in the language they were browsing in, pointing at WhatsApp for anything urgent. The receipt is only attempted after the main message is accepted, and if it fails it is logged without failing the request — the visitor already got through. Nothing is stored server-side.
+
+The endpoint validates and length-caps every field, drops honeypot hits, and rate limits to 5 submissions per hour per IP. Responses are stable error codes that the client translates, so provider internals never reach the page.
+
+| Variable | Required | Default |
+| --- | --- | --- |
+| `RESEND_API_KEY` | yes | — |
+| `CONTACT_FROM` | no | `Portfolio GDV <onboarding@resend.dev>` |
+| `CONTACT_TO` | no | the author's inbox |
+
+`CONTACT_FROM` needs a domain verified in Resend. Until then the sender falls back to `onboarding@resend.dev`, which only delivers to the address registered on the Resend account, so the form reports `sender_unverified` instead of failing silently. Verified domains are included in the free plan; see `.env.example` for the details.
 
 ## Project structure
 
 ```
-api/contact.ts            Serverless contact endpoint (Resend)
-scripts/                  Build: sitemap with cover guard, prerender, image optimization
-src/components/           DevBadge, Layout, PageMeta (per-route SEO), StudioTapes, details
-src/data/                 Projects, journal, tapes (es/en), profile and site config
+api/contact.ts            Serverless contact endpoint (Resend, validation, rate limit, receipt)
+api/cv.ts                 Localized CV download with Content-Disposition
+scripts/                  Build: sitemap with cover + gallery guards, prerender, OG image
+src/components/           DevBadge, Layout, PageMeta (per-route SEO), Studio Tapes, details
+src/data/                 Projects, journal, tapes (es/en), gallery counts, profile, site
 src/i18n/                 LanguageContext, translations, helpers
-src/lib/                  safeStorage
+src/lib/                  safeStorage, useFocusTrap, journalMeta (dates, reading time)
 src/pages/                Home, Portfolio, Journal, About, Contact, 404
 site.config.json          Canonical origin (the only place the domain lives)
-vercel.json               Rewrites, cache headers, conditional PDF download
+vercel.json               Rewrites, security headers, cache, conditional PDF download
 ```
 
 ## Deployment

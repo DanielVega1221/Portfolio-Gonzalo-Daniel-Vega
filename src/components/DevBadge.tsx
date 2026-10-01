@@ -11,6 +11,7 @@ import {
   Download,
   FileText,
   RefreshCw,
+  AlertTriangle,
 } from 'lucide-react';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
@@ -83,9 +84,20 @@ export default function DevBadge({
   const t = useT();
   const [isFlipped, setIsFlipped] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const [qrSvg, setQrSvg] = useState<string | null>(null);
 
   const copyTimerRef = useRef<number | null>(null);
+
+  const armCopyReset = () => {
+    if (copyTimerRef.current !== null) {
+      window.clearTimeout(copyTimerRef.current);
+    }
+    copyTimerRef.current = window.setTimeout(() => {
+      setCopiedEmail(false);
+      setCopyFailed(false);
+    }, 2000);
+  };
 
   const prefersReducedMotion = useReducedMotion();
   const lanyardControls = useAnimation();
@@ -161,12 +173,29 @@ export default function DevBadge({
     e.stopPropagation();
     if (!profile.email) return;
 
-    navigator.clipboard?.writeText(profile.email).catch(() => {});
-    setCopiedEmail(true);
-    if (copyTimerRef.current !== null) {
-      window.clearTimeout(copyTimerRef.current);
+    // Antes se marcaba "COPIED" en el mismo tick que pediamos la promesa, asi
+    // que el exito se mostraba incluso cuando el portapapeles fallaba (contexto
+    // no seguro, permiso denegado, documento sin foco). Ahora el estado refleja
+    // lo que realmente paso.
+    const clipboard = navigator.clipboard;
+    if (!clipboard) {
+      setCopiedEmail(false);
+      setCopyFailed(true);
+      armCopyReset();
+      return;
     }
-    copyTimerRef.current = window.setTimeout(() => setCopiedEmail(false), 2000);
+    clipboard
+      .writeText(profile.email)
+      .then(() => {
+        setCopyFailed(false);
+        setCopiedEmail(true);
+        armCopyReset();
+      })
+      .catch(() => {
+        setCopiedEmail(false);
+        setCopyFailed(true);
+        armCopyReset();
+      });
   };
 
   const grain = <div className={`absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-multiply`} style={{ backgroundImage: GRAIN }} />;
@@ -230,18 +259,15 @@ export default function DevBadge({
           style={{ transformOrigin: 'top center', transformStyle: 'preserve-3d' }}
           className="relative -mt-3 z-20"
         >
+          {/* Sin role="button": con ese rol, ARIA vuelve presentacionales a
+              todos los descendientes, asi que el QR, la descarga, el link a
+              LinkedIn y el boton de copiar el email desaparecian del arbol de
+              accesibilidad. Tampoco hay tabIndex ni onKeyDown aca: el teclado
+              se maneja con los botones explicitos de cada cara, y antes el
+              preventDefault hacia que Enter no abriera los links. El click en
+              la tarjeta sigue sirviendo para el raton. */}
           <div
-            tabIndex={0}
-            role="button"
-            aria-pressed={isFlipped}
-            aria-label={t(ui.badge.flipAria)}
             onClick={toggleFlip}
-            onKeyDown={(e) => {
-              if (e.key === ' ' || e.key === 'Enter') {
-                e.preventDefault();
-                toggleFlip();
-              }
-            }}
             className={`${CARD} cursor-pointer relative ${RADIUS}`}
             style={{ perspective: '1400px' }}
           >
@@ -261,7 +287,6 @@ export default function DevBadge({
                 {/* Header */}
                 <div className={HEADER}>
                   <div className="flex items-center gap-1.5 text-[10.5px] font-mono text-[#a84432] font-bold uppercase">
-                    
                     <span>{t(ui.badge.headerLabel)}</span>
                   </div>
                   {profile.isOpenToWork && (
@@ -270,6 +295,14 @@ export default function DevBadge({
                       <span>{t(ui.badge.openToWork)}</span>
                     </div>
                   )}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); toggleFlip(); }}
+                    aria-label={t(ui.badge.flipAria)}
+                    className="ml-auto text-[#a84432] hover:text-[#1a1a1a] transition-colors cursor-pointer shrink-0"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                  </button>
                 </div>
 
                 {/* Photo */}
@@ -277,7 +310,6 @@ export default function DevBadge({
                   <img
                     src={profile.avatarUrl}
                     alt={profile.name}
-                    draggable={false}
                     width={400}
                     height={360}
                     loading="lazy"
@@ -319,7 +351,8 @@ export default function DevBadge({
                     </div>
                   </div>
 
-                  <p className="my-1 text-center font-serif text-[10.5px] italic leading-snug text-[#2a2a2a] text-pretty">
+                  {/* Echoes the pull-quote treatment used on the page */}
+                  <p className="my-1 pl-2.5 border-l-2 border-[#a84432] text-center font-serif text-[10.5px] italic leading-snug text-[#2a2a2a] text-pretty">
                     "{profile.shortQuote}"
                   </p>
 
@@ -411,6 +444,8 @@ export default function DevBadge({
                     >
                       {copiedEmail ? (
                         <Check className="w-3.5 h-3.5 shrink-0 text-emerald-600" />
+                      ) : copyFailed ? (
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-[#a84432]" />
                       ) : (
                         <Mail className="w-3.5 h-3.5 shrink-0 text-[#a84432]" />
                       )}
@@ -418,10 +453,13 @@ export default function DevBadge({
                         {t(ui.badge.emailLabel)}
                       </span>
                       <span className="text-[10px] font-mono text-[#555] truncate">
-                        {copiedEmail ? t(ui.badge.copiedEmail) : profile.email}
+                        {copiedEmail ? t(ui.badge.copiedEmail) : copyFailed ? t(ui.badge.copyEmailFailed) : profile.email}
                       </span>
+                      {/* Tras un fallo el chip vuelve a "COPIAR", no a "COPIADO":
+                          el mensaje de error ya esta en la fila de arriba y el
+                          boton tiene que quedar disponible para reintentar. */}
                       <span className="text-[8px] font-mono text-[#a84432] bg-[#a84432]/10 px-1.5 py-0.5 rounded-xs ml-auto shrink-0">
-                        {t(ui.badge.copyEmail)}
+                        {copiedEmail ? t(ui.badge.copiedEmail) : t(ui.badge.copyEmail)}
                       </span>
                     </button>
                   )}
@@ -429,10 +467,15 @@ export default function DevBadge({
 
                 <div className="mt-2.5 pt-1.5 border-t border-[#1a1a1a]/10 flex items-center justify-between gap-2">
                   <Barcode className="h-4 w-24" />
-                  <p className="flex items-center gap-1.5 text-[9.5px] font-mono text-[#a84432] whitespace-nowrap">
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); toggleFlip(); }}
+                    aria-label={t(ui.badge.flipAria)}
+                    className="flex items-center gap-1.5 text-[9.5px] font-mono text-[#a84432] hover:text-[#1a1a1a] whitespace-nowrap transition-colors cursor-pointer"
+                  >
                     <RefreshCw className="w-2.5 h-2.5 opacity-70" />
                     {t(ui.badge.flipBack)}
-                  </p>
+                  </button>
                 </div>
               </div>
             </motion.div>

@@ -6,6 +6,7 @@ import { caseStudies } from '../data/projects';
 import { getProjectEn } from '../data/projects-en-lookup';
 import ProjectImage from '../components/ProjectImage';
 import { journalEntries } from '../data/journal';
+import { profile, absoluteCvDownloadUrl } from '../data/profile';
 import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
@@ -53,7 +54,7 @@ export default function Home() {
                 <span className="font-mono text-[10px] uppercase tracking-wider text-[#f9f7f2] bg-emerald-600/80 px-2 py-0.5 rounded-xs">{t(ui.home.available)}</span>
               </div>
 
-              <h1 className="sr-only">Gonzalo Daniel Vega — Full Stack Developer</h1>
+              <h1 className="sr-only">{profile.name} — Full Stack Developer</h1>
 
               <h2 className="text-serif text-4xl sm:text-5xl md:text-6xl font-light leading-[1.05] text-[#1a1a1a] tracking-tight pr-4">
                 {t(ui.home.heroTitle)}
@@ -80,9 +81,7 @@ export default function Home() {
 
             <div className="flex flex-wrap gap-3">
               <a
-                href={lang === 'es' ? '/cv-es.pdf' : '/cv-en.pdf'}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={absoluteCvDownloadUrl(lang)}
                 className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#f9f7f2] bg-[#a84432] hover:bg-[#a84432]/90 px-4 py-2.5 rounded-sm transition-colors"
               >
                 <Download size={14} />
@@ -111,7 +110,7 @@ export default function Home() {
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {featuredProjects.map((project) => (
+                {featuredProjects.map((project, i) => (
                   <Link
                     key={project.id}
                     to={localizePath(`/proyectos/${project.id}`, lang)}
@@ -125,6 +124,7 @@ export default function Home() {
                       projectId={project.id}
                       url={project.url}
                       screenshot={project.screenshot}
+                      priority={i === 0}
                       className="border-0 rounded-none"
                     />
                     <div className="p-4">
@@ -190,28 +190,28 @@ export default function Home() {
               <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.home.index)}</p>
 
               <nav className="flex flex-col gap-6">
-                <Link to={localizePath('/proyectos', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a] focus:outline-none">
+                <Link to={localizePath('/proyectos', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a]">
                   <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#a84432] font-semibold">01.</span>
                   <span className="text-2xl font-light border-b border-transparent group-hover:border-[#a84432] pb-1 transition-all text-serif">{t(ui.nav.projects)}</span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>
                   <span className="font-mono text-[11px] uppercase opacity-50">{t(ui.home.indexProjects)}</span>
                 </Link>
 
-                <Link to={localizePath('/journal', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a] focus:outline-none">
+                <Link to={localizePath('/journal', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a]">
                   <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#a84432] font-semibold">02.</span>
                   <span className="text-2xl font-light border-b border-transparent group-hover:border-[#a84432] pb-1 transition-all text-serif">{t(ui.nav.journal)}</span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>
                   <span className="font-mono text-[11px] uppercase opacity-50">{t(ui.home.indexJournal)}</span>
                 </Link>
 
-                <Link to={localizePath('/sobre-mi', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a] focus:outline-none">
+                <Link to={localizePath('/sobre-mi', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a]">
                   <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#a84432] font-semibold">03.</span>
                   <span className="text-2xl font-light border-b border-transparent group-hover:border-[#a84432] pb-1 transition-all text-serif">{t(ui.nav.about)}</span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>
                   <span className="font-mono text-[11px] uppercase opacity-50">{t(ui.home.indexAbout)}</span>
                 </Link>
 
-                <Link to={localizePath('/dialogo', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a] focus:outline-none">
+                <Link to={localizePath('/dialogo', lang)} className="group cursor-pointer flex justify-between items-baseline text-left w-full border-none bg-transparent p-0 text-[#1a1a1a]">
                   <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#a84432] font-semibold">04.</span>
                   <span className="text-2xl font-light border-b border-transparent group-hover:border-[#a84432] pb-1 transition-all text-serif">{t(ui.nav.contact)}</span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>

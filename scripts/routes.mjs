@@ -24,7 +24,11 @@ export const JOURNAL = [
 
 // Projects without a published cover .jpg: PageMeta.tsx falls back to /foto.png
 // for their og:image (NO_COVER_PROJECTS must match this list).
-export const NO_COVER_PROJECTS = new Set(['content-studio']);
+//
+// Currently empty: all 15 projects have public/projects/<id>.jpg, including
+// content-studio, which used to be listed here and fell back to /foto.png even
+// though its own cover was already in the repo.
+export const NO_COVER_PROJECTS = new Set([]);
 
 export const ROUTES = [
   ...PAGES,

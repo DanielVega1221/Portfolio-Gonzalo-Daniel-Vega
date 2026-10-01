@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-// GITHUB: sacar este comentario del import para volver a usar el icono.
-// import { ArrowLeft, Calendar, CheckCircle2, AlertTriangle, RefreshCw, Award, Anchor, ExternalLink, Github, FolderKanban, X } from 'lucide-react';
 import { ArrowLeft, Calendar, CheckCircle2, AlertTriangle, RefreshCw, Award, Anchor, ExternalLink, FolderKanban, X } from 'lucide-react';
 import { caseStudies } from '../data/projects';
 import { CaseStudy } from '../types';
 import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
-import { ui } from '../i18n/translations';
+import { ui, criteriaLabels } from '../i18n/translations';
 import { getProjectEn } from '../data/projects-en-lookup';
+import { galleryImages } from '../data/gallery';
+import { useFocusTrap } from '../lib/useFocusTrap';
 import ProjectImage from './ProjectImage';
 
 export default function ProjectDetail() {
@@ -23,6 +23,18 @@ export default function ProjectDetail() {
   const [showGallery, setShowGallery] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+
+  // App.tsx reutiliza esta misma instancia cuando solo cambia el parametro de
+  // la ruta, asi que sin este reset el estado de un proyecto se filtra al
+  // siguiente: los placeholders de una imagen caida quedaban pegados en todos
+  // los proyectos posteriores y la imagen no volvia a intentar cargarse.
+  useEffect(() => {
+    setFailedImages(new Set());
+    setLightboxIndex(null);
+    setShowGallery(false);
+  }, [pid]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -37,11 +49,17 @@ export default function ProjectDetail() {
     return () => window.removeEventListener('keydown', onKey);
   }, [showGallery, lightboxIndex]);
 
+  // Ambos overlays son modales de verdad, asi que el foco no puede quedarse
+  // adentro de la pagina de fondo mientras estan abiertos.
+  useFocusTrap(lightboxRef, lightboxIndex !== null);
+  useFocusTrap(galleryRef, showGallery && lightboxIndex === null);
+
   if (!project || !projectData) {
     return (
       <div className="max-w-5xl mx-auto px-6 py-24 text-center">
-        <p className="font-mono text-sm text-[#777]">{t(ui.projectDetail.notFound)}</p>
+        <h1 className="font-serif text-3xl font-light text-[#1a1a1a] mb-4">{t(ui.projectDetail.notFound)}</h1>
         <button
+          type="button"
           onClick={() => navigate(localizePath('/proyectos', lang))}
           className="mt-4 font-mono text-xs text-[#a84432] underline uppercase tracking-wider"
         >
@@ -62,6 +80,8 @@ export default function ProjectDetail() {
     ? 'border-[#a84432]/20 text-[#a84432] bg-[#a84432]/5'
     : 'border-[#1a1a1a]/10 text-[#444] bg-[#1a1a1a]/5';
   const onBack = () => navigate(localizePath('/proyectos', lang));
+  const images = galleryImages(projectData.id);
+  const totalImages = images.length;
 
   return (
     <motion.article
@@ -73,6 +93,7 @@ export default function ProjectDetail() {
     >
       <div className="flex justify-between items-center border-b border-[#1a1a1a]/10 pb-6 mb-12">
         <button
+          type="button"
           onClick={onBack}
           className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#a84432] hover:text-[#1a1a1a] transition-colors cursor-pointer"
         >
@@ -277,6 +298,17 @@ export default function ProjectDetail() {
               {t(ui.projectDetail.differentSub)}
             </span>
           </section>
+
+          {projectData.demonstrates && (
+            <section className="max-w-2xl mx-auto mt-10 bg-[#1a1a1a] text-[#f9f7f2] p-8 rounded-sm">
+              <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#e8a99c] font-bold mb-3 flex items-center gap-2">
+                <Award size={12} /> {t(ui.projectDetail.demonstratesTitle)}
+              </h4>
+              <p className="text-sm leading-relaxed text-[#e8e4dc] font-light">
+                {projectData.demonstrates}
+              </p>
+            </section>
+          )}
         </div>
 
         <aside className="lg:col-span-4 lg:sticky lg:top-24 space-y-8">
@@ -303,7 +335,9 @@ export default function ProjectDetail() {
 
               <div>
                 <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">{t(ui.projectDetail.scope)}</span>
-                <p className="font-sans text-[#a84432] font-semibold uppercase tracking-wider">{projectData.criteriaLevel}</p>
+                <p className="font-sans text-[#a84432] font-semibold uppercase tracking-wider">
+                  {projectData.criteriaLevel ? t(criteriaLabels[projectData.criteriaLevel]) : null}
+                </p>
               </div>
 
               <div className="pt-4 border-t border-[#1a1a1a]/10">
@@ -345,14 +379,17 @@ export default function ProjectDetail() {
                 </div>
               )}
 
-              <div className="pt-4 border-t border-[#1a1a1a]/10">
-                <button
-                  onClick={() => setShowGallery(true)}
-                  className="flex items-center gap-1.5 font-mono text-[11px] text-[#a84432] hover:text-[#1a1a1a] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
-                >
-                  <FolderKanban size={11} /> {t(ui.projectDetail.gallery)}
-                </button>
-              </div>
+              {totalImages > 0 && (
+                <div className="pt-4 border-t border-[#1a1a1a]/10">
+                  <button
+                    type="button"
+                    onClick={() => setShowGallery(true)}
+                    className="flex items-center gap-1.5 font-mono text-[11px] text-[#a84432] hover:text-[#1a1a1a] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                  >
+                    <FolderKanban size={11} /> {t(ui.projectDetail.gallery)}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -377,16 +414,16 @@ export default function ProjectDetail() {
           aria-modal="true"
           aria-label={t(ui.projectDetail.galleryTitle)}
         >
-          <div className="bg-[#fffef0] border border-[#e5e2de] rounded-sm p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
+          <div ref={galleryRef} className="bg-[#fffef0] border border-[#e5e2de] rounded-sm p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <div>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-[#a84432] font-semibold block">{t(ui.projectDetail.galleryTitle)}</span>
                 <h3 className="font-serif text-xl font-light text-[#1a1a1a]">{projectData.title}</h3>
               </div>
               <button
+                type="button"
                 onClick={() => setShowGallery(false)}
                 aria-label={t(ui.a11y.close)}
-                autoFocus
                 className="text-[#888] hover:text-[#1a1a1a] cursor-pointer"
               >
                 <X size={20} />
@@ -394,15 +431,17 @@ export default function ProjectDetail() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {[1, 2, 3].map((n) => {
+              {images.map((src, i) => {
+                const n = i + 1;
                 const failed = failedImages.has(n);
                 return (
                 <button
-                  key={n}
+                  key={src}
                   type="button"
-                  onClick={() => setLightboxIndex(n - 1)}
+                  disabled={failed}
+                  onClick={() => setLightboxIndex(i)}
                   aria-label={`${t(ui.a11y.openImage)} ${projectData.title} ${String(n).padStart(2, '0')}`}
-                  className="aspect-[4/3] bg-[#efede8] border border-[#e5e2de] rounded-xs flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-[#a84432]/40 transition-colors group p-0"
+                  className="aspect-[4/3] bg-[#efede8] border border-[#e5e2de] rounded-xs flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-[#a84432]/40 transition-colors group p-0 disabled:cursor-default disabled:hover:border-[#e5e2de]"
                 >
                   <div className="absolute inset-0 bg-[#1a1a1a]/0 group-hover:bg-[#1a1a1a]/5 transition-colors z-10 flex items-center justify-center pointer-events-none">
                     <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity font-mono text-[11px] uppercase tracking-wider bg-[#1a1a1a]/60 px-2 py-1 rounded-xs">
@@ -411,7 +450,7 @@ export default function ProjectDetail() {
                   </div>
                   {!failed && (
                     <img
-                      src={`/projects/${projectData.id}/${String(n).padStart(2, '0')}.webp`}
+                      src={src}
                       alt={`${projectData.title} — ${String(n).padStart(2, '0')}`}
                       width={640}
                       height={480}
@@ -447,24 +486,26 @@ export default function ProjectDetail() {
         </div>
       )}
 
-      {lightboxIndex !== null && (
+      {lightboxIndex !== null && images[lightboxIndex] && (
         <div
+          ref={lightboxRef}
           className="fixed inset-0 z-[60] flex items-center justify-center bg-[#1a1a1a]/90 backdrop-blur-sm"
           onClick={() => setLightboxIndex(null)}
           role="dialog"
           aria-modal="true"
-          aria-label={`${projectData.title} — ${lightboxIndex + 1} / 3`}
+          aria-label={`${projectData.title} — ${lightboxIndex + 1} / ${totalImages}`}
         >
           <button
+            type="button"
             onClick={() => setLightboxIndex(null)}
             aria-label={t(ui.a11y.close)}
-            autoFocus
             className="absolute top-4 right-4 text-white/60 hover:text-white z-10 cursor-pointer"
           >
             <X size={28} />
           </button>
 
           <button
+            type="button"
             onClick={(e) => { e.stopPropagation(); setLightboxIndex(i => Math.max(0, (i ?? 0) - 1)); }}
             aria-label={t(ui.a11y.previous)}
             className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white disabled:opacity-20 z-10 cursor-pointer"
@@ -474,31 +515,37 @@ export default function ProjectDetail() {
           </button>
 
           <img
-            src={`/projects/${projectData.id}/${String(lightboxIndex + 1).padStart(2, '0')}.webp`}
+            src={images[lightboxIndex]}
             alt={`${projectData.title} — ${String(lightboxIndex + 1).padStart(2, '0')}`}
             width={1200}
             height={900}
             className="max-w-[90vw] max-h-[85vh] object-contain rounded-sm shadow-2xl"
             onClick={(e) => e.stopPropagation()}
+            onError={() => {
+              setFailedImages(prev => new Set(prev).add(lightboxIndex + 1));
+              setLightboxIndex(null);
+            }}
           />
 
           <button
-            onClick={(e) => { e.stopPropagation(); setLightboxIndex(i => Math.min(2, (i ?? 0) + 1)); }}
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex(i => Math.min(totalImages - 1, (i ?? 0) + 1)); }}
             aria-label={t(ui.a11y.next)}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white disabled:opacity-20 z-10 cursor-pointer"
-            disabled={lightboxIndex === 2}
+            disabled={lightboxIndex === totalImages - 1}
           >
             <span className="block rotate-180"><ArrowLeft size={36} /></span>
           </button>
 
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-xs text-white/40 uppercase tracking-wider">
-            {lightboxIndex + 1} / 3
+            {lightboxIndex + 1} / {totalImages}
           </div>
         </div>
       )}
 
       <div className="border-t border-[#1a1a1a]/10 mt-20 pt-10 flex flex-col sm:flex-row justify-between items-center gap-4">
         <button
+          type="button"
           onClick={onBack}
           className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#a84432] hover:text-[#1a1a1a] transition-colors cursor-pointer"
         >

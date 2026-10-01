@@ -7,8 +7,8 @@ import { JournalEntry } from '../types';
  * {
  *   id: 'slug-unico',            // sin espacios ni caracteres especiales
  *   title: 'Título de la nota',
- *   date: '15 Jul, 2026',        // formato: DD Mes, AAAA
- *   readingTime: '4 min de lectura',
+ *   date: '2026-09-10',         // formato: AAAA-MM-DD (se formatea al renderizar)
+ *                                // el tiempo de lectura se calcula solo, no se escribe
  *   category: 'Filosofía de Producto',
  *   tagline: 'Una frase que resuma de qué va la nota.',
  *   content: `...`               // ver guía de formato abajo
@@ -32,8 +32,6 @@ export const journalEntries: JournalEntry[] = [
     title: 'No tengo 70 proyectos. Tengo 15, y a algunos no los pidió nadie',
     titleEn: "I don't have 70 projects. I have 15. Some of them nobody asked for",
     date: '2026-09-10',
-    readingTime: '5 min de lectura',
-    readingTimeEn: '5 min read',
     category: 'Producto',
     categoryEn: 'Product',
     tagline: 'En mi portfolio hay demos que nadie pagó y un sistema de reservas con pagos que quedó sin un solo usuario. Esto es lo que aprendí sobre "terminar" un proyecto.',
@@ -146,8 +144,6 @@ And if you look at my list and see demos nobody asked for and a complete system 
     title: 'Cómo empecé a programar (y por qué no paré)',
     titleEn: 'How I started coding (and why I never stopped)',
     date: '2025-12-01',
-    readingTime: '5 min de lectura',
-    readingTimeEn: '5 min read',
     category: 'Historia Personal',
     categoryEn: 'Personal Story',
     tagline: 'De ver a un amigo programar a crear nuestra propia agencia. La historia de cómo me metí en el desarrollo web sin planearlo demasiado.',
@@ -188,8 +184,6 @@ And if you're reading this, maybe you're in that same place I was. Understanding
     title: 'Cómo pasé de hacer TPs de la facultad a productos que facturan',
     titleEn: 'How I went from university assignments to products that make money',
     date: '2026-02-01',
-    readingTime: '5 min de lectura',
-    readingTimeEn: '5 min read',
     category: 'Carrera',
     categoryEn: 'Career',
     tagline: 'No tengo título todavía, pero esto es lo que aprendí en el camino.',
@@ -250,8 +244,6 @@ I don't have the degree yet. And that's fine. What I have is fifteen projects I 
     title: 'Lo que aprendí hablando con clientes sin ser vendedor',
     titleEn: 'What I learned talking to clients without being a salesperson',
     date: '2026-03-01',
-    readingTime: '5 min de lectura',
-    readingTimeEn: '5 min read',
     category: 'Negocio',
     categoryEn: 'Business',
     tagline: 'El código es el 50%. El otro 50% es entender qué necesita el cliente.',
