@@ -64,14 +64,32 @@ async function prerender() {
   const server = await startServer();
   console.log('Prerendering...\n');
 
-  const browser = await chromium.launch({
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-    ],
-  });
+  let browser;
+  try {
+    browser = await chromium.launch({
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+      ],
+    });
+  } catch (err) {
+    const msg = err.message || String(err);
+    server.close();
+    if (/cannot open shared object file|Host system is missing dependencies/i.test(msg)) {
+      const lib = msg.match(/([\w.+-]+\.so[.\d]*): cannot open/)?.[1] || '(desconocida)';
+      console.error(
+        `\nPrerender: falta la libreria del sistema ${lib}.\n` +
+          `Chromium no arranca sin ella y el build no puede prerenderizar las 48 rutas.\n` +
+          `En Vercel (Amazon Linux 2023, dnf) anade el equivalente en scripts/vercel-build-deps.sh.\n` +
+          `En local (Debian/Ubuntu): npx playwright install-deps chromium\n\n${msg}`
+      );
+    } else {
+      console.error(`\nPrerender: no se pudo lanzar Chromium.\n\n${msg}`);
+    }
+    process.exit(1);
+  }
 
   const variants = [
     { prefix: '', lang: 'es', locale: 'es-ES' },

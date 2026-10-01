@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "bash scripts/vercel-build-deps.sh && npm run build",
   "outputDirectory": "dist",
   "functions": {
     "api/cv.ts": {
