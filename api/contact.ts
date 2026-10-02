@@ -1,5 +1,18 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import site from '../site.config.json';
+import {
+  buildAck,
+  buildNotification,
+  cvFilename,
+  parseLang,
+  parseReasonKey,
+  reasonNeedsCv,
+  type Lang,
+  type ReasonKey,
+} from './_emails';
 
 /**
  * Formulario de contacto.
@@ -18,6 +31,10 @@ import { Resend } from 'resend';
  *   cliente recibe un código estable y el detalle queda en los logs.
  * - Remitente y destinatario por variable de entorno. Estaban fijos en el
  *   código, así que cambiar de casilla obligaba a desplegar.
+ * - El motivo viaja como clave estable (`reasonKey`), no como texto. El backend
+ *   elige con eso la variante del acuse y si adjunta el CV, así que un retoque
+ *   de copy en los chips no puede desalinear lo que se le manda a quien escribe.
+ * - Las plantillas y el copy de los correos viven en `api/_emails.ts`.
  *
  * Sobre el rate limit: es un `Map` en memoria, o sea que vale por instancia.
  * En Vercel cada función puede tener varias instancias y se reciclan, así que
@@ -37,42 +54,22 @@ const RATE_LIMIT_MAX = 5;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const SITE_URL = 'https://gonzalodanielvega.com';
-const WHATSAPP_URL = 'https://wa.me/5493834368748';
+// Mismo origen que canonical, hreflang, sitemap y robots. Se lee el config y no
+// `src/data/site.ts` a propósito: ese archivo es código de cliente y no tiene por
+// qué entrar en el bundle de una función. `_emails.ts` tampoco puede importar
+// (lo importa el script de preview, que corre fuera de Vercel), así que el origen
+// entra por parámetro.
+const SITE_URL = (site as { url: string }).url.replace(/\/+$/, '');
 
-/**
- * Acuse de recibo para quien escribió.
- *
- * Va acá y no en `src/i18n/translations.ts` a propósito: ese archivo es el bundle
- * del cliente, con 400+ líneas de textos de interfaz y etiquetas de proyecto, y no
- * tiene sentido arrastrarlo a una función serverless. El copy de un email
- * transaccional vive junto al email que lo envía.
- *
- * El idioma lo manda el cliente (`lang`), porque el servidor no sabe en qué
- *idioma estaba la página. Cualquier valor que no sea 'en' cae a español.
- */
-const ACK = {
-  es: {
-    subject: 'Recibí tu mensaje',
-    greeting: (name: string) => `Hola ${name}, gracias por escribir.`,
-    intro:
-      'Soy Gonzalo Daniel Vega, Full Stack Developer, y trabajo desde Catamarca, Argentina.',
-    delivered: 'Tu mensaje ya llegó a mi correo y te respondo por acá personalmente.',
-    urgent: 'Si es urgente o preferís que hablemos más rápido, escribime por WhatsApp:',
-    sign: 'Saludos, Gonzalo.',
-    links: `Portfolio: ${SITE_URL}`,
-  },
-  en: {
-    subject: 'I received your message',
-    greeting: (name: string) => `Hi ${name}, thanks for reaching out.`,
-    intro:
-      "I'm Gonzalo Daniel Vega, a Full Stack Developer based in Catamarca, Argentina.",
-    delivered: "Your message reached my inbox and I'll reply here personally.",
-    urgent: "If it's urgent or you'd rather talk faster, message me on WhatsApp:",
-    sign: 'Best, Gonzalo.',
-    links: `Portfolio: ${SITE_URL}`,
-  },
-} as const;
+// Los CV van por `includeFiles` en vercel.json. El link del cuerpo apunta al PDF
+// servido como archivo y el adjunto va en base64, que es lo que pide Resend.
+// El nombre sale de `cvFilename` para que el archivo que anuncia el callout del
+// acuse y el que va adjunto sean siempre el mismo.
+const CV_FILES: Record<Lang, { file: string; name: string }> = {
+  es: { file: 'cv-es.pdf', name: cvFilename('es') },
+  en: { file: 'cv-en.pdf', name: cvFilename('en') },
+};
+
 
 const hits = new Map<string, number[]>();
 
@@ -107,15 +104,6 @@ if (typeof setInterval !== 'undefined') {
     }
   }, RATE_LIMIT_WINDOW_MS);
   timer.unref?.();
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
 }
 
 function stripCrLf(value: string): string {
@@ -172,7 +160,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const reason = asString(body.reason, MAX_REASON);
   // El servidor no sabe en qué idioma está la página; lo decide el cliente. Cualquier
   // cosa que no sea 'en' se trata como español.
-  const lang: 'es' | 'en' = asString(body.lang, MAX_LANG) === 'en' ? 'en' : 'es';
+  const lang = parseLang(asString(body.lang, MAX_LANG));
+  // Clave estable del motivo. Si no viene o no es una conocida, se trata como
+  // 'work': es el motivo más neutro y el único que no promete nada (ni CV ni
+  // plazo de 48 h) si alguien mandó el formulario a mano o cacheó un cliente viejo.
+  const reasonKey: ReasonKey = parseReasonKey(body.reasonKey) ?? 'work';
+  const displayName = stripCrLf(name ?? '') || email;
+  const displayReason = stripCrLf(reason ?? '');
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -207,24 +201,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const resend = new Resend(apiKey);
+    const notification = buildNotification({
+      name: displayName,
+      email,
+      reason: reasonKey,
+      reasonLabel: displayReason,
+      message,
+      lang,
+      siteUrl: SITE_URL,
+      receivedAt: new Date(),
+    });
+
     const result = await resend.emails.send({
       from,
       to,
       replyTo: email,
-      subject: `[Portfolio] ${stripCrLf(reason ?? 'Consulta')} — ${stripCrLf(name ?? email)}`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #a84432;">Nueva consulta desde el portfolio</h2>
-          <hr style="border: 1px solid #e5e2de;" />
-          <p><strong>Nombre:</strong> ${escapeHtml(name ?? 'No especificado')}</p>
-          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-          <p><strong>Motivo:</strong> ${escapeHtml(reason ?? 'No especificado')}</p>
-          <hr style="border: 1px solid #e5e2de;" />
-          <p style="white-space: pre-wrap;">${escapeHtml(message)}</p>
-          <hr style="border: 1px solid #e5e2de;" />
-          <p style="color: #999; font-size: 12px;">Enviado desde el formulario de contacto del portfolio. Responde a ${escapeHtml(email)}.</p>
-        </div>
-      `,
+      subject: notification.subject,
+      html: notification.html,
+      text: notification.text,
     });
 
     if (result.error) {
@@ -265,7 +259,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Si el acuse falla, no se devuelve error. El mensaje ya se entregó, así que
     // mostrarle un error al visitante por un acuse que no salió sería tirar la
     // información al piso. Queda solo en el log.
-    await sendAck(resend, { from, to, lang, name, email });
+    await sendAck(resend, { from, to, lang, name: displayName, email, reasonKey });
 
     return res.status(200).json({ success: true });
   } catch (error) {
@@ -278,44 +272,64 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
  * Manda el acuse al visitante. Nunca lanza: su único efecto es el log.
  *
  * `replyTo` apunta a la casilla del autor, no a la del visitante. Si el visitante
- * responde al acuse, tiene que llegarle a Gonzalo, no rebotarle a sí mismo.
+ * responde al acuse, tiene que llegarle a Gonzalo, no rebotarle a sí mismo. Y esa
+ * casilla es `dvega6442@gmail.com`, la pública del portfolio, no su correo
+ * personal: el `from` visible es el dominio verificado porque Resend no puede
+ * enviar desde una casilla de gmail.com, y el `replyTo` es lo que decide a dónde
+ * aterriza la respuesta.
+ *
+ * El CV solo se adjunta para `hiring` (ver `reasonNeedsCv`).
  */
+async function loadCvAttachment(lang: Lang): Promise<{ filename: string; content: string } | null> {
+  const cv = CV_FILES[lang];
+  try {
+    const buffer = await readFile(join(process.cwd(), 'public', cv.file));
+    return { filename: cv.name, content: buffer.toString('base64') };
+  } catch (error) {
+    // El link al PDF sigue en el cuerpo, así que un CV que no se pudo leer no
+    // puede romper el acuse. Solo se pierde el adjunto.
+    console.error('[Contact] no se pudo leer el CV para adjuntar:', error);
+    return null;
+  }
+}
+
 async function sendAck(
   resend: Resend,
-  opts: { from: string; to: string; lang: 'es' | 'en'; name: string | null; email: string },
+  opts: {
+    from: string;
+    to: string;
+    lang: Lang;
+    name: string;
+    email: string;
+    reasonKey: ReasonKey;
+  },
 ): Promise<void> {
-  const { from, to, lang, name, email } = opts;
-  const copy = ACK[lang];
-  // El nombre va crudo acá: el `escapeHtml` de la plantilla es el único que
-  // escapa. Pasarlo ya escapado y volver a escapar en la plantilla lo convierte
-  // en `&amp;lt;` y el visitante lee la entities en vez de su nombre.
-  const displayName = stripCrLf(name ?? '') || email;
+  const { from, to, lang, name, email, reasonKey } = opts;
+
+  const attachment = reasonNeedsCv(reasonKey) ? await loadCvAttachment(lang) : null;
+  const ack = buildAck({ name, reason: reasonKey, lang, siteUrl: SITE_URL });
 
   try {
-    const ack = await resend.emails.send({
+    const result = await resend.emails.send({
       from,
       to: email,
       replyTo: to,
-      subject: copy.subject,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-          <p style="color: #999; font-size: 12px; font-family: monospace;">${escapeHtml(copy.links)}</p>
-          <hr style="border: 1px solid #e5e2de;" />
-          <p>${escapeHtml(copy.greeting(displayName))}</p>
-          <p>${escapeHtml(copy.intro)}</p>
-          <p>${escapeHtml(copy.delivered)}</p>
-          <p>${escapeHtml(copy.urgent)}<br />
-            <a href="${WHATSAPP_URL}" style="color: #a84432;">${WHATSAPP_URL}</a>
-          </p>
-          <p>${escapeHtml(copy.sign)}</p>
-        </div>
-      `,
+      subject: ack.subject,
+      html: ack.html,
+      text: ack.text,
+      ...(attachment ? { attachments: [attachment] } : {}),
     });
 
-    if (ack.error) {
-      console.error('[Contact] acuse no entregado (el mensaje principal sí salió):', ack.error);
+    if (result.error) {
+      console.error('[Contact] acuse no entregado (el mensaje principal sí salió):', result.error);
     } else {
-      console.log('[Contact] acuse enviado', ack.data?.id, '->', email, `(${lang})`);
+      console.log(
+        '[Contact] acuse enviado',
+        result.data?.id,
+        '->',
+        email,
+        `(${lang}, ${reasonKey}${attachment ? ', con CV' : ''})`,
+      );
     }
   } catch (error) {
     console.error('[Contact] el acuse lanzó excepción (el mensaje principal sí salió):', error);

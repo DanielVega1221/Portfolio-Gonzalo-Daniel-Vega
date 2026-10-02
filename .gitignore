@@ -10,5 +10,6 @@ CV/
 *.log
 *.local
 *.tsbuildinfo
+.preview-emails/
 .env*
 !.env.example

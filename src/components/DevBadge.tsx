@@ -290,19 +290,11 @@ export default function DevBadge({
                     <span>{t(ui.badge.headerLabel)}</span>
                   </div>
                   {profile.isOpenToWork && (
-                    <div className="flex items-center gap-1 font-mono text-[9.5px] pl-1.5 pr-1.5 py-0.5 rounded-full border border-emerald-600/30 bg-emerald-50 text-emerald-800 whitespace-nowrap">
+                    <div className="ml-auto flex items-center gap-1 font-mono text-[9.5px] pl-1.5 pr-1.5 py-0.5 rounded-full border border-emerald-600/30 bg-emerald-50 text-emerald-800 whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_0_1.5px_rgba(16,185,129,0.18)]" />
                       <span>{t(ui.badge.openToWork)}</span>
                     </div>
                   )}
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); toggleFlip(); }}
-                    aria-label={t(ui.badge.flipAria)}
-                    className="ml-auto text-[#a84432] hover:text-[#1a1a1a] transition-colors cursor-pointer shrink-0"
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                  </button>
                 </div>
 
                 {/* Photo */}

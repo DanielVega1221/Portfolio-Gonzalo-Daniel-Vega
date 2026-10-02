@@ -44,6 +44,9 @@ export default function Contact() {
     }
     setIsSubmitting(true);
     setFeedback(null);
+    // Se resuelve acá, después del guard de null, para que el tipo sea reason y
+    // no reason | undefined.
+    const reason = ui.contact.reasons[contactReasonIdx];
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -51,7 +54,10 @@ export default function Contact() {
         body: JSON.stringify({
           name: contactName,
           email: contactEmail,
-          reason: t(ui.contact.reasons[contactReasonIdx]),
+          reason: t(reason),
+          // Clave estable del motivo. El servidor la usa para elegir el acuse y
+          // decidir si adjunta el CV; `reason` es solo texto para el humans.
+          reasonKey: reason.key,
           message: contactMessage,
           lang,
           // Va vacío en un envío humano; el servidor lo descarta si llega lleno.
@@ -117,7 +123,7 @@ export default function Contact() {
               <div className="flex flex-wrap gap-2">
                 {ui.contact.reasons.map((reason, idx) => (
                   <button
-                    key={reason.es}
+                    key={reason.key}
                     type="button"
                     onClick={() => setContactReasonIdx(idx)}
                     className={`px-3 py-1.5 rounded-sm text-xs font-mono border tracking-wide transition-all cursor-pointer ${

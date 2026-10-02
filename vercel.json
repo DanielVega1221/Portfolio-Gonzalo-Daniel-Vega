@@ -4,6 +4,9 @@
   "functions": {
     "api/cv.ts": {
       "includeFiles": "public/cv-*.pdf"
+    },
+    "api/contact.ts": {
+      "includeFiles": "public/cv-*.pdf"
     }
   },
   "rewrites": [

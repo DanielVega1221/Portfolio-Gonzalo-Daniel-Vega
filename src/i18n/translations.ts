@@ -194,11 +194,15 @@ export const ui = {
     title: { es: 'Establezcamos una conversación', en: "Let's start a conversation" },
     desc: { es: 'Si tenés una idea, un problema complejo de negocio, o simplemente una forma parecida de ver el desarrollo de producto, escribime. Leo todo personalmente.', en: "If you have an idea, a complex business problem, or just a similar way of looking at product development, write to me. I read everything personally." },
     reasonLabel: { es: 'Quiero escribir porque:', en: 'I want to write because:' },
+    // `key` es estable y es lo que viaja al servidor: el backend decide qué
+    // acuse y si adjunta CV a partir de la clave, nunca del texto traducido.
+    // Si tocás el copy de `es`/`en` no se rompe nada; si agregás un motivo nuevo,
+    // agregalo también a REASON_KEYS en api/_emails.ts.
     reasons: [
-      { es: 'Tengo un problema complejo', en: 'I have a complex problem' },
-      { es: 'Quiero conversar sobre producto', en: 'I want to talk about product' },
-      { es: 'Quiero sumar tu criterio a un equipo', en: 'I want to add your judgment to a team' },
-      { es: 'Solo quería saludar', en: 'I just wanted to say hi' },
+      { key: 'work', es: 'Tengo un problema complejo', en: 'I have a complex problem' },
+      { key: 'product', es: 'Quiero conversar sobre producto', en: 'I want to talk about product' },
+      { key: 'hiring', es: 'Quiero sumar tu criterio a un equipo', en: 'I want to add your judgment to a team' },
+      { key: 'hi', es: 'Solo quería saludar', en: 'I just wanted to say hi' },
     ],
     nameLabel: { es: 'Tu nombre', en: 'Your name' },
     namePlaceholder: { es: 'Juan Pérez', en: 'John Doe' },

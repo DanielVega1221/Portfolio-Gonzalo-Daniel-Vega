@@ -12,6 +12,7 @@
     "lint": "eslint . && tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "screenshots": "tsx scripts/screenshots.ts",
+    "preview:emails": "tsx scripts/preview-emails.ts",
     "optimize:foto": "node scripts/optimize-foto.mjs",
     "postinstall": "npx playwright install chromium"
   },
