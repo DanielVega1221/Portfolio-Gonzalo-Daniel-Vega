@@ -209,7 +209,6 @@ const NOTIF_LABELS = {
   message: { es: 'Mensaje', en: 'Message' },
   replyCta: { es: 'Responder ahora', en: 'Reply now' },
   portfolioCta: { es: 'Ver el portfolio', en: 'View the portfolio' },
-  whatsappCta: { es: 'WhatsApp', en: 'WhatsApp' },
   visitor: { es: 'Mensaje nuevo desde el portfolio', en: 'New message from the portfolio' },
   title: { es: 'Mensaje de {name}', en: 'Message from {name}' },
   /** Pie de la notificación: deja explícito a dónde va la respuesta. */
@@ -531,15 +530,13 @@ export function buildNotification(input: NotificationInput): BuiltMail {
   // en blanco. Con el saludo ya escrito, la diferencia entre contestar y que el
   // mensaje muera en el limbo es un click.
   const greeting = lang === 'en' ? `Hi ${plainName},\r\n\r\n` : `Hola ${plainName},\r\n\r\n`;
+  // El mailto ya trae el saludo con el nombre del visitante, así que contestarle es
+  // un click y el hilo queda en el mismo asunto.
+  //
+  // Acá no hay botón de WhatsApp a propósito. Este mail lo recibe Gonzalo, así que un
+  // link a wa.me abriría su propio WhatsApp: sin número del visitante no hay a quién
+  // dirigir la conversación. Para eso está el del acuse, que sí lo recibe quien escribió.
   const mailto = `mailto:${email}?subject=${encodeURIComponent(`Re: ${subject}`)}&body=${encodeURIComponent(greeting)}`;
-
-  // El prefijo de WhatsApp ahora saluda a Gonzalo, que es quien lo va a clickear.
-  // Antes decía "Hola <nombre del visitante>", como si fuera él el que escribía.
-  const waText =
-    lang === 'en'
-      ? `Hi Gonzalo, I am writing about "${label}" from your portfolio.`
-      : `Hola Gonzalo, te escribo por "${label}" desde tu portfolio.`;
-  const waUrl = `${WHATSAPP_URL}?text=${encodeURIComponent(waText)}`;
 
   const rows: Array<[string, string]> = [
     [NOTIF_LABELS.from[lang], escapeHtml(name)],
@@ -579,7 +576,6 @@ export function buildNotification(input: NotificationInput): BuiltMail {
     <div style="margin:8px 0 0 0;">${accentPanel(safeMessage)}</div>
     <p style="margin:24px 0 0 0;">
       ${button(mailto, NOTIF_LABELS.replyCta[lang], true)}
-      ${button(waUrl, NOTIF_LABELS.whatsappCta[lang])}
     </p>
     <p class="muted" style="margin:14px 0 0 0;font-family:${SANS};font-size:11px;line-height:1.7;color:${C.muted};">${escapeHtml(
       NOTIF_LABELS.replyHint[lang].replace('{email}', email),
@@ -603,7 +599,6 @@ export function buildNotification(input: NotificationInput): BuiltMail {
     '-'.repeat(48),
     '',
     `${NOTIF_LABELS.replyCta[lang]}: ${mailto}`,
-    `${NOTIF_LABELS.whatsappCta[lang]}: ${waUrl}`,
     NOTIF_LABELS.replyHint[lang].replace('{email}', email),
     `${NOTIF_LABELS.portfolioCta[lang]}: ${origin}`,
   ].join('\n');
