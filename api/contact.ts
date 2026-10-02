@@ -12,10 +12,25 @@ import {
   reasonNeedsCv,
   type Lang,
   type ReasonKey,
-} from './_emails';
+} from './_emails.js';
 
 /**
  * Formulario de contacto.
+ *
+ * Imports de `api/`, regla que no es negociable:
+ *
+ * Los relative imports llevan extensión `.js` explícita (`./_emails.js`). Vercel no
+ * empaqueta esta función: compila cada `.ts` a `.js` en el mismo lugar y lo corre como
+ * ESM nativo en Node 24. ESM nativo no resuelve specifiers sin extensión, así que
+ * `./_emails` muere con ERR_MODULE_NOT_FOUND y todo POST devuelve 500 aunque el build
+ * esté en verde. TypeScript no avisa porque tsconfig usa `moduleResolution: bundler`, que
+ * lo permite, y Vite/esbuild lo resuelven al compilar.
+ *
+ * Lo mismo vale para los `.json`: Node 24 exige `with { type: 'json' }`, así que en vez
+ * de pelearse con el atributo se leen con fs (ver `readSiteConfig` más abajo).
+ *
+ * `scripts/smoke-api.mjs` compila los handlers sin bundle y los carga con el loader real
+ * de Node justamente para que estas dos cosas no puedan volver a llegar a producción.
  *
  * Lo que cambió y por qué:
  *

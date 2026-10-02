@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
-import { cvFilename } from './_emails';
+import { cvFilename } from './_emails.js';
 
 // Vercel route rules cannot match a query string, so the download header has to
 // come from a serverless function. The plain /cv-es.pdf and /cv-en.pdf URLs

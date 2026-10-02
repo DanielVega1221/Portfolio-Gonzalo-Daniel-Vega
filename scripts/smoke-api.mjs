@@ -1,31 +1,39 @@
 /**
  * Smoke test de las funciones de `api/`.
  *
- * Existe por un 500 en producción que llegó con el build en verde: `api/contact.ts`
- * hacía `import site from '../site.config.json'`. TypeScript lo acepta (tsconfig usa
- * `moduleResolution: bundler`) y Vite procesa ese import sin problema, así que lint,
- * `tsc` y `vite build` los dan por buenos. Pero en Vercel la función corre como ESM
- * nativo y Node 22+ rechaza un JSON importado sin `with { type: 'json' }`: la función
- * moría al cargar el módulo y todo POST devolvía 500.
+ * Existe por dos 500 en producción, ambos con el build en verde. Y los dos tienen la
+ * misma causa de fondo: `api/` estaba escrito asumiendo que un bundler resuelve los
+ * imports, y Vercel no empaqueta.
  *
- * O sea: el build no puede ver esta clase de error. Este script sí.
+ *   - `api/contact.ts` hacía `import site from '../site.config.json'`. TypeScript lo
+ *     acepta (tsconfig usa `moduleResolution: bundler`) y Vite lo procesa sin
+ *     problema, pero Node 24 rechaza un JSON importado sin `with { type: 'json' }`.
+ *     ERR_IMPORT_ATTRIBUTE_MISSING al cargar el módulo, 500 en cada POST.
+ *   - `api/contact.ts` y `api/cv.ts` importaban `'./_emails'` sin extensión. ESM
+ *     nativo nunca resuelve un specifier sin extensión:
+ *     ERR_MODULE_NOT_FOUND al cargar el módulo, 500 en cada POST.
  *
- * Lo que hace, en dos capas:
+ * El dato que las dos veces pasó por alto: los logs del despliegue muestran
+ * `imported from /var/task/api/contact.js`. Hay un `.js` compilado en el lugar, no un
+ * bundle. Vercel corre cada función como ESM nativo, y ahí las reglas son las de Node,
+ * no las del bundler.
  *
- *   1. Guard estático: ningún archivo de `api/` puede importar un `.json` como módulo.
- *      Es la regresión concreta que rompiendo producción, y el mensaje dice por qué.
- *   2. Guard de runtime: se empaqueta cada handler con esbuild y se importa con el
- *      loader ESM real de Node. Si un módulo no carga, el test falla acá y no en Vercel.
+ * La lección que quedó: el build no puede ver esta clase de error, ni `tsc` ni `vite
+ * build` ni `eslint`. Por eso este script compila los handlers SIN bundle y los carga
+ * con el loader ESM real de Node, que es exactamente lo que hace el runtime.
  *
-* Deliberadamente NO usa `tsx` para cargar los handlers: tsx resuelve los `.json` como
- * lo hace un bundler, o sea que no reproduciría el bug que estamos guarding.
+ * Las capas, y por qué están separadas:
  *
- * Las dos capas tienen trabajos distintos y complementarios:
- *   - La estática da el diagnóstico preciso del caso `.json`. El runtime la correría
- *     después, desde el directorio temporal, donde el specifier relativo resolvería a
- *     otra ruta y el error sería MODULE_NOT_FOUND en vez de
- *     ERR_IMPORT_ATTRIBUTE_MISSING. Para eso está la estática, que corre primero.
- *   - La de runtime es la red general: atrapa cualquier otro fallo al cargar un módulo.
+ *   1. Guard estático. Le pone nombre al problema del `.json`, que desde el directorio
+ *      temporal el runtime vería como un MODULE_NOT_FOUND genérico. Barato y exacto.
+ *   2. Runtime sin bundle. LA CAPA QUE IMPORTA: es el deployment real. Compila archivo
+ *      por archivo como Vercel y deja los specifiers sin tocar, así que Node los
+ *      resuelve con semántica nativa. Acá viven las aserciones de comportamiento.
+ *   3. Runtime con bundle. Barata y no es lo que se despliega. Falla si alguna vez se
+ *      cambia la estrategia de build, y cubre lo que se mostró en el preview de emails.
+ *
+ * El punto ciego anterior: la capa 2 corría con `bundle: true`, o sea resolvía los
+ * specifiers en build time. Daba 10/10 con producción rota.
  *
  * Los casos de Request no llegan a Resend: usan el honeypot y las validaciones que
  * cortan antes del envío, así que corren sin red y sin API keys.
@@ -59,23 +67,41 @@ function fatal(message, hint = '') {
 }
 
 /**
- * Capa 1. Un `.json` importado como módulo se ve bien en typecheck y en el build de
+ * Devuelve las líneas de código de un archivo, sin comentarios.
+ *
+ * Hace falta porque los dos guards buscan specifiers por regex, y los comentarios
+ * documentan justamente los errores que previenen: el ejemplo de `import ... from
+ * '../site.config.json'` dentro del JSDoc de contact.ts matcheaba como si fuera código
+ * real y frenaba el build con un falso positivo.
+ *
+ * Se borran bloques `/* ... *\/` y las líneas que son sólo comentario. Los comentarios
+ * al final de una línea de código no se tocan, para no romper strings con `//`, que en
+ * este repo son URLs.
+ */
+function codeLines(file) {
+  const source = readFileSync(join(ROOT, 'api', file), 'utf8');
+  const withoutBlocks = source.replace(/\/\*[\s\S]*?\*\//g, (block) => '\n'.repeat(block.split('\n').length - 1));
+
+  return withoutBlocks.split('\n').filter((line) => {
+    const trimmed = line.trim();
+    return trimmed.length > 0 && !trimmed.startsWith('//') && !trimmed.startsWith('*');
+  });
+}
+
+/**
+ * Capa 1a. Un `.json` importado como módulo se ve bien en typecheck y en el build de
  * Vite, y explota en el runtime de la función. Si algún día vuelve a aparecer, este
  * guard lo dice en local en vez de dejar que lo descubra un POST en producción.
  */
 function guardNoJsonModuleImports() {
-  console.log('\n[1/2] Guard estático: api/ no importa .json como módulo');
-
   const offenders = [];
 
   for (const file of readdirSync(join(ROOT, 'api')).filter((f) => f.endsWith('.ts'))) {
-    const source = readFileSync(join(ROOT, 'api', file), 'utf8');
-
-    source.split('\n').forEach((line, index) => {
+    for (const line of codeLines(file)) {
       const isModuleImport = /^\s*import\b[^;]*['"][^'"]+\.json['"]/.test(line);
       const isRequire = /\brequire\(\s*['"][^'"]+\.json['"]\s*\)/.test(line);
-      if (isModuleImport || isRequire) offenders.push(`api/${file}:${index + 1}`);
-    });
+      if (isModuleImport || isRequire) offenders.push(`api/${file} -> ${line.trim()}`);
+    }
   }
 
   if (offenders.length === 0) {
@@ -97,18 +123,74 @@ function guardNoJsonModuleImports() {
 }
 
 /**
- * Empaqueta los handlers y los importa con el loader ESM real de Node. El `.mjs`
- * es obligatorio porque el archivo temporal queda fuera de todo package.json.
+ * Capa 1b. Todo relative import dentro de `api/` tiene que llevar extensión `.js`.
  *
- * El output va a `node_modules/.cache/` y no al temp del sistema a propósito: los
- * `external` quedan fuera del bundle igual que en Vercel, y desde ahí Node sube hasta
- * el `node_modules` del proyecto y los puede resolver. Si vivieran en el temp del
- * sistema, `import 'resend'` fallaría con MODULE_NOT_FOUND.
+ * Mismo motivo que el guard de `.json`: Vercel no empaqueta, así que los specifiers los
+ * resuelve Node con ESM nativo, que no acepta `./_emails` a secas. TypeScript lo deja
+ * pasar porque tsconfig usa `moduleResolution: bundler`, y Vite/esbuild lo resuelven al
+ * compilar, así que ni `tsc` ni `vite build` lo ven.
+ *
+ * Solo se aceptan `.js` porque es lo que existe en `/var/task/api/` después de compilar.
  */
-async function loadHandlers() {
+function guardRelativeImportsHaveExtensions() {
+  const offenders = [];
+
+  for (const file of readdirSync(join(ROOT, 'api')).filter((f) => f.endsWith('.ts'))) {
+    for (const line of codeLines(file)) {
+      for (const match of line.matchAll(/(?:from|import|require\()\s*['"](\.[^'"]*)['"]/g)) {
+        if (!match[1].endsWith('.js')) offenders.push(`api/${file} -> ${line.trim()}`);
+      }
+    }
+  }
+
+  if (offenders.length === 0) {
+    check('todo relative import de api/ termina en .js', true);
+    return;
+  }
+
+  console.error('ERROR: relative import sin extensión .js en api/:');
+  for (const where of offenders) console.error(`  - ${where}`);
+  console.error('');
+  console.error('Vercel no empaqueta esta función: la compila a .js y la corre como ESM');
+  console.error('nativo. Node no resuelve un specifier relativo sin extensión y la función');
+  console.error('muere al cargar el módulo con ERR_MODULE_NOT_FOUND, o sea 500 en cada');
+  console.error('request, con el build en verde.');
+  console.error('');
+  console.error("Escribí './_emails.js' y no './_emails': TypeScript mapea el .js al .ts");
+  console.error('al compilar, así que el typecheck sigue funcionando.');
+  process.exit(1);
+}
+
+/**
+ * Compila los handlers y los importa con el loader ESM real de Node.
+ *
+ * `mode: 'unbundled'` es el que importa: replica el deployment. Vercel compila cada
+ * `.ts` a `.js` en el mismo lugar y corre eso como ESM nativo, sin bundle. Acá
+ * `bundle: false` deja los specifiers exactamente como están, así que Node los resuelve
+ * con las reglas reales: extensión obligatoria, sin JSON modules, sin `__dirname`. Un
+ * `./_emails` sin `.js` falla acá exactamente como falló en producción.
+ *
+ * `mode: 'bundled'` es el secundario y NO es lo que se despliega. Falla si alguna vez se
+ * cambia la estrategia de build de `api/`, y cubre que los handlers también anden
+ * empaquetados.
+ *
+ * El output va a `node_modules/.cache/` y no al temp del sistema a propósito: las deps
+ * sueltas quedan fuera igual que en Vercel, y desde ahí Node sube hasta el `node_modules`
+ * del proyecto y las resuelve. En el temp del sistema, `import 'resend'` fallaría con
+ * MODULE_NOT_FOUND y el test mediría lo que no es el bug.
+ *
+ * El `.js` no se renombra a `.mjs`. `/var/task/api/_emails.js` es el nombre real, y el
+ * source importa `./_emails.js`: si el harness emitiera `_emails.mjs` el import no
+ *ritionaría y el test fallaría por un motivo que Vercel nunca va a tener. El temporal
+ * queda dentro del repo, así que Node hereda el `"type": "module"` del package.json raíz
+ * y lo trata como ESM igual.
+ */
+async function loadHandlers(mode) {
   const cacheDir = join(ROOT, 'node_modules', '.cache');
   mkdirSync(cacheDir, { recursive: true });
   const outdir = mkdtempSync(join(cacheDir, 'smoke-api-'));
+
+  const isBundled = mode === 'bundled';
 
   await build({
     entryPoints: [
@@ -117,30 +199,37 @@ async function loadHandlers() {
       join(ROOT, 'api', '_emails.ts'),
     ],
     outdir,
-    outExtension: { '.js': '.mjs' },
     format: 'esm',
     platform: 'node',
     target: 'node20',
-    bundle: true,
-    // `*.json` queda externo a propósito: es como se packaging las funciones de
-    // Vercel, y es exactamente el caso que hay que verificar con el loader real.
-    external: ['node:*', 'resend', '*.json'],
+    // La diferencia que importa entre las dos capas. Con bundle, esbuild resuelve los
+    // specifiers acá y el bug deja de existir; sin bundle, quedan intactos y es Node el
+    // que los resuelve, igual que en producción.
+    bundle: isBundled,
+    // `external` solo tiene sentido con `bundle`; esbuild lo rechaza si no.
+    ...(isBundled ? { external: ['node:*', 'resend', '*.json'] } : {}),
     logLevel: 'silent',
   });
 
   const load = async (name) => {
-    const file = join(outdir, `${name}.mjs`);
+    const file = join(outdir, `${name}.js`);
     try {
       return await import(pathToFileURL(file).href);
     } catch (error) {
       rmSync(outdir, { recursive: true, force: true });
       fatal(
-        `api/${name}.ts no carga en el runtime ESM de Node`,
+        `api/${name}.ts no carga en el runtime ESM de Node (${mode})`,
         [
           `  ${error?.message ?? error}`,
           '',
-          '  Si el error es ERR_IMPORT_ATTRIBUTE_MISSING, volviste a importar un .json',
-          '  como módulo. Ver el guard estático de arriba.',
+          '  Vercel no empaqueta esta función: la compila a .js y la corre como ESM',
+          '  nativo. Por lo tanto todo lo que un bundler te perdona es un 500 en prod:',
+          '',
+          "  - Relative imports sin extensión ('./_emails') -> ERR_MODULE_NOT_FOUND",
+          '    Usá "./_emails.js". TypeScript lo resuelve igual.',
+          '',
+          '  - .json importado como módulo -> ERR_IMPORT_ATTRIBUTE_MISSING',
+          '    Leelo con fs. Ver el guard estático de arriba.',
         ].join('\n'),
       );
     }
@@ -209,8 +298,8 @@ async function call(handler, request) {
   return res;
 }
 
-async function runRuntimeChecks(contact, cv, emails) {
-  console.log('\n[2/2] Runtime: los handlers cargan y responden');
+async function runRuntimeChecks(contact, cv, emails, mode) {
+  console.log(`\n[2/3] Runtime sin bundle (${mode}): los handlers cargan y responden`);
 
   // Cargar `contact.ts` ya ejecutó `readSiteConfig()` a nivel de módulo, así que si
   // SITE_URL estuviera roto o faltara el archivo, el import de arriba ya falló.
@@ -279,14 +368,30 @@ async function runRuntimeChecks(contact, cv, emails) {
   }
 }
 
+console.log('\n[1/3] Guards estáticos de api/');
 guardNoJsonModuleImports();
+guardRelativeImportsHaveExtensions();
 
-const handlers = await loadHandlers();
-
+// Capa 2: sin bundle. Es el deployment real, así que acá van las aserciones de
+// comportamiento. Acá es donde tiene que valer el 100% de los checks.
+const unbundled = await loadHandlers('unbundled');
 try {
-  await runRuntimeChecks(handlers.contact, handlers.cv, handlers.emails);
+  await runRuntimeChecks(unbundled.contact, unbundled.cv, unbundled.emails, 'unbundled');
 } finally {
-  handlers.cleanup();
+  unbundled.cleanup();
+}
+
+// Capa 3: con bundle. No es lo que se despliega; se verifica que los handlers también
+// anden empaquetados, por si alguna vez se cambia la estrategia de build de api/.
+const bundled = await loadHandlers('bundled');
+try {
+  console.log('\n[3/3] Runtime con bundle: los handlers también empaquetan');
+  check(
+    'api/*.ts empaqueta sin romper',
+    typeof bundled.contact.default === 'function' && typeof bundled.cv.default === 'function',
+  );
+} finally {
+  bundled.cleanup();
 }
 
 console.log('');
