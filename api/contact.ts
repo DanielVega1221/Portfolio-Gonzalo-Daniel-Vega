@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
+import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import site from '../site.config.json';
 import {
   buildAck,
   buildNotification,
@@ -54,12 +54,50 @@ const RATE_LIMIT_MAX = 5;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-// Mismo origen que canonical, hreflang, sitemap y robots. Se lee el config y no
-// `src/data/site.ts` a propósito: ese archivo es código de cliente y no tiene por
-// qué entrar en el bundle de una función. `_emails.ts` tampoco puede importar
-// (lo importa el script de preview, que corre fuera de Vercel), así que el origen
-// entra por parámetro.
-const SITE_URL = (site as { url: string }).url.replace(/\/+$/, '');
+/**
+ * Mismo origen que canonical, hreflang, sitemap y robots. Se lee el archivo y no
+ * `src/data/site.ts` a propósito: ese archivo es código de cliente y no tiene por
+ * qué entrar en el bundle de una función.
+ *
+ * Y no se importa como módulo JSON. `import site from '../site.config.json'`
+ * compila sin quejarse (tsconfig usa `moduleResolution: bundler` y Vite procesa
+ * el import), pero en Vercel la función corre como ESM nativo y Node 22+ exige
+ * `with { type: 'json' }`. Sin el atributo la función moría al cargar el módulo
+ * con ERR_IMPORT_ATTRIBUTE_MISSING y todo POST devolvía 500, con el build en
+ * verde. Por eso se lee con fs, igual que scripts/sitemap.mjs, vite.config.ts y
+ * scripts/preview-emails.ts.
+ *
+ * `scripts/smoke-api.mjs` existe para que este tipo de error de runtime no pueda
+ * volver a llegar a producción.
+ */
+function readSiteConfig(): string {
+  const path = join(process.cwd(), 'site.config.json');
+
+  let raw: string;
+  try {
+    raw = readFileSync(path, 'utf8');
+  } catch (error) {
+    throw new Error(
+      `No se pudo leer ${path} (cwd=${process.cwd()}): ${(error as Error).message}`,
+    );
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`${path} no es JSON válido: ${(error as Error).message}`);
+  }
+
+  const url = (parsed as { url?: unknown })?.url;
+  if (typeof url !== 'string' || url.trim().length === 0) {
+    throw new Error(`${path} no tiene un campo "url" string no vacío`);
+  }
+
+  return url.trim().replace(/\/+$/, '');
+}
+
+const SITE_URL = readSiteConfig();
 
 // Los CV van por `includeFiles` en vercel.json. El link del cuerpo apunta al PDF
 // servido como archivo y el adjunto va en base64, que es lo que pide Resend.

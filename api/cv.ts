@@ -2,13 +2,17 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
+import { cvFilename } from './_emails';
 
 // Vercel route rules cannot match a query string, so the download header has to
 // come from a serverless function. The plain /cv-es.pdf and /cv-en.pdf URLs
 // keep previewing inline, which is what the header and footer want.
+//
+// The filename comes from `cvFilename` so that the download here and the name
+// announced in the email attachments can never drift apart.
 const CVS = {
-  es: { file: 'cv-es.pdf', name: 'CV-Gonzalo-Daniel-Vega-ES.pdf' },
-  en: { file: 'cv-en.pdf', name: 'CV-Gonzalo-Daniel-Vega-EN.pdf' },
+  es: { file: 'cv-es.pdf', name: cvFilename('es') },
+  en: { file: 'cv-en.pdf', name: cvFilename('en') },
 } as const;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

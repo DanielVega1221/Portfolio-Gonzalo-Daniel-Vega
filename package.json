@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000",
-    "build": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && node scripts/build-og-image.mjs && vite build && node scripts/prerender.mjs",
-    "build:skip-prerender": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && node scripts/build-og-image.mjs && vite build",
+    "build": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && node scripts/build-og-image.mjs && vite build && node scripts/prerender.mjs && node scripts/smoke-api.mjs",
+    "build:skip-prerender": "node scripts/sitemap.mjs && node scripts/optimize-foto.mjs && node scripts/build-og-image.mjs && vite build && node scripts/smoke-api.mjs",
+    "smoke:api": "node scripts/smoke-api.mjs",
     "prerender": "node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "eslint . && tsc --noEmit",
