@@ -40,7 +40,7 @@ export function useFocusTrap(
 
     // Al abrir, el foco entra al primer control util del dialogo.
     const initial = focusables()[0];
-    if (initial) initial.focus();
+    if (initial) initial.focus({ preventScroll: true });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Tab') return;
@@ -76,7 +76,7 @@ export function useFocusTrap(
       // Devolver el foco a donde estaba evita que al cerrarse el dialogo el
       // usuario quede en document.body y el siguiente Tab arranque desde arriba.
       if (previouslyFocused && document.contains(previouslyFocused)) {
-        previouslyFocused.focus();
+        previouslyFocused.focus({ preventScroll: true });
       }
     };
   }, [active, containerRef]);

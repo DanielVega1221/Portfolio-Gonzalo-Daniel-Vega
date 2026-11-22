@@ -41,7 +41,9 @@ export interface DevBadgeProps {
 // 2.25in x 3.5in is the real conference badge ratio.
 const CARD = 'w-64 h-[400px]';
 const RADIUS = 'rounded-[10px]';
-const CARD_FACE = `absolute inset-0 w-full h-full ${RADIUS} border border-[#ded9cf] overflow-hidden text-[#1a1a1a] shadow-[0_1px_1px_rgba(26,26,26,0.05),0_6px_12px_-4px_rgba(26,26,26,0.13),0_18px_30px_-14px_rgba(26,26,26,0.20)] transition-shadow duration-300 hover:shadow-[0_1px_1px_rgba(26,26,26,0.06),0_10px_18px_-6px_rgba(26,26,26,0.18),0_26px_40px_-16px_rgba(26,26,26,0.24)]`;
+// Fondo opaco: la credencial se lee como papel impreso aunque debajo haya
+// contenido decorativo (el fondo de mariposas) atravesando la página.
+const CARD_FACE = `absolute inset-0 w-full h-full ${RADIUS} bg-[#faf7ec] border border-[#ded9cf] overflow-hidden text-[#1a1a1a] shadow-[0_1px_1px_rgba(26,26,26,0.05),0_6px_12px_-4px_rgba(26,26,26,0.13),0_18px_30px_-14px_rgba(26,26,26,0.20)] transition-shadow duration-300 hover:shadow-[0_1px_1px_rgba(26,26,26,0.06),0_10px_18px_-6px_rgba(26,26,26,0.18),0_26px_40px_-16px_rgba(26,26,26,0.24)]`;
 // The slot is a die-cut: it shows the page paper, not a drawn hole.
 const SLOT =
   'absolute top-2 left-1/2 -translate-x-1/2 w-8 h-2 rounded-full bg-[#f7f4ec] border border-[#1a1a1a]/10 shadow-[inset_0_1.5px_2px_rgba(26,26,26,0.16),0_1px_0_rgba(255,255,255,0.9)] flex items-center justify-center pointer-events-none z-30';

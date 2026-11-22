@@ -66,7 +66,7 @@ export default function About() {
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
               {t(ui.about.section00Title)}
             </h3>
-            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base">
+            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base reading-wash text-halo-paper">
               <p>{t(ui.about.section00p1)}</p>
             </div>
 
@@ -107,7 +107,7 @@ export default function About() {
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
               {t(ui.about.section01Title)}
             </h3>
-            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base space-y-4">
+            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base space-y-4 reading-wash text-halo-paper">
               <p>{t(ui.about.section01p1)}</p>
             </div>
 
@@ -148,14 +148,14 @@ export default function About() {
               </div>
             </div>
 
-            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base">
+            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base reading-wash text-halo-paper">
               <p>{t(ui.about.section01Close)}</p>
             </div>
           </section>
 
           {/* Pull Quote */}
           <div className="bg-[#fffef0] border-l-4 border-[#a84432] border-y border-r border-[#e5e2de] py-6 px-6 my-8 rounded-r-sm shadow-2xs">
-            <p className="text-serif text-lg md:text-xl italic text-[#2a2a2a] font-light leading-relaxed">
+            <p className="text-serif text-lg md:text-xl italic text-[#2a2a2a] font-light leading-relaxed text-halo-paper">
               "{t(ui.about.pullQuote)}"
             </p>
           </div>
@@ -170,7 +170,7 @@ export default function About() {
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
               {t(ui.about.section02Title)}
             </h3>
-            <p className="text-sm text-[#555] font-light italic">
+            <p className="text-sm text-[#555] font-light italic text-halo-paper">
               {t(ui.about.section02Sub)}
             </p>
 
@@ -198,7 +198,7 @@ export default function About() {
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
               {t(ui.about.section03Title)}
             </h3>
-            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base">
+            <div className="text-[#333] font-light leading-relaxed text-sm md:text-base reading-wash text-halo-paper">
               <p>{t(ui.about.section03p1)}</p>
             </div>
           </section>

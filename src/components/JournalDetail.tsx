@@ -146,7 +146,7 @@ export default function JournalDetail() {
         </div>
       </div>
 
-      <div className="prose prose-neutral max-w-none mb-16 font-sans">
+      <div className="prose prose-neutral max-w-none mb-16 font-sans reading-wash text-halo-paper">
         {renderParagraphs(lang === 'en' && entry.contentEn ? entry.contentEn : entry.content)}
       </div>
 
@@ -162,7 +162,7 @@ export default function JournalDetail() {
 
       <div className="border-t border-b border-[#1a1a1a]/10 py-10 my-12 text-center relative">
         <Quote className="text-[#a84432]/5 absolute top-4 left-4" size={48} />
-        <p className="text-serif text-lg italic text-[#444] max-w-lg mx-auto">
+        <p className="text-serif text-lg italic text-[#444] max-w-lg mx-auto reading-wash text-halo-paper">
           {t(ui.journal.quote)}
         </p>
       </div>

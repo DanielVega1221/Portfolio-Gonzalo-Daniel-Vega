@@ -12,6 +12,17 @@
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
+/* Tokens compartidos con el fondo de mariposas (se leen desde el canvas).
+   Van en :root explícito: Tailwind no emite variables de @theme que no se
+   usan en ninguna utilidad, y el canvas las necesita aunque no haya clases. */
+:root {
+  --color-paper: #f9f7f2;
+  --color-accent: #a84432;
+  --color-ink: #1a1a1a;
+  --color-pollen: #c47a38;
+  --color-soft: #cbc8bf;
+}
+
 /* Custom base styles for that Warm Organic, bookish physical feel */
 html {
   background-color: #f9f7f2; /* Beautiful warm organic paper background */
@@ -23,6 +34,50 @@ html {
 body {
   background-color: #f9f7f2;
   color: #1a1a1a;
+}
+
+/* Fondo de mariposas ASCII: casi invisible sobre el texto central, más
+   presente en los márgenes. La máscara usa el canal alfa: negro = visible. */
+.butterfly-backdrop {
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 75% at 50% 45%,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.75) 55%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 75% at 50% 45%,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.75) 55%,
+    #000 100%
+  );
+}
+
+/* Legibilidad sobre el fondo animado: halo de papel en la letra y una
+   veladura difuminada solo en los bloques de lectura. El canvas no se toca. */
+.text-halo-paper {
+  text-shadow:
+    0 0 2px rgba(249, 247, 242, 0.95),
+    0 0 6px rgba(249, 247, 242, 0.7);
+}
+
+.reading-wash {
+  position: relative;
+  isolation: isolate;
+}
+
+.reading-wash::before {
+  content: '';
+  position: absolute;
+  inset: -0.6rem -0.9rem;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(249, 247, 242, 0.92) 0%,
+    rgba(249, 247, 242, 0.78) 55%,
+    rgba(249, 247, 242, 0) 100%
+  );
 }
 
 /* Subtle grain overlay for print texture */

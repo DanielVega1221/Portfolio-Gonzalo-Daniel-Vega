@@ -2,6 +2,7 @@ import { lazy, Suspense, type ReactNode } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MotionConfig } from 'motion/react';
 import { LanguageProvider } from './i18n/LanguageContext';
+import { MoodProvider } from './lib/mood/MoodProvider';
 import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -51,11 +52,13 @@ export default function App() {
             con estilos inline, y StudioTapes tiene rotaciones infinitas. */}
         <MotionConfig reducedMotion="user">
           <LanguageProvider>
-            <PageMeta />
-            <Routes>
-              {buildRoutes('')}
-              {buildRoutes('/en')}
-            </Routes>
+            <MoodProvider>
+              <PageMeta />
+              <Routes>
+                {buildRoutes('')}
+                {buildRoutes('/en')}
+              </Routes>
+            </MoodProvider>
           </LanguageProvider>
         </MotionConfig>
       </BrowserRouter>

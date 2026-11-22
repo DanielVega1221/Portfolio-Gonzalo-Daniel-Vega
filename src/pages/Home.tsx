@@ -47,7 +47,7 @@ export default function Home() {
       <div className="space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start" id="home-view">
           <section className="lg:col-span-7 space-y-10 lg:border-r lg:border-[#1a1a1a]/10 lg:pr-12">
-            <div className="space-y-4">
+            <div className="space-y-4 reading-wash text-halo-paper">
               <div className="flex gap-6 items-center mb-2">
                 <span className="font-mono text-[11px] uppercase tracking-[0.2em] font-medium text-[#666]">{t(ui.home.edition)}</span>
                 <span className="font-mono text-[11px] uppercase tracking-[0.2em] font-medium text-[#a84432] font-semibold">{t(ui.home.editorial)}</span>
@@ -73,7 +73,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="max-w-md">
+            <div className="max-w-md reading-wash text-halo-paper">
               <p className="font-sans text-sm leading-relaxed text-[#444] tracking-wider">
                 {t(ui.home.heroBody)}
               </p>
@@ -105,7 +105,7 @@ export default function Home() {
               <p className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
                 <span>●</span> {t(ui.home.exchange)}
               </p>
-              <p className="text-sm text-[#555] leading-relaxed font-light mb-4">
+              <p className="text-sm text-[#555] leading-relaxed font-light mb-4 reading-wash text-halo-paper">
                 {t(ui.home.exchangeDesc)}
               </p>
 

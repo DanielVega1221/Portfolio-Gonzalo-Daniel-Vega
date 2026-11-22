@@ -149,7 +149,7 @@ export default function ProjectDetail() {
         })()}
 
         <div className="border-l-4 border-[#a84432] pl-6 py-2 my-8">
-          <p className="text-xl md:text-2xl font-light text-[#2a2a2a] font-serif italic leading-relaxed">
+          <p className="text-xl md:text-2xl font-light text-[#2a2a2a] font-serif italic leading-relaxed text-halo-paper">
             "{projectData.tagline}"
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function ProjectDetail() {
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
               {t(ui.projectDetail.contextTitle)}
             </h3>
-            <div className="text-[#333] leading-relaxed font-light whitespace-pre-line text-base md:text-lg">
+            <div className="text-[#333] leading-relaxed font-light whitespace-pre-line text-base md:text-lg reading-wash text-halo-paper">
               {projectData.pointOfDeparture}
             </div>
           </section>
@@ -195,7 +195,7 @@ export default function ProjectDetail() {
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
               {t(ui.projectDetail.investigationTitle)}
             </h3>
-            <div className="text-[#333] leading-relaxed font-light space-y-4 whitespace-pre-line text-base md:text-lg">
+            <div className="text-[#333] leading-relaxed font-light space-y-4 whitespace-pre-line text-base md:text-lg reading-wash text-halo-paper">
               {projectData.investigation.split('\n\n').map((paragraph, index) => {
                 if (paragraph.trim().startsWith('-')) {
                   const items = paragraph.split('\n').map(item => item.replace('-', '').trim());
@@ -236,7 +236,7 @@ export default function ProjectDetail() {
               <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
                 {t(ui.projectDetail.tacticsTitle)}
               </h3>
-              <p className="text-sm text-[#555] font-light italic">
+              <p className="text-sm text-[#555] font-light italic text-halo-paper">
                 {t(ui.projectDetail.tacticsSub)}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
@@ -259,7 +259,7 @@ export default function ProjectDetail() {
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
               {t(ui.projectDetail.decisionTitle)}
             </h3>
-            <div className="text-[#333] leading-relaxed font-light space-y-4 whitespace-pre-line text-base md:text-lg">
+            <div className="text-[#333] leading-relaxed font-light space-y-4 whitespace-pre-line text-base md:text-lg reading-wash text-halo-paper">
               {projectData.decision}
             </div>
           </section>
@@ -269,7 +269,7 @@ export default function ProjectDetail() {
               <h4 className="font-mono text-xs uppercase tracking-widest text-emerald-800 font-bold flex items-center gap-1.5">
                 <CheckCircle2 size={14} /> {t(ui.projectDetail.workedWell)}
               </h4>
-              <p className="text-sm text-[#444] leading-relaxed font-light whitespace-pre-line">
+              <p className="text-sm text-[#444] leading-relaxed font-light whitespace-pre-line text-halo-paper">
                 {projectData.workedWell}
               </p>
             </div>
@@ -277,7 +277,7 @@ export default function ProjectDetail() {
               <h4 className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold flex items-center gap-1.5">
                 <AlertTriangle size={14} /> {t(ui.projectDetail.tradeoffs)}
               </h4>
-              <p className="text-sm text-[#444] leading-relaxed font-light whitespace-pre-line">
+              <p className="text-sm text-[#444] leading-relaxed font-light whitespace-pre-line text-halo-paper">
                 {projectData.tradeoffs}
               </p>
             </div>

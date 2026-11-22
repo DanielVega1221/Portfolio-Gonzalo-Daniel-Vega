@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLanguage } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
@@ -6,6 +6,7 @@ import { motion, AnimatePresence, type PanInfo } from 'motion/react';
 import { studioTapes, Tape } from '../data/studioTapes';
 import { safeGet, safeSet, safeRemove } from '../lib/safeStorage';
 import { useFocusTrap } from '../lib/useFocusTrap';
+import { useMood } from '../lib/mood/context';
 
 // Procedural Analog Sound Synthesizer for buttons, tapes, and ambient warm tape hiss
 class AnalogSynth {
@@ -198,12 +199,14 @@ const synth = new AnalogSynth();
 
 export default function StudioTapes() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDrawerAnimating, setIsDrawerAnimating] = useState(false);
   const [activeTape, setActiveTape] = useState<Tape | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
   const [audioError, setAudioError] = useState(false);
+  const [tapeFromMood, setTapeFromMood] = useState(false);
 
   // Drag overlap alert
   const [isOverSlot, setIsOverSlot] = useState(false);
@@ -222,6 +225,16 @@ export default function StudioTapes() {
 
   const { lang } = useLanguage();
   const t = useT();
+  const { suggestedTapeId } = useMood();
+
+  const closeDrawer = useCallback(() => {
+    window.dispatchEvent(new Event('gdv:tapes-close'));
+    setIsOpen(false);
+  }, []);
+
+  // En el primer render la sugerencia ya viene del localStorage de MOOD: no
+  // debe pisar una cinta guardada por el usuario en TAPES.
+  const lastSuggestedRef = useRef(suggestedTapeId);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -234,11 +247,17 @@ export default function StudioTapes() {
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
+      if (e.key === 'Escape') closeDrawer();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen]);
+  }, [isOpen, closeDrawer]);
+
+  // MOOD y TAPES son cajones exclusivos: si se abre uno, el otro se cierra.
+  useEffect(() => {
+    window.addEventListener('gdv:mood-open', closeDrawer);
+    return () => window.removeEventListener('gdv:mood-open', closeDrawer);
+  }, [closeDrawer]);
 
   // El cajon declara `aria-modal` pero sin esto el Tab se iba a los controles de
   // transporte de fondo, que quedan visibles detras del panel.
@@ -263,6 +282,7 @@ export default function StudioTapes() {
       const tape = studioTapes.find(t => t.id === savedTapeId);
       if (tape) {
         setActiveTape(tape);
+        setTapeFromMood(false);
       }
     }
     if (savedTime) {
@@ -272,6 +292,27 @@ export default function StudioTapes() {
       setVolume(parseFloat(savedVolume));
     }
   }, []);
+
+  // MOOD solo sugiere: cambia la cinta cargada, sin synth.playInsert() ni play.
+  useEffect(() => {
+    if (lastSuggestedRef.current === suggestedTapeId) return;
+    lastSuggestedRef.current = suggestedTapeId;
+
+    const tape = studioTapes.find((item) => item.id === suggestedTapeId);
+    if (!tape) return;
+
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setAudioDuration(tape.durationSeconds);
+    setAudioError(false);
+    setActiveTape(tape);
+    setTapeFromMood(true);
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.removeAttribute('src');
+    }
+  }, [suggestedTapeId]);
 
   // Persist values on change
   useEffect(() => {
@@ -453,6 +494,7 @@ export default function StudioTapes() {
     }
     insertTimerRef.current = window.setTimeout(() => {
       setActiveTape(tape);
+      setTapeFromMood(false);
       setCurrentTime(0);
       setAudioDuration(tape.durationSeconds);
       setAudioError(false);
@@ -490,6 +532,7 @@ export default function StudioTapes() {
     synth.playEject();
     setIsPlaying(false);
     setActiveTape(null);
+    setTapeFromMood(false);
     setCurrentTime(0);
     setAudioDuration(0);
     setAudioError(false);
@@ -568,7 +611,13 @@ export default function StudioTapes() {
           type="button"
           onClick={() => {
             synth.playClick();
-            setIsOpen(!isOpen);
+            if (isOpen) {
+              closeDrawer();
+              return;
+            }
+            setIsDrawerAnimating(true);
+            window.dispatchEvent(new Event('gdv:tapes-open'));
+            setIsOpen(true);
           }}
           className="relative flex items-center gap-2 md:gap-2.5 bg-[#f9f7f2] hover:bg-[#fffef0] border border-[#e5e2de] hover:border-[#1a1a1a]/20 px-2.5 md:px-3.5 py-2 md:py-2.5 rounded-sm shadow-xs transition-all duration-300 group"
           aria-label="Abrir Studio Tapes"
@@ -608,10 +657,13 @@ export default function StudioTapes() {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 130 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            onAnimationComplete={() => {
+              if (isOpen) setIsDrawerAnimating(false);
+            }}
             className="fixed bottom-0 left-0 right-0 z-40 bg-[#f9f7f2] border-t border-[#e5e2de] shadow-xl overflow-hidden"
             id="studio-tapes-drawer"
-            style={{ maxHeight: '85vh' }}
+            style={{ maxHeight: '85vh', willChange: 'transform' }}
             role="dialog"
             aria-modal="true"
             aria-label="Studio Tapes"
@@ -640,7 +692,7 @@ export default function StudioTapes() {
                     type="button"
                     onClick={() => {
                       synth.playClick();
-                      setIsOpen(false);
+                      closeDrawer();
                     }}
                     aria-label={t(ui.a11y.close)}
                     className="w-5 h-5 md:w-6 md:h-6 rounded-full border border-[#1a1a1a]/10 flex items-center justify-center text-[#666] hover:text-[#1a1a1a] hover:bg-[#1a1a1a]/5 text-[9px] md:text-[10px] transition-all"
@@ -682,6 +734,11 @@ export default function StudioTapes() {
                           <div className="text-amber-300 font-bold uppercase truncate tracking-wide text-xs">
                             {activeTape.subtitle}
                           </div>
+                          {tapeFromMood && (
+                            <div className="font-mono text-[7px] text-amber-500/70 uppercase tracking-wider">
+                              {t(ui.studioTapes.moodSuggested)}
+                            </div>
+                          )}
                           <div className="flex justify-between items-center text-[9px] text-amber-500/80 pt-0.5 border-t border-amber-950/40">
                             <span className="opacity-70 font-sans tracking-wide">
                               {t(ui.studioTapes.tape)} {activeTape.title}
@@ -759,7 +816,7 @@ export default function StudioTapes() {
                             <div className="flex items-center gap-2 md:gap-3.5 mr-0.5 md:mr-1">
                               <div className="relative w-6 h-6 md:w-8 md:h-8 rounded-full border border-black/30 bg-black/50 flex items-center justify-center">
                                 <motion.div 
-                                  animate={isPlaying ? { rotate: 360 } : {}}
+                                  animate={isPlaying && !isDrawerAnimating ? { rotate: 360 } : {}}
                                   transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                   className="w-4 md:w-5 h-4 md:h-5 rounded-full border-t border-r border-b border-dashed border-white/30"
                                 />
@@ -767,7 +824,7 @@ export default function StudioTapes() {
                               </div>
                               <div className="relative w-6 h-6 md:w-8 md:h-8 rounded-full border border-black/30 bg-black/50 flex items-center justify-center">
                                 <motion.div 
-                                  animate={isPlaying ? { rotate: 360 } : {}}
+                                  animate={isPlaying && !isDrawerAnimating ? { rotate: 360 } : {}}
                                   transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                   className="w-4 md:w-5 h-4 md:h-5 rounded-full border-t border-r border-b border-dashed border-white/30"
                                 />
@@ -936,7 +993,7 @@ export default function StudioTapes() {
                                 {/* Left Reel */}
                                 <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border border-[#1a1a1a]/20 bg-[#fffef0] flex items-center justify-center">
                                   <motion.div 
-                                    animate={isPlaying && isActive ? { rotate: 360 } : {}}
+                                    animate={isPlaying && isActive && !isDrawerAnimating ? { rotate: 360 } : {}}
                                     transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                     className="w-2.5 md:w-3 h-2.5 md:h-3 rounded-full border-t border-b border-l border-[#1a1a1a]/50"
                                   />
@@ -947,7 +1004,7 @@ export default function StudioTapes() {
                                 {/* Right Reel */}
                                 <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border border-[#1a1a1a]/20 bg-[#fffef0] flex items-center justify-center">
                                   <motion.div 
-                                    animate={isPlaying && isActive ? { rotate: 360 } : {}}
+                                    animate={isPlaying && isActive && !isDrawerAnimating ? { rotate: 360 } : {}}
                                     transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                     className="w-2.5 md:w-3 h-2.5 md:h-3 rounded-full border-t border-b border-l border-[#1a1a1a]/50"
                                   />

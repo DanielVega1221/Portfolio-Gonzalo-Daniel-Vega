@@ -1,8 +1,12 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { AnimatePresence } from 'motion/react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
+import { useMood } from '../lib/mood/context';
+import AtmosphereBackground from './AtmosphereBackground';
+import type { ButterflySpecies, WildlifeCreature } from '../lib/mood/types';
 import { profile } from '../data/profile';
 import {
   Library, Layers, BookOpen, User, Mail,
@@ -10,11 +14,33 @@ import {
 } from 'lucide-react';
 
 const StudioTapes = lazy(() => import('./StudioTapes'));
+const MoodPanel = lazy(() => import('./MoodPanel'));
+
+/** Fijos: MOOD ya no expone parámetros, solo elige el ecosistema. */
+const ATMOSPHERE_SETTINGS: Record<
+  WildlifeCreature,
+  {
+    count: number;
+    compactCount: number;
+    speed: number;
+    scale: number;
+    species: ButterflySpecies;
+  }
+> = {
+  // Un 8% más lento que antes; en mobile solo 3 mariposas / 2 koi.
+  butterflies: { count: 10, compactCount: 3, speed: 0.92, scale: 1, species: 'mixed' },
+  koi: { count: 10, compactCount: 2, speed: 0.78, scale: 1.05, species: 'mixed' },
+};
+
+const NORMAL_FPS = 30;
+const OVERLAY_FPS = 18;
+const RESUME_DELAY_MS = 260;
 
 export default function Layout() {
   const location = useLocation();
   const { lang, toggleLang } = useLanguage();
   const t = useT();
+  const { mode } = useMood();
 
   const navItems = [
     { path: '/', label: t(ui.nav.home), icon: BookOpen },
@@ -24,9 +50,90 @@ export default function Layout() {
     { path: '/dialogo', label: t(ui.nav.contact), icon: Mail },
   ] as const;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCompact, setIsCompact] = useState(() =>
+    window.matchMedia('(max-width: 767px)').matches
+  );
+  const [openPanels, setOpenPanels] = useState({ mood: false, tapes: false });
+  const [atmosphereFps, setAtmosphereFps] = useState(NORMAL_FPS);
+  const overlayOpen = openPanels.mood || openPanels.tapes;
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsCompact(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    const onMoodOpen = () => setOpenPanels((prev) => ({ ...prev, mood: true }));
+    const onMoodClose = () => setOpenPanels((prev) => ({ ...prev, mood: false }));
+    const onTapesOpen = () => setOpenPanels((prev) => ({ ...prev, tapes: true }));
+    const onTapesClose = () => setOpenPanels((prev) => ({ ...prev, tapes: false }));
+
+    window.addEventListener('gdv:mood-open', onMoodOpen);
+    window.addEventListener('gdv:mood-close', onMoodClose);
+    window.addEventListener('gdv:tapes-open', onTapesOpen);
+    window.addEventListener('gdv:tapes-close', onTapesClose);
+
+    return () => {
+      window.removeEventListener('gdv:mood-open', onMoodOpen);
+      window.removeEventListener('gdv:mood-close', onMoodClose);
+      window.removeEventListener('gdv:tapes-open', onTapesOpen);
+      window.removeEventListener('gdv:tapes-close', onTapesClose);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (overlayOpen) {
+      setAtmosphereFps(OVERLAY_FPS);
+      return;
+    }
+    const timer = window.setTimeout(() => setAtmosphereFps(NORMAL_FPS), RESUME_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [overlayOpen]);
+
+  // Precargar los chunks de los paneles en idle para que el primer click no espere.
+  useEffect(() => {
+    const prefetch = () => {
+      void import('./MoodPanel');
+      void import('./StudioTapes');
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(prefetch);
+      return () => window.cancelIdleCallback(id);
+    }
+    const timer = setTimeout(prefetch, 1);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="min-h-screen relative flex flex-col selection:bg-amber-100 selection:text-amber-900" id="app-root">
+    <div className="isolate min-h-screen relative flex flex-col selection:bg-amber-100 selection:text-amber-900" id="app-root">
+      {/* Crossfade: el fondo saliente se desvanece mientras el entrante aparece. */}
+      <AnimatePresence mode="sync">
+        {mode !== 'none' && (
+          <AtmosphereBackground
+            key={mode}
+            theme="light"
+            creature={mode}
+            count={
+              isCompact
+                ? ATMOSPHERE_SETTINGS[mode].compactCount
+                : ATMOSPHERE_SETTINGS[mode].count
+            }
+            speed={ATMOSPHERE_SETTINGS[mode].speed}
+            scale={ATMOSPHERE_SETTINGS[mode].scale}
+            species={ATMOSPHERE_SETTINGS[mode].species}
+            interactionMode="breeze"
+            cellSize={11}
+            overlayMode="ascii-pixels"
+            showAmbientParticles
+            paused={false}
+            fps={atmosphereFps}
+            opacity={1}
+            spawnOnClick={false}
+          />
+        )}
+      </AnimatePresence>
       <div className="grain-overlay"></div>
 
       <header className="border-b border-[#1a1a1a]/10 sticky top-0 bg-[#f9f7f2]/95 backdrop-blur-md z-40 transition-all duration-300">
@@ -120,6 +227,7 @@ export default function Layout() {
       </footer>
 
       <Suspense fallback={null}>
+        <MoodPanel />
         <StudioTapes />
       </Suspense>
     </div>

@@ -334,6 +334,22 @@ export const ui = {
     ejectBtn: { es: 'Eject', en: 'Eject' },
     timeElapsed: { es: 'TIME ELAPSED', en: 'TIME ELAPSED' },
     timeRemaining: { es: 'TIME REMAINING', en: 'TIME REMAINING' },
+    moodSuggested: { es: 'Sugerida por MOOD', en: 'Suggested by MOOD' },
+  },
+
+  // ── MOOD / fondo visual ──
+  mood: {
+    label: { es: 'MOOD', en: 'MOOD' },
+    ariaLabel: { es: 'Cambiar ambiente', en: 'Change mood' },
+    title: { es: 'AMBIENTE VISUAL', en: 'VISUAL MOOD' },
+    subtitle: { es: 'Elegí el fondo', en: 'Pick the backdrop' },
+    options: { es: 'OPCIONES', en: 'OPTIONS' },
+    butterflies: { es: 'Mariposas', en: 'Butterflies' },
+    butterfliesHint: { es: 'Paper, ámbar y terracota en vuelo', en: 'Paper, amber and terracotta in flight' },
+    koi: { es: 'Koi', en: 'Koi' },
+    koiHint: { es: 'Estanque cálido, sin azules', en: 'Warm pond, no blues' },
+    none: { es: 'Nada', en: 'None' },
+    noneHint: { es: 'Solo papel, sin criaturas', en: 'Paper only, no creatures' },
   },
 
   // ── Journal ──
