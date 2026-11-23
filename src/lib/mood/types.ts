@@ -1,15 +1,18 @@
-export type WildlifeCreature = 'butterflies' | 'koi';
+export type WildlifeCreature =
+  | 'butterflies'
+  | 'koi'
+  | 'hummingbirds'
+  | 'petals'
+  | 'comets'
+  | 'turtles'
+  | 'rain'
+  | 'snow'
+  | 'jellyfish';
 
-/** Los tres únicos estados que el usuario puede elegir desde MOOD. */
+/** Los diez estados que el usuario puede elegir desde MOOD. */
 export type MoodMode = WildlifeCreature | 'none';
 
-export type ButterflySpecies =
-  | 'mixed'
-  | 'morpho'
-  | 'monarch'
-  | 'luna'
-  | 'violet'
-  | 'ink';
+export type ButterflySpecies = 'mixed' | 'morpho' | 'monarch' | 'luna' | 'violet' | 'ink';
 
 export type CursorInteractionMode = 'breeze' | 'attract' | 'calm';
 

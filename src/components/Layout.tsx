@@ -5,13 +5,10 @@ import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
 import { useMood } from '../lib/mood/context';
-import AtmosphereBackground from './AtmosphereBackground';
+import { AsciiButterflyBackground } from './AsciiButterflyBackground';
 import type { ButterflySpecies, WildlifeCreature } from '../lib/mood/types';
 import { profile } from '../data/profile';
-import {
-  Library, Layers, BookOpen, User, Mail,
-  Menu, X,
-} from 'lucide-react';
+import { Library, Layers, BookOpen, User, Mail, Menu, X } from 'lucide-react';
 
 const StudioTapes = lazy(() => import('./StudioTapes'));
 const MoodPanel = lazy(() => import('./MoodPanel'));
@@ -27,9 +24,16 @@ const ATMOSPHERE_SETTINGS: Record<
     species: ButterflySpecies;
   }
 > = {
-  // Un 8% más lento que antes; en mobile solo 3 mariposas / 2 koi.
+  // Un 8% más lento que antes; en mobile se reduce el número de entidades.
   butterflies: { count: 10, compactCount: 3, speed: 0.92, scale: 1, species: 'mixed' },
   koi: { count: 10, compactCount: 2, speed: 0.78, scale: 1.05, species: 'mixed' },
+  hummingbirds: { count: 9, compactCount: 3, speed: 1.05, scale: 0.95, species: 'mixed' },
+  petals: { count: 14, compactCount: 5, speed: 0.8, scale: 1, species: 'mixed' },
+  comets: { count: 9, compactCount: 3, speed: 1.15, scale: 1, species: 'mixed' },
+  turtles: { count: 7, compactCount: 2, speed: 0.62, scale: 1.05, species: 'mixed' },
+  rain: { count: 18, compactCount: 7, speed: 1.1, scale: 1, species: 'mixed' },
+  snow: { count: 16, compactCount: 6, speed: 0.8, scale: 1, species: 'mixed' },
+  jellyfish: { count: 8, compactCount: 3, speed: 0.7, scale: 1, species: 'mixed' },
 };
 
 const NORMAL_FPS = 30;
@@ -50,9 +54,7 @@ export default function Layout() {
     { path: '/dialogo', label: t(ui.nav.contact), icon: Mail },
   ] as const;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isCompact, setIsCompact] = useState(() =>
-    window.matchMedia('(max-width: 767px)').matches
-  );
+  const [isCompact, setIsCompact] = useState(() => window.matchMedia('(max-width: 767px)').matches);
   const [openPanels, setOpenPanels] = useState({ mood: false, tapes: false });
   const [atmosphereFps, setAtmosphereFps] = useState(NORMAL_FPS);
   const overlayOpen = openPanels.mood || openPanels.tapes;
@@ -107,18 +109,19 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className="isolate min-h-screen relative flex flex-col selection:bg-amber-100 selection:text-amber-900" id="app-root">
+    <div
+      className="isolate min-h-screen relative flex flex-col selection:bg-amber-100 selection:text-amber-900"
+      id="app-root"
+    >
       {/* Crossfade: el fondo saliente se desvanece mientras el entrante aparece. */}
       <AnimatePresence mode="sync">
         {mode !== 'none' && (
-          <AtmosphereBackground
+          <AsciiButterflyBackground
             key={mode}
             theme="light"
             creature={mode}
             count={
-              isCompact
-                ? ATMOSPHERE_SETTINGS[mode].compactCount
-                : ATMOSPHERE_SETTINGS[mode].count
+              isCompact ? ATMOSPHERE_SETTINGS[mode].compactCount : ATMOSPHERE_SETTINGS[mode].count
             }
             speed={ATMOSPHERE_SETTINGS[mode].speed}
             scale={ATMOSPHERE_SETTINGS[mode].scale}
@@ -197,20 +200,25 @@ export default function Layout() {
         </div>
       </header>
 
-      <main className="flex-grow">
+      <main className="relative z-10 flex-grow">
         <Outlet />
       </main>
 
       <footer className="border-t border-[#1a1a1a]/10 py-12 bg-[#efede8]/50">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-[#555] font-mono">
           <div>
-            <p>
-              {t(ui.footer.copyright).replace('{year}', String(new Date().getFullYear()))}
-            </p>
+            <p>{t(ui.footer.copyright).replace('{year}', String(new Date().getFullYear()))}</p>
             <p className="text-xs text-[#444] mt-1">{t(ui.footer.made)}</p>
           </div>
           <div className="flex gap-4">
-            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-[#a84432] transition-colors">LINKEDIN</a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#a84432] transition-colors"
+            >
+              LINKEDIN
+            </a>
             {/* GITHUB: sacar este comentario para volver a mostrar el link del footer.
             {(
               <>
@@ -219,9 +227,18 @@ export default function Layout() {
               </>
             )} */}
             <span>•</span>
-            <a href={lang === 'es' ? '/cv-es.pdf' : '/cv-en.pdf'} target="_blank" rel="noopener noreferrer" className="hover:text-[#a84432] transition-colors">{t(ui.footer.cv)}</a>
+            <a
+              href={lang === 'es' ? '/cv-es.pdf' : '/cv-en.pdf'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#a84432] transition-colors"
+            >
+              {t(ui.footer.cv)}
+            </a>
             <span>•</span>
-            <a href={`mailto:${profile.email}`} className="hover:text-[#a84432] transition-colors">EMAIL</a>
+            <a href={`mailto:${profile.email}`} className="hover:text-[#a84432] transition-colors">
+              EMAIL
+            </a>
           </div>
         </div>
       </footer>

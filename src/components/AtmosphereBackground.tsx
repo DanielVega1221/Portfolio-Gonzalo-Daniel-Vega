@@ -55,7 +55,6 @@ interface KoiPalette {
   patchSecondary: string;
   fins: string;
   outline: string;
-  eye: string;
   glow: string;
 }
 
@@ -141,8 +140,7 @@ function buildKoiPalettes(p: ButterflyPalette): Record<PaletteKey, KoiPalette> {
     // Las aletas salen del propio cuerpo, no del papel: evita que parezcan
     // una pieza blanca separada cuando el koi es claro.
     fins: rgba(mixHex(secondary, body, 0.34), 0.82),
-    outline: rgba(mixHex(body, p.ink, 0.3), 0.38),
-    eye: rgba(p.ink, 0.86),
+    outline: rgba(mixHex(body, p.ink, 0.3), 0.46),
     glow: rgba(glowColor, glowAlpha),
   });
 
@@ -167,6 +165,9 @@ const TARGET_FPS = 30;
 // Agujero de lectura: núcleo limpio y borde difuso, en px CSS.
 const READING_HOLE_RADIUS = 130;
 const READING_HOLE_CORE = 0.46;
+// Separación suave entre criaturas, para que no se amontonen ni se solapen.
+const SEPARATION_PUSH = 130;
+const MAX_BOOST = 200;
 
 interface CreatureEntity {
   x: number;
@@ -349,14 +350,6 @@ function drawKoiFish(
   swimPhase: number,
   palette: KoiPalette,
 ): void {
-  const aura = ctx.createRadialGradient(x, y, length * 0.08, x, y, length * 0.9);
-  aura.addColorStop(0, palette.glow);
-  aura.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = aura;
-  ctx.beginPath();
-  ctx.arc(x, y, length * 0.9, 0, Math.PI * 2);
-  ctx.fill();
-
   const numSegs = 7;
   const segStep = (length * 0.88) / (numSegs - 1);
   const backDir = angle + Math.PI;
@@ -375,6 +368,24 @@ function drawKoiFish(
       y: y + backY * (i * segStep) + perpY * sway,
     });
   }
+
+  // Iluminación alargada y centrada en el cuerpo, no en la cabeza: evita el
+  // halo redondo que hacía que el koi se leyera como larva sobre papel claro.
+  const glowX = x + backX * length * 0.42;
+  const glowY = y + backY * length * 0.42;
+  ctx.save();
+  ctx.translate(glowX, glowY);
+  ctx.rotate(angle);
+  ctx.scale(1.25, 0.72);
+  const glow = ctx.createRadialGradient(0, 0, length * 0.06, 0, 0, length * 0.62);
+  glow.addColorStop(0, palette.glow);
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.globalAlpha = 0.7;
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(0, 0, length * 0.62, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 
   const finAnchor = spine[1];
   const finRow = Math.sin(swimPhase * 0.85) * 0.35;
@@ -509,14 +520,6 @@ function drawKoiFish(
   );
   ctx.fill();
 
-  // Ojo mínimo: un solo punto de tinta, suficiente para dejar de parecer larva.
-  const eyeX = spine[0].x + Math.cos(angle) * widths[0] * 0.32 + perpX * widths[0] * 0.34;
-  const eyeY = spine[0].y + Math.sin(angle) * widths[0] * 0.32 + perpY * widths[0] * 0.34;
-  ctx.fillStyle = palette.eye;
-  ctx.beginPath();
-  ctx.arc(eyeX, eyeY, length * 0.07, 0, Math.PI * 2);
-  ctx.fill();
-
   ctx.restore();
 }
 
@@ -588,8 +591,18 @@ export default function AtmosphereBackground({
     list.length = 0;
     pelletsRef.current = [];
     ripplesRef.current = [];
+    const minGap = creature === 'koi' ? 110 : 120;
     for (let i = 0; i < target; i++) {
-      list.push(createCreature(width, height, creature, species));
+      let next = createCreature(width, height, creature, species);
+      // Unos pocos intentos para no arrancar con el fondo ya amontonado.
+      for (let attempt = 0; attempt < 8; attempt++) {
+        const tooClose = list.some(
+          (other) => Math.hypot(next.x - other.x, next.y - other.y) < minGap,
+        );
+        if (!tooClose) break;
+        next = createCreature(width, height, creature, species);
+      }
+      list.push(next);
     }
   }, [creature, count, species]);
 
@@ -790,6 +803,26 @@ export default function AtmosphereBackground({
 
       for (const b of list) {
         if (dt > 0) {
+          // Cada criatura empuja suavemente a las que se le acercan demasiado.
+          let sepX = 0;
+          let sepY = 0;
+          for (const other of list) {
+            if (other === b) continue;
+            const dx = b.x - other.x;
+            const dy = b.y - other.y;
+            const d2 = dx * dx + dy * dy;
+            const personal =
+              (b.size + other.size) * 0.5 * cfg.scale * (isKoi ? 1.05 : 1.15);
+            if (d2 < personal * personal && d2 > 1) {
+              const dist = Math.sqrt(d2);
+              const strength = 1 - dist / personal;
+              sepX += (dx / dist) * strength;
+              sepY += (dy / dist) * strength;
+            }
+          }
+          b.boostVx += sepX * SEPARATION_PUSH * dt;
+          b.boostVy += sepY * SEPARATION_PUSH * dt;
+
           // Tramos largos y viradas suaves: ni mariposas ni koi dan vueltas chicas.
           b.wanderTimer -= dt;
           if (b.wanderTimer <= 0) {
@@ -863,6 +896,12 @@ export default function AtmosphereBackground({
                 b.wanderTarget = b.angle;
               }
             }
+          }
+
+          const boostMag = Math.hypot(b.boostVx, b.boostVy);
+          if (boostMag > MAX_BOOST) {
+            b.boostVx = (b.boostVx / boostMag) * MAX_BOOST;
+            b.boostVy = (b.boostVy / boostMag) * MAX_BOOST;
           }
 
           b.excitement = Math.max(0, b.excitement - dt * 0.7);

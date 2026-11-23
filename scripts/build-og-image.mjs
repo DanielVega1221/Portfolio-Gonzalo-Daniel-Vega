@@ -40,7 +40,7 @@ const esc = (s) =>
 
 function overlay() {
   const lines = [
-    'Gonzalo Daniel Vega',
+    'Gonzalo Vega',
     'Full Stack Developer',
     'React · TypeScript · Node · PostgreSQL',
     'Catamarca, Argentina',
@@ -61,7 +61,6 @@ function overlay() {
   <rect width="${W}" height="${H}" fill="${BG}"/>
   <rect x="0" y="0" width="${W}" height="10" fill="${ACCENT}"/>
   <text x="80" y="86" font-family="ui-monospace, 'Courier New', monospace" font-size="20" fill="${ACCENT}" letter-spacing="5">PORTFOLIO</text>
-  <line x1="80" y1="108" x2="${W - 80}" y2="108" stroke="${RULE}" stroke-width="2"/>
   <g>
     ${text}
   </g>

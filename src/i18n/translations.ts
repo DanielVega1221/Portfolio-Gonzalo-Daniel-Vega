@@ -35,11 +35,20 @@ export const ui = {
   home: {
     edition: { es: 'Portfolio 2026', en: 'Portfolio 2026' },
     editorial: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
-    heroTitle: { es: 'Construyo software que resuelve problemas reales.', en: 'I build software that solves real problems.' },
+    heroTitle: {
+      es: 'Construyo software que resuelve problemas reales.',
+      en: 'I build software that solves real problems.',
+    },
     heroTag: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
-    heroBody: { es: '5 proyectos con clientes reales. Decisiones, límites y resultados documentados.', en: '5 projects with real clients. Decisions, limits and results documented.' },
+    heroBody: {
+      es: '5 proyectos con clientes reales. Decisiones, límites y resultados documentados.',
+      en: '5 projects with real clients. Decisions, limits and results documented.',
+    },
     exchange: { es: 'PROYECTOS DESTACADOS', en: 'FEATURED PROJECTS' },
-    exchangeDesc: { es: 'Tres proyectos que muestran mi forma de trabajar.', en: 'Three projects that show how I work.' },
+    exchangeDesc: {
+      es: 'Tres proyectos que muestran mi forma de trabajar.',
+      en: 'Three projects that show how I work.',
+    },
     featuredViewAll: { es: 'Ver todos los proyectos (15) →', en: 'View all projects (15) →' },
     testimonials: { es: 'LO QUE DICEN LOS CLIENTES', en: 'WHAT CLIENTS SAY' },
     testimonial1: {
@@ -53,9 +62,15 @@ export const ui = {
       en: '"Thank you very much for the website, I\'m very satisfied with your work, very professional."',
     },
     testimonial2Name: { es: 'Comercial Río Hondo', en: 'Comercial Río Hondo' },
-    testimonial2Role: { es: 'Cantera · Áridos · Construcción', en: 'Quarry · Aggregates · Construction' },
+    testimonial2Role: {
+      es: 'Cantera · Áridos · Construcción',
+      en: 'Quarry · Aggregates · Construction',
+    },
     base: { es: 'Base operativa y física', en: 'Operating base' },
-    location: { es: 'San Fernando del Valle de Catamarca, Catamarca, Argentina', en: 'San Fernando del Valle de Catamarca, Catamarca, Argentina' },
+    location: {
+      es: 'San Fernando del Valle de Catamarca, Catamarca, Argentina',
+      en: 'San Fernando del Valle de Catamarca, Catamarca, Argentina',
+    },
     index: { es: 'ÍNDICE DE CONTENIDOS', en: 'TABLE OF CONTENTS' },
     indexProjects: { es: 'Archivo', en: 'Archive' },
     indexJournal: { es: 'Notas de Campo', en: 'Field Notes' },
@@ -65,10 +80,16 @@ export const ui = {
     readNote: { es: 'Leer nota de campo →', en: 'Read field note →' },
     register: { es: 'Gonzalo Daniel Vega', en: 'Gonzalo Daniel Vega' },
     registerSub: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
-    heroTech: { es: 'React · Next.js · TypeScript · Node.js · Tailwind CSS', en: 'React · Next.js · TypeScript · Node.js · Tailwind CSS' },
+    heroTech: {
+      es: 'React · Next.js · TypeScript · Node.js · Tailwind CSS',
+      en: 'React · Next.js · TypeScript · Node.js · Tailwind CSS',
+    },
     downloadCV: { es: 'Descargar CV', en: 'Download CV' },
     available: { es: 'Disponible para trabajar', en: 'Available for work' },
-    experienceText: { es: 'UXnicorp — 2024 al presente — 5 clientes reales. Full Stack Developer.', en: 'UXnicorp — 2024 to present — 5 real clients. Full Stack Developer.' },
+    experienceText: {
+      es: 'UXnicorp — 2024 al presente — 5 clientes reales. Full Stack Developer.',
+      en: 'UXnicorp — 2024 to present — 5 real clients. Full Stack Developer.',
+    },
   },
 
   // ── About ──
@@ -78,10 +99,19 @@ export const ui = {
       es: `No me interesa ser el que "sabe más". Me interesa ser el que entiende mejor el problema.`,
       en: `I'm not interested in being the one who "knows the most." I'm interested in being the one who best understands the problem.`,
     },
-    tag: { es: 'ENSAYO AUTOBIOGRÁFICO Y CRITERIO PROFESIONAL.', en: 'BIOGRAPHICAL ESSAY AND PROFESSIONAL JUDGMENT.' },
-    logbook: { es: 'CUADERNO DE BITÁCORA // PERSPECTIVA OPERATIVA', en: 'LOGBOOK // OPERATIONAL PERSPECTIVE' },
+    tag: {
+      es: 'ENSAYO AUTOBIOGRÁFICO Y CRITERIO PROFESIONAL.',
+      en: 'BIOGRAPHICAL ESSAY AND PROFESSIONAL JUDGMENT.',
+    },
+    logbook: {
+      es: 'CUADERNO DE BITÁCORA // PERSPECTIVA OPERATIVA',
+      en: 'LOGBOOK // OPERATIONAL PERSPECTIVE',
+    },
     section00: { es: 'DE DÓNDE VENGO', en: 'WHERE I COME FROM' },
-    section00Title: { es: 'Catamarca, ingeniería y muchas ganas de aprender', en: 'Catamarca, engineering, and a hunger to learn' },
+    section00Title: {
+      es: 'Catamarca, ingeniería y muchas ganas de aprender',
+      en: 'Catamarca, engineering, and a hunger to learn',
+    },
     section00p1: {
       es: 'Soy de Catamarca, Argentina. Estudio Ingeniería en Informática en la Universidad Nacional de Catamarca. Voy por tercer año. Aprendí las bases en la facultad y todo lo demás por mi cuenta. Leyendo, probando, equivocándome y escuchando a colegas. Trabajo remoto desde San Fernando del Valle de Catamarca.',
       en: "I'm from Catamarca, Argentina. I'm studying Computer Engineering at the National University of Catamarca. I'm in my third year. I learned the foundations at university and everything else on my own. Reading, trying, failing, and listening to colleagues. I work remotely from San Fernando del Valle de Catamarca.",
@@ -89,12 +119,12 @@ export const ui = {
     section00Card1Title: { es: 'Formación', en: 'Education' },
     section00Card1Text: {
       es: 'Ingeniería en Informática (UNCA, 3er año). Aprendí React viendo a Mauro codear. El resto lo fui aprendiendo solo, a los tumbos, con cada proyecto nuevo.',
-      en: "Computer Engineering (UNCA, 3rd year). I learned React by watching Mauro code. The rest I picked up on my own, stumbling through each new project.",
+      en: 'Computer Engineering (UNCA, 3rd year). I learned React by watching Mauro code. The rest I picked up on my own, stumbling through each new project.',
     },
     section00Card2Title: { es: 'Trayectoria', en: 'Background' },
     section00Card2Text: {
       es: 'Arranqué con proyectos chicos para la facultad. Hoy construyo productos digitales para empresas y profesionales dentro de UXnicorp. Diseño, programo, hablo con clientes y gestiono el equipo.',
-      en: "I started with small university projects. Today I build digital products for businesses and professionals at UXnicorp. I design, code, talk to clients, and manage the team.",
+      en: 'I started with small university projects. Today I build digital products for businesses and professionals at UXnicorp. I design, code, talk to clients, and manage the team.',
     },
     section00Card3Title: { es: 'Disponibilidad', en: 'Availability' },
     section00Card3Text: {
@@ -102,7 +132,10 @@ export const ui = {
       en: "I work remotely from Catamarca. Open to on-site opportunities if the project is worth it. I'm driven by the people I work with and the problems I can help solve.",
     },
     section01: { es: 'UXNICORP', en: 'UXNICORP' },
-    section01Title: { es: 'Donde hago de todo. Y me gusta.', en: "Where I do everything. And I love it." },
+    section01Title: {
+      es: 'Donde hago de todo. Y me gusta.',
+      en: 'Where I do everything. And I love it.',
+    },
     section01p1: {
       es: 'UXnicorp es una agencia de desarrollo web chica. En una agencia chica no hay "departamento de diseño" ni "equipo de ventas". Hay que hacer lo que haga falta. Y eso fue exactamente lo que hice desde que entré.',
       en: 'UXnicorp is a small web development agency. In a small agency there\'s no "design department" or "sales team." You do whatever needs to be done. And that\'s exactly what I did from the moment I joined.',
@@ -125,7 +158,7 @@ export const ui = {
     section01Leads: { es: 'Busco leads y vendo.', en: 'I find leads and sell.' },
     section01LeadsText: {
       es: 'Identifico negocios que podrían beneficiarse de lo que hacemos, los contacto, les explico qué ofrecemos y por qué les puede servir. Aprendí a escuchar, a entender qué necesita cada uno y a ofrecer soluciones que tengan sentido, no a vender por vender.',
-      en: "I identify businesses that could benefit from what we do, contact them, explain what we offer and why it can help them. I learned to listen, to understand what each one needs, and to offer solutions that make sense — not to sell for the sake of selling.",
+      en: 'I identify businesses that could benefit from what we do, contact them, explain what we offer and why it can help them. I learned to listen, to understand what each one needs, and to offer solutions that make sense — not to sell for the sake of selling.',
     },
     section01Team: { es: 'Gestiono el equipo.', en: 'I manage the team.' },
     section01TeamText: {
@@ -141,21 +174,45 @@ export const ui = {
       en: "When you care about something, you don't look at what your job title says. You look at what the project needs.",
     },
     section02: { es: 'CÓMO PIENSO', en: 'HOW I THINK' },
-    section02Title: { es: 'No tengo una única forma de resolver problemas', en: "I don't have one single way to solve problems" },
-    section02Sub: { es: 'Pero sí hay algunas cosas que siempre están. Con ejemplos reales.', en: 'But some things are always present. With real examples.' },
+    section02Title: {
+      es: 'No tengo una única forma de resolver problemas',
+      en: "I don't have one single way to solve problems",
+    },
+    section02Sub: {
+      es: 'Pero sí hay algunas cosas que siempre están. Con ejemplos reales.',
+      en: 'But some things are always present. With real examples.',
+    },
     principles: {
       p01Title: { es: 'Entender antes de hacer', en: 'Understand before doing' },
-      p01Text: { es: 'ElectroPower llegó pidiendo "una página web". Si les hacía caso sin preguntar, entregaba un sitio genérico que nadie iba a usar. Escuchando entendí que todo su negocio pasaba por WhatsApp. La web no reemplazó el canal. Lo alimentó.', en: 'ElectroPower came asking for "a website." If I had just done what they said without asking, I would have delivered a generic site no one would use. By listening, I understood that their entire business ran through WhatsApp. The website didn\'t replace the channel. It fed it.' },
+      p01Text: {
+        es: 'ElectroPower llegó pidiendo "una página web". Si les hacía caso sin preguntar, entregaba un sitio genérico que nadie iba a usar. Escuchando entendí que todo su negocio pasaba por WhatsApp. La web no reemplazó el canal. Lo alimentó.',
+        en: 'ElectroPower came asking for "a website." If I had just done what they said without asking, I would have delivered a generic site no one would use. By listening, I understood that their entire business ran through WhatsApp. The website didn\'t replace the channel. It fed it.',
+      },
       p02Title: { es: 'Explicar simple', en: 'Explain simply' },
-      p02Text: { es: 'La clienta de PATAgenda es docente, no programadora. El sistema modela conceptos legales del Ministerio de Educación. Si ella no entendía lo que estaba viendo, el proyecto fracasaba. Por eso cada pantalla y cada término está pensado para alguien sin formación técnica.', en: 'The PATAgenda client is a teacher, not a programmer. The system models legal concepts from the Ministry of Education. If she didn\'t understand what she was looking at, the project would fail. That\'s why every screen and every term is designed for someone with no technical background.' },
+      p02Text: {
+        es: 'La clienta de PATAgenda es docente, no programadora. El sistema modela conceptos legales del Ministerio de Educación. Si ella no entendía lo que estaba viendo, el proyecto fracasaba. Por eso cada pantalla y cada término está pensado para alguien sin formación técnica.',
+        en: "The PATAgenda client is a teacher, not a programmer. The system models legal concepts from the Ministry of Education. If she didn't understand what she was looking at, the project would fail. That's why every screen and every term is designed for someone with no technical background.",
+      },
       p03Title: { es: 'Evitar la complejidad innecesaria', en: 'Avoid unnecessary complexity' },
-      p03Text: { es: 'MyVisor es un lector de Markdown. Podría haber usado React, Next.js y una base de datos. Pero con Vanilla JS, Vite y la File System Access API alcanzó. No todo necesita un stack gigante. A veces la mejor solución es la más simple que resuelve bien el problema.', en: 'MyVisor is a Markdown reader. I could have used React, Next.js and a database. But Vanilla JS, Vite and the File System Access API were enough. Not everything needs a giant stack. Sometimes the best solution is the simplest one that solves the problem well.' },
+      p03Text: {
+        es: 'MyVisor es un lector de Markdown. Podría haber usado React, Next.js y una base de datos. Pero con Vanilla JS, Vite y la File System Access API alcanzó. No todo necesita un stack gigante. A veces la mejor solución es la más simple que resuelve bien el problema.',
+        en: 'MyVisor is a Markdown reader. I could have used React, Next.js and a database. But Vanilla JS, Vite and the File System Access API were enough. Not everything needs a giant stack. Sometimes the best solution is the simplest one that solves the problem well.',
+      },
     },
-    section03: { es: 'CÓMO ES TRABAJAR CONMIGO', en: 'WHAT IT\'S LIKE TO WORK WITH ME' },
-    section03Title: { es: 'Arranco entendiendo, no construyendo', en: 'I start by understanding, not building' },
-    section03p1: { es: 'Propongo lo que tiene sentido, no lo más grande. Avanzo en partes, valido con algo real y mejoro sobre eso. Trabajo de forma cercana: explico qué hacemos, por qué y hasta dónde llegar. Sin tecnicismos, sin vueltas. Y si algo no convence, lo charlamos y buscamos otra vuelta. No me interesa imponer soluciones.', en: 'I propose what makes sense, not the biggest thing. I advance in chunks, validate with something real, and improve on it. I work closely: I explain what we\'re doing, why, and how far to go. No jargon, no runarounds. And if something doesn\'t convince, we talk it through and find another way. I\'m not interested in imposing solutions.' },
+    section03: { es: 'CÓMO ES TRABAJAR CONMIGO', en: "WHAT IT'S LIKE TO WORK WITH ME" },
+    section03Title: {
+      es: 'Arranco entendiendo, no construyendo',
+      en: 'I start by understanding, not building',
+    },
+    section03p1: {
+      es: 'Propongo lo que tiene sentido, no lo más grande. Avanzo en partes, valido con algo real y mejoro sobre eso. Trabajo de forma cercana: explico qué hacemos, por qué y hasta dónde llegar. Sin tecnicismos, sin vueltas. Y si algo no convence, lo charlamos y buscamos otra vuelta. No me interesa imponer soluciones.',
+      en: "I propose what makes sense, not the biggest thing. I advance in chunks, validate with something real, and improve on it. I work closely: I explain what we're doing, why, and how far to go. No jargon, no runarounds. And if something doesn't convince, we talk it through and find another way. I'm not interested in imposing solutions.",
+    },
     section04: { es: 'CÓMO EXPLICO LAS COSAS', en: 'HOW I EXPLAIN THINGS' },
-    section04Text: { es: 'No me interesa hablar complicado. Si una idea no se puede explicar fácil, probablemente no esté bien entendida. Intento que cualquiera pueda entender lo que estoy proponiendo, sin importar si es técnico o no. Porque construir algo que nadie entiende, no sirve.', en: "I'm not interested in talking in complicated terms. If an idea can't be explained simply, it probably hasn't been understood well. I try to make sure anyone can understand what I'm proposing, regardless of whether they're technical or not. Because building something no one understands is useless." },
+    section04Text: {
+      es: 'No me interesa hablar complicado. Si una idea no se puede explicar fácil, probablemente no esté bien entendida. Intento que cualquiera pueda entender lo que estoy proponiendo, sin importar si es técnico o no. Porque construir algo que nadie entiende, no sirve.',
+      en: "I'm not interested in talking in complicated terms. If an idea can't be explained simply, it probably hasn't been understood well. I try to make sure anyone can understand what I'm proposing, regardless of whether they're technical or not. Because building something no one understands is useless.",
+    },
     principleLabel: { es: 'PRINCIPIO', en: 'PRINCIPLE' },
     footerBiography: { es: 'BIOGRAFÍA DE CAMPO // VOL. II', en: 'FIELD BIOGRAPHY // VOL. II' },
     philosophyTitle: { es: 'FILOSOFÍA DE TRABAJO', en: 'WORK PHILOSOPHY' },
@@ -184,7 +241,10 @@ export const ui = {
     copyEmailFailed: { es: 'No se pudo copiar', en: 'Copy failed' },
     flipFront: { es: 'Clic para voltear', en: 'Click to flip' },
     flipBack: { es: 'Clic para volver', en: 'Click to go back' },
-    flipAria: { es: 'Voltear la credencial para ver el currículum y LinkedIn', en: 'Flip the badge to see the resume and LinkedIn' },
+    flipAria: {
+      es: 'Voltear la credencial para ver el currículum y LinkedIn',
+      en: 'Flip the badge to see the resume and LinkedIn',
+    },
     shakeAria: { es: 'Sacudir la credencial', en: 'Shake the badge' },
   },
 
@@ -192,7 +252,10 @@ export const ui = {
   contact: {
     chapter: { es: 'CAPÍTULO V — DIÁLOGO HONESTO', en: 'CHAPTER V — HONEST CONVERSATION' },
     title: { es: 'Establezcamos una conversación', en: "Let's start a conversation" },
-    desc: { es: 'Si tenés una idea, un problema complejo de negocio, o simplemente una forma parecida de ver el desarrollo de producto, escribime. Leo todo personalmente.', en: "If you have an idea, a complex business problem, or just a similar way of looking at product development, write to me. I read everything personally." },
+    desc: {
+      es: 'Si tenés una idea, un problema complejo de negocio, o simplemente una forma parecida de ver el desarrollo de producto, escribime. Leo todo personalmente.',
+      en: 'If you have an idea, a complex business problem, or just a similar way of looking at product development, write to me. I read everything personally.',
+    },
     reasonLabel: { es: 'Quiero escribir porque:', en: 'I want to write because:' },
     // `key` es estable y es lo que viaja al servidor: el backend decide qué
     // acuse y si adjunta CV a partir de la clave, nunca del texto traducido.
@@ -201,40 +264,95 @@ export const ui = {
     reasons: [
       { key: 'work', es: 'Tengo un problema complejo', en: 'I have a complex problem' },
       { key: 'product', es: 'Quiero conversar sobre producto', en: 'I want to talk about product' },
-      { key: 'hiring', es: 'Quiero sumar tu criterio a un equipo', en: 'I want to add your judgment to a team' },
+      {
+        key: 'hiring',
+        es: 'Quiero sumar tu criterio a un equipo',
+        en: 'I want to add your judgment to a team',
+      },
       { key: 'hi', es: 'Solo quería saludar', en: 'I just wanted to say hi' },
     ],
     nameLabel: { es: 'Tu nombre', en: 'Your name' },
     namePlaceholder: { es: 'Juan Pérez', en: 'John Doe' },
     emailLabel: { es: 'Tu correo de contacto', en: 'Your contact email' },
-    messageLabel: { es: '¿Cuál es el problema, contexto o idea?', en: "What's the problem, context, or idea?" },
-    messagePlaceholder: { es: 'Describime qué querés resolver, cómo funciona actualmente o sobre qué querés intercambiar opiniones...', en: 'Describe what you want to solve, how it currently works, or what you want to exchange opinions on...' },
+    messageLabel: {
+      es: '¿Cuál es el problema, contexto o idea?',
+      en: "What's the problem, context, or idea?",
+    },
+    messagePlaceholder: {
+      es: 'Describime qué querés resolver, cómo funciona actualmente o sobre qué querés intercambiar opiniones...',
+      en: 'Describe what you want to solve, how it currently works, or what you want to exchange opinions on...',
+    },
     submit: { es: 'Enviar mensaje', en: 'Send message' },
     submitting: { es: 'Enviando...', en: 'Sending...' },
-    success: { es: 'Mensaje enviado correctamente. ¡Gracias por escribir!', en: 'Message sent successfully. Thanks for writing!' },
+    success: {
+      es: 'Mensaje enviado correctamente. ¡Gracias por escribir!',
+      en: 'Message sent successfully. Thanks for writing!',
+    },
     errorReason: { es: 'Seleccioná un motivo para escribir.', en: 'Select a reason to write.' },
-    errorGeneric: { es: 'Error al enviar el mensaje. Intentá de nuevo.', en: 'Error sending message. Try again.' },
+    errorGeneric: {
+      es: 'Error al enviar el mensaje. Intentá de nuevo.',
+      en: 'Error sending message. Try again.',
+    },
     // El endpoint devuelve códigos estables en vez de texto: el cliente los
     // traduce acá. Antes se pintaba en pantalla el mensaje crudo del servidor,
     // siempre en español, y en inglés llegaba a leerse "rate_limited".
     errorCodes: {
-      rate_limited: { es: 'Demasiados envíos seguidos. Probá de nuevo en un rato.', en: 'Too many submissions in a row. Try again in a while.' },
-      email_invalid: { es: 'Revisá el email: no parece una dirección válida.', en: 'Check the email address: it does not look valid.' },
-      message_required: { es: 'El mensaje no puede quedar vacío.', en: 'The message cannot be empty.' },
+      rate_limited: {
+        es: 'Demasiados envíos seguidos. Probá de nuevo en un rato.',
+        en: 'Too many submissions in a row. Try again in a while.',
+      },
+      email_invalid: {
+        es: 'Revisá el email: no parece una dirección válida.',
+        en: 'Check the email address: it does not look valid.',
+      },
+      message_required: {
+        es: 'El mensaje no puede quedar vacío.',
+        en: 'The message cannot be empty.',
+      },
       method_not_allowed: { es: 'Método no permitido.', en: 'Method not allowed.' },
-      invalid_body: { es: 'No pudimos leer el formulario. Probá de nuevo.', en: 'We could not read the form. Try again.' },
-      invalid_json: { es: 'No pudimos leer el formulario. Probá de nuevo.', en: 'We could not read the form. Try again.' },
-      delivery_failed: { es: 'No pudimos entregar el mensaje. Te dejo el email por si querés responder directo.', en: 'We could not deliver the message. Here is my email in case you want to reply directly.' },
-      sender_unverified: { es: 'El envío está en modo de prueba y todavía no acepta destinatarios externos. Te dejo el email por si querés responder directo.', en: 'Sending is still in test mode and does not accept outside recipients yet. Here is my email in case you want to reply directly.' },
-      service_unavailable: { es: 'El servicio está temporalmente caído. Te dejo el email por si querés responder directo.', en: 'The service is temporarily down. Here is my email in case you want to reply directly.' },
+      invalid_body: {
+        es: 'No pudimos leer el formulario. Probá de nuevo.',
+        en: 'We could not read the form. Try again.',
+      },
+      invalid_json: {
+        es: 'No pudimos leer el formulario. Probá de nuevo.',
+        en: 'We could not read the form. Try again.',
+      },
+      delivery_failed: {
+        es: 'No pudimos entregar el mensaje. Te dejo el email por si querés responder directo.',
+        en: 'We could not deliver the message. Here is my email in case you want to reply directly.',
+      },
+      sender_unverified: {
+        es: 'El envío está en modo de prueba y todavía no acepta destinatarios externos. Te dejo el email por si querés responder directo.',
+        en: 'Sending is still in test mode and does not accept outside recipients yet. Here is my email in case you want to reply directly.',
+      },
+      service_unavailable: {
+        es: 'El servicio está temporalmente caído. Te dejo el email por si querés responder directo.',
+        en: 'The service is temporarily down. Here is my email in case you want to reply directly.',
+      },
     },
-    casualTitle: { es: '¿Querés charlar de manera casual o simplemente intercambiar ideas?', en: 'Want to chat casually or just exchange ideas?' },
-    casualDesc: { es: 'Me encanta conversar. Si te pinta hablar de tecnología, de proyectos, de la vida o de lo que sea, escribime sin compromiso.', en: 'I love to chat. If you feel like talking about tech, projects, life, or whatever, write to me — no strings attached.' },
+    casualTitle: {
+      es: '¿Querés charlar de manera casual o simplemente intercambiar ideas?',
+      en: 'Want to chat casually or just exchange ideas?',
+    },
+    casualDesc: {
+      es: 'Me encanta conversar. Si te pinta hablar de tecnología, de proyectos, de la vida o de lo que sea, escribime sin compromiso.',
+      en: 'I love to chat. If you feel like talking about tech, projects, life, or whatever, write to me — no strings attached.',
+    },
     casualBtn: { es: 'Charlar por WhatsApp', en: 'Chat on WhatsApp' },
     bottomTitle: { es: 'Si llegaste hasta acá', en: 'If you made it this far' },
-    bottom1: { es: 'Capaz tenemos una forma parecida de pensar.', en: 'Maybe we think in similar ways.' },
-    bottom2: { es: 'O capaz no, pero igual estaría bueno hablar.', en: "Or maybe not, but it'd still be good to talk." },
-    bottom3: { es: 'Si tenés una idea, un problema, o simplemente querés intercambiar cómo vemos las cosas, podemos charlar.', en: "If you have an idea, a problem, or just want to exchange how we see things, we can talk." },
+    bottom1: {
+      es: 'Capaz tenemos una forma parecida de pensar.',
+      en: 'Maybe we think in similar ways.',
+    },
+    bottom2: {
+      es: 'O capaz no, pero igual estaría bueno hablar.',
+      en: "Or maybe not, but it'd still be good to talk.",
+    },
+    bottom3: {
+      es: 'Si tenés una idea, un problema, o simplemente querés intercambiar cómo vemos las cosas, podemos charlar.',
+      en: 'If you have an idea, a problem, or just want to exchange how we see things, we can talk.',
+    },
     emailPlaceholder: { es: 'nombre@ejemplo.com', en: 'name@example.com' },
   },
 
@@ -242,8 +360,14 @@ export const ui = {
   portfolio: {
     chapter: { es: 'CAPÍTULO II — ARCHIVOS Y PROYECTOS', en: 'CHAPTER II — FILES & PROJECTS' },
     title: { es: 'Registro de Proyectos', en: 'Project Log' },
-    desc: { es: 'No todos los proyectos nacen del mismo lugar. Algunos surgen de la curiosidad. Otros de problemas reales. Y otros de cosas que necesitaba resolver para mí. Los separo así porque cada uno muestra una forma distinta de pensar.', en: "Not all projects come from the same place. Some arise from curiosity. Others from real problems. And others from things I needed to solve for myself. I separate them like this because each one shows a different way of thinking." },
-    searchPlaceholder: { es: 'Buscar por herramienta, problema, tecnología...', en: 'Search by tool, problem, technology...' },
+    desc: {
+      es: 'No todos los proyectos nacen del mismo lugar. Algunos surgen de la curiosidad. Otros de problemas reales. Y otros de cosas que necesitaba resolver para mí. Los separo así porque cada uno muestra una forma distinta de pensar.',
+      en: 'Not all projects come from the same place. Some arise from curiosity. Others from real problems. And others from things I needed to solve for myself. I separate them like this because each one shows a different way of thinking.',
+    },
+    searchPlaceholder: {
+      es: 'Buscar por herramienta, problema, tecnología...',
+      en: 'Search by tool, problem, technology...',
+    },
     searchLabel: { es: 'Buscar proyectos', en: 'Search projects' },
     // Un solo vocabulario para toda la pagina: antes los filtros decia
     // "Clientes UXnicorp" mientras el badge de la card decia "CLIENTE", y para
@@ -258,7 +382,10 @@ export const ui = {
     },
     chapterLabel: { es: 'CAPÍTULO /', en: 'CHAPTER /' },
     yearLabel: { es: 'Año', en: 'Year' },
-    emptyTitle: { es: 'Ningún proyecto coincide con la búsqueda.', en: 'No projects match your search.' },
+    emptyTitle: {
+      es: 'Ningún proyecto coincide con la búsqueda.',
+      en: 'No projects match your search.',
+    },
     resetButton: { es: 'Restablecer filtros', en: 'Reset filters' },
     studyLink: { es: 'Estudio Técnico Completo →', en: 'Full Technical Study →' },
     before: { es: 'Antes', en: 'Before' },
@@ -270,22 +397,46 @@ export const ui = {
   projectDetail: {
     back: { es: 'Volver a Proyectos', en: 'Back to Projects' },
     journal: { es: 'DIARIO EDITORIAL / VOL. II /', en: 'EDITORIAL JOURNAL / VOL. II /' },
-    figure: { es: 'FIG 01. Representación estructural de la solución', en: 'FIG 01. Structural representation of the solution' },
-    contextTitle: { es: 'El punto de partida del desafío', en: 'The starting point of the challenge' },
-    investigationTitle: { es: 'Hurgando bajo la superficie: ¿Qué investigué?', en: 'Digging beneath the surface: What did I investigate?' },
+    figure: {
+      es: 'FIG 01. Representación estructural de la solución',
+      en: 'FIG 01. Structural representation of the solution',
+    },
+    contextTitle: {
+      es: 'El punto de partida del desafío',
+      en: 'The starting point of the challenge',
+    },
+    investigationTitle: {
+      es: 'Hurgando bajo la superficie: ¿Qué investigué?',
+      en: 'Digging beneath the surface: What did I investigate?',
+    },
     insightRevealed: { es: 'INSIGHT REVELADO', en: 'INSIGHT REVEALED' },
     synthesis: { es: 'LA SÍNTESIS', en: 'THE SYNTHESIS' },
-    synthesisText: { es: 'Comprender este pilar transformó por completo la dirección táctica del proyecto, permitiendo depurar el ruido innecesario y enfocarse en valor estricto.', en: 'Understanding this pillar completely transformed the tactical direction of the project, allowing unnecessary noise to be filtered out and focusing on strict value.' },
+    synthesisText: {
+      es: 'Comprender este pilar transformó por completo la dirección táctica del proyecto, permitiendo depurar el ruido innecesario y enfocarse en valor estricto.',
+      en: 'Understanding this pillar completely transformed the tactical direction of the project, allowing unnecessary noise to be filtered out and focusing on strict value.',
+    },
     tactics: { es: 'TÁCTICAS', en: 'TACTICS' },
-    tacticsTitle: { es: 'Análisis de compromisos: opciones sobre la mesa', en: 'Tradeoff Analysis: options on the table' },
-    tacticsSub: { es: 'Construir software a medida requiere evaluar escenarios honestamente. Ninguna arquitectura es perfecta, cada decisión tiene un precio:', en: 'Building custom software requires honestly evaluating scenarios. No architecture is perfect — every decision has a price:' },
+    tacticsTitle: {
+      es: 'Análisis de compromisos: opciones sobre la mesa',
+      en: 'Tradeoff Analysis: options on the table',
+    },
+    tacticsSub: {
+      es: 'Construir software a medida requiere evaluar escenarios honestamente. Ninguna arquitectura es perfecta, cada decisión tiene un precio:',
+      en: 'Building custom software requires honestly evaluating scenarios. No architecture is perfect — every decision has a price:',
+    },
     option: { es: 'OPCIÓN', en: 'OPTION' },
     determination: { es: 'DETERMINACIÓN', en: 'DETERMINATION' },
     decisionTitle: { es: 'La Decisión: El camino elegido', en: 'The Decision: The path chosen' },
     workedWell: { es: 'LO QUE FUNCIONÓ DE VERDAD', en: 'WHAT ACTUALLY WORKED' },
     tradeoffs: { es: 'LIMITACIONES Y COMPROMISOS', en: 'LIMITATIONS & TRADE-OFFS' },
-    differentTitle: { es: 'DE LA BITÁCORA PERSONAL DE GONZALO: ¿QUÉ HARÍA DIFERENTE HOY?', en: "FROM GONZALO'S PERSONAL LOGBOOK: WHAT WOULD I DO DIFFERENTLY TODAY?" },
-    differentSub: { es: 'Anotación retrospectiva posterior al lanzamiento', en: 'Retrospective note after launch' },
+    differentTitle: {
+      es: 'DE LA BITÁCORA PERSONAL DE GONZALO: ¿QUÉ HARÍA DIFERENTE HOY?',
+      en: "FROM GONZALO'S PERSONAL LOGBOOK: WHAT WOULD I DO DIFFERENTLY TODAY?",
+    },
+    differentSub: {
+      es: 'Anotación retrospectiva posterior al lanzamiento',
+      en: 'Retrospective note after launch',
+    },
     demonstratesTitle: { es: 'QUÉ DEMUESTRA ESTE PROYECTO', en: 'WHAT THIS PROJECT DEMONSTRATES' },
     ficha: { es: 'FICHA TÉCNICA', en: 'TECHNICAL SHEET' },
     project: { es: 'PROYECTO', en: 'PROJECT' },
@@ -321,11 +472,20 @@ export const ui = {
     inserting: { es: 'INSERTANDO...', en: 'INSERTING...' },
     slot: { es: 'RANURA DE ENTRADA', en: 'ENTRY SLOT' },
     slotHint: { es: 'Selecciona una cinta de abajo', en: 'Select a tape below' },
-    tray: { es: 'BANDEJA DE CASSETTES (ARRÁSTRALO O HAZ CLICK)', en: 'CASSETTE TRAY (DRAG OR CLICK)' },
-    trayMobile: { es: 'BANDEJA DE CASSETTES (TOCÁ PARA CARGAR)', en: 'CASSETTE TRAY (TAP TO LOAD)' },
+    tray: {
+      es: 'BANDEJA DE CASSETTES (ARRÁSTRALO O HAZ CLICK)',
+      en: 'CASSETTE TRAY (DRAG OR CLICK)',
+    },
+    trayMobile: {
+      es: 'BANDEJA DE CASSETTES (TOCÁ PARA CARGAR)',
+      en: 'CASSETTE TRAY (TAP TO LOAD)',
+    },
     playing: { es: 'PLAYING', en: 'PLAYING' },
     tapes: { es: 'TAPES', en: 'TAPES' },
-    subtitle: { es: 'Colección analógica de estados de ánimo y procesos creativos // G.D.V.', en: 'Analog collection of moods and creative processes // G.D.V.' },
+    subtitle: {
+      es: 'Colección analógica de estados de ánimo y procesos creativos // G.D.V.',
+      en: 'Analog collection of moods and creative processes // G.D.V.',
+    },
     player: { es: 'REPRODUCTOR ANALÓGICO', en: 'ANALOG PLAYER' },
     noFile: { es: '⚠ Archivo no encontrado — simulando', en: '⚠ File not found — simulating' },
     playBtn: { es: 'Play', en: 'Play' },
@@ -345,9 +505,29 @@ export const ui = {
     subtitle: { es: 'Elegí el fondo', en: 'Pick the backdrop' },
     options: { es: 'OPCIONES', en: 'OPTIONS' },
     butterflies: { es: 'Mariposas', en: 'Butterflies' },
-    butterfliesHint: { es: 'Paper, ámbar y terracota en vuelo', en: 'Paper, amber and terracotta in flight' },
+    butterfliesHint: {
+      es: 'Paper, ámbar y terracota en vuelo',
+      en: 'Paper, amber and terracotta in flight',
+    },
     koi: { es: 'Koi', en: 'Koi' },
     koiHint: { es: 'Estanque cálido, sin azules', en: 'Warm pond, no blues' },
+    hummingbirds: { es: 'Colibríes', en: 'Hummingbirds' },
+    hummingbirdsHint: { es: 'Aleteo rápido y nectar ámbar', en: 'Fast wingbeats and amber nectar' },
+    petals: { es: 'Pétalos', en: 'Petals' },
+    petalsHint: { es: 'Caída lenta de terracota', en: 'Slow terracotta fall' },
+    comets: { es: 'Cometas', en: 'Comets' },
+    cometsHint: { es: 'Estelas diagonales y destello', en: 'Diagonal trails and a bright head' },
+    turtles: { es: 'Tortugas', en: 'Turtles' },
+    turtlesHint: { es: 'Caparazón y aletas lentas', en: 'Shells and slow flippers' },
+    rain: { es: 'Lluvia', en: 'Rain' },
+    rainHint: { es: 'Gotas y ondas concéntricas', en: 'Drops and concentric ripples' },
+    snow: { es: 'Nieve', en: 'Snow' },
+    snowHint: { es: 'Copos suaves sobre el borde', en: 'Soft flakes along the edge' },
+    jellyfish: { es: 'Medusas', en: 'Jellyfish' },
+    jellyfishHint: {
+      es: 'Campanas translúcidas y tentáculos',
+      en: 'Translucent bells and tentacles',
+    },
     none: { es: 'Nada', en: 'None' },
     noneHint: { es: 'Solo papel, sin criaturas', en: 'Paper only, no creatures' },
   },
@@ -356,7 +536,10 @@ export const ui = {
   journal: {
     chapter: { es: 'CAPÍTULO III — NOTAS DE CAMPO', en: 'CHAPTER III — FIELD NOTES' },
     title: { es: 'Notas de Campo & Ensayos', en: 'Field Notes & Essays' },
-    desc: { es: 'Una compilación de reflexiones técnicas honestas, análisis heurísticos y aprendizajes sobre arquitectura de software, experiencia de usuario habitable y dirección de arte digital.', en: 'A collection of honest technical reflections, heuristic analysis, and learnings about software architecture, livable user experience, and digital art direction.' },
+    desc: {
+      es: 'Una compilación de reflexiones técnicas honestas, análisis heurísticos y aprendizajes sobre arquitectura de software, experiencia de usuario habitable y dirección de arte digital.',
+      en: 'A collection of honest technical reflections, heuristic analysis, and learnings about software architecture, livable user experience, and digital art direction.',
+    },
     readMore: { es: 'Leer nota de campo →', en: 'Read field note →' },
     noteLabel: { es: 'NOTA N.º ', en: 'NOTE #' },
     comingSoon: { es: 'Próximamente', en: 'Coming soon' },
@@ -375,7 +558,10 @@ export const ui = {
     authorName: { es: 'Gonzalo Daniel Vega', en: 'Gonzalo Daniel Vega' },
     authorRole: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
     conformity: { es: 'CONFORMIDAD TÉCNICA', en: 'TECHNICAL CONFORMITY' },
-    quote: { es: '"El software más valioso no es el más sofisticado, sino aquel que modela con absoluta honestidad la realidad de quien lo opera."', en: '"The most valuable software is not the most sophisticated, but the one that models with absolute honesty the reality of those who operate it."' },
+    quote: {
+      es: '"El software más valioso no es el más sofisticado, sino aquel que modela con absoluta honestidad la realidad de quien lo opera."',
+      en: '"The most valuable software is not the most sophisticated, but the one that models with absolute honesty the reality of those who operate it."',
+    },
     fieldNotebook: { es: 'CUADERNO DE CAMPO — 2026', en: 'FIELD NOTEBOOK — 2026' },
   },
 

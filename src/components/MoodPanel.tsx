@@ -7,28 +7,62 @@ import { MOOD_MODES } from '../lib/mood/presets';
 import type { MoodMode } from '../lib/mood/types';
 import { useFocusTrap } from '../lib/useFocusTrap';
 
-const MODE_LABELS: Record<MoodMode, keyof typeof ui.mood> = {
+type MoodTranslation = keyof typeof ui.mood;
+
+const ACCENT_ACTIVE = 'border-[#a84432] bg-[#a84432]/10 text-[#a84432]';
+const POLLEN_ACTIVE = 'border-[#c47a38] bg-[#c47a38]/12 text-[#9a5a22]';
+const SOFT_ACTIVE = 'border-[#cbc8bf] bg-[#cbc8bf]/25 text-[#4a4844]';
+
+const MODE_LABELS: Record<MoodMode, MoodTranslation> = {
   butterflies: 'butterflies',
   koi: 'koi',
+  hummingbirds: 'hummingbirds',
+  petals: 'petals',
+  comets: 'comets',
+  turtles: 'turtles',
+  rain: 'rain',
+  snow: 'snow',
+  jellyfish: 'jellyfish',
   none: 'none',
 };
 
-const MODE_HINTS: Record<MoodMode, keyof typeof ui.mood> = {
+const MODE_HINTS: Record<MoodMode, MoodTranslation> = {
   butterflies: 'butterfliesHint',
   koi: 'koiHint',
+  hummingbirds: 'hummingbirdsHint',
+  petals: 'petalsHint',
+  comets: 'cometsHint',
+  turtles: 'turtlesHint',
+  rain: 'rainHint',
+  snow: 'snowHint',
+  jellyfish: 'jellyfishHint',
   none: 'noneHint',
 };
 
 const MODE_DOTS: Record<MoodMode, string> = {
   butterflies: 'bg-[#a84432]',
   koi: 'bg-[#c47a38]',
+  hummingbirds: 'bg-[#c47a38]',
+  petals: 'bg-[#a84432]',
+  comets: 'bg-[#a84432]',
+  turtles: 'bg-[#c47a38]',
+  rain: 'bg-[#777]',
+  snow: 'bg-[#cbc8bf]',
+  jellyfish: 'bg-[#a84432]',
   none: 'bg-[#cbc8bf]',
 };
 
 const MODE_ACTIVE: Record<MoodMode, string> = {
-  butterflies: 'border-[#a84432] bg-[#a84432]/10 text-[#a84432]',
-  koi: 'border-[#c47a38] bg-[#c47a38]/12 text-[#9a5a22]',
-  none: 'border-[#cbc8bf] bg-[#cbc8bf]/25 text-[#4a4844]',
+  butterflies: ACCENT_ACTIVE,
+  koi: POLLEN_ACTIVE,
+  hummingbirds: POLLEN_ACTIVE,
+  petals: ACCENT_ACTIVE,
+  comets: ACCENT_ACTIVE,
+  turtles: POLLEN_ACTIVE,
+  rain: SOFT_ACTIVE,
+  snow: SOFT_ACTIVE,
+  jellyfish: ACCENT_ACTIVE,
+  none: SOFT_ACTIVE,
 };
 
 export default function MoodPanel() {
@@ -154,12 +188,17 @@ export default function MoodPanel() {
                             : 'bg-[#fffef0] border-[#e5e2de] text-[#1a1a1a] hover:border-[#a84432]/40'
                         }`}
                       >
-                        <span className={`w-2.5 h-2.5 shrink-0 rounded-full ${MODE_DOTS[option]}`} aria-hidden="true" />
+                        <span
+                          className={`w-2.5 h-2.5 shrink-0 rounded-full ${MODE_DOTS[option]}`}
+                          aria-hidden="true"
+                        />
                         <span className="min-w-0">
                           <span className="block font-serif text-sm leading-none">
                             {t(ui.mood[MODE_LABELS[option]])}
                           </span>
-                          <span className={`block mt-1 font-mono text-[8px] leading-none tracking-wide ${isActive ? 'opacity-70' : 'text-[#888]'}`}>
+                          <span
+                            className={`block mt-1 font-mono text-[8px] leading-none tracking-wide ${isActive ? 'opacity-70' : 'text-[#888]'}`}
+                          >
                             {t(ui.mood[MODE_HINTS[option]])}
                           </span>
                         </span>
