@@ -14,7 +14,9 @@ interface ErrorBoundaryState {
 // contexto (una caida puede venir justo de ahi). Se resuelve desde la URL:
 // /en/... cae en ingles, el resto en espanol.
 function langFromUrl(): 'es' | 'en' {
-  return typeof window !== 'undefined' && /^\/en(\/|$)/.test(window.location.pathname) ? 'en' : 'es';
+  return typeof window !== 'undefined' && /^\/en(\/|$)/.test(window.location.pathname)
+    ? 'en'
+    : 'es';
 }
 
 export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { Link } from 'react-router-dom';
+import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
 import { useMood } from '../lib/mood/context';
@@ -69,6 +71,7 @@ export default function MoodPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const t = useT();
+  const { lang } = useLanguage();
   const { mode, setMode } = useMood();
 
   useFocusTrap(panelRef, isOpen);
@@ -106,7 +109,6 @@ export default function MoodPanel() {
         <button
           type="button"
           onClick={togglePanel}
-          aria-label={t(ui.mood.ariaLabel)}
           aria-expanded={isOpen}
           aria-controls="mood-panel"
           id="mood-trigger"
@@ -116,6 +118,7 @@ export default function MoodPanel() {
           <span className="font-mono text-[9px] md:text-[10px] tracking-widest text-[#1a1a1a] font-medium">
             {t(ui.mood.label)}
           </span>
+          <span className="sr-only"> — {t(ui.mood.ariaLabel)}</span>
         </button>
       </div>
 
@@ -206,6 +209,30 @@ export default function MoodPanel() {
                     );
                   })}
                 </div>
+              </section>
+
+              <section className="border-t border-[#1a1a1a]/10 pt-3">
+                <Link
+                  to={localizePath('/zen', lang)}
+                  onClick={closePanel}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-sm border bg-[#fffef0] border-[#e5e2de] text-[#1a1a1a] hover:border-[#a84432]/40 transition-all"
+                >
+                  <span
+                    className="w-2.5 h-2.5 shrink-0 rounded-full bg-[#c47a38]"
+                    aria-hidden="true"
+                  />
+                  <span className="min-w-0">
+                    <span className="block font-serif text-sm leading-none">
+                      {t(ui.zen.moodEntry)}
+                    </span>
+                    <span className="block mt-1 font-mono text-[8px] leading-none tracking-wide text-[#888]">
+                      {t(ui.zen.moodEntryHint)}
+                    </span>
+                  </span>
+                  <span aria-hidden="true" className="ml-auto font-mono text-[10px] text-[#a84432]">
+                    ↗
+                  </span>
+                </Link>
               </section>
             </div>
           </motion.div>

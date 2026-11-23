@@ -91,6 +91,24 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.gonzalodanielvega.com/zen</loc>
+        <xhtml:link rel="alternate" hreflang="es" href="https://www.gonzalodanielvega.com/zen" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.gonzalodanielvega.com/en/zen" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.gonzalodanielvega.com/zen" />
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.gonzalodanielvega.com/en/zen</loc>
+        <xhtml:link rel="alternate" hreflang="es" href="https://www.gonzalodanielvega.com/zen" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.gonzalodanielvega.com/en/zen" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.gonzalodanielvega.com/zen" />
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.gonzalodanielvega.com/proyectos/brunn-studio</loc>
         <xhtml:link rel="alternate" hreflang="es" href="https://www.gonzalodanielvega.com/proyectos/brunn-studio" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.gonzalodanielvega.com/en/proyectos/brunn-studio" />

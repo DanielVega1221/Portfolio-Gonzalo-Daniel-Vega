@@ -11,11 +11,10 @@ import { formatEntryDate, readingTimeLabel } from '../lib/journalMeta';
 export default function Journal() {
   const { lang } = useLanguage();
   const t = useT();
-  const entries = useMemo(() =>
-    [...journalEntries].sort((a, b) =>
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    ),
-    []
+  const entries = useMemo(
+    () =>
+      [...journalEntries].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+    [],
   );
 
   const isEmpty = entries.length === 0;
@@ -30,7 +29,9 @@ export default function Journal() {
     >
       <section id="journal-view" className="space-y-16">
         <div className="max-w-3xl space-y-4">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.journal.chapter)}</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">
+            {t(ui.journal.chapter)}
+          </p>
           <h1 className="text-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#1a1a1a] tracking-tight leading-tight">
             {t(ui.journal.title)}
           </h1>
@@ -42,16 +43,12 @@ export default function Journal() {
         {isEmpty ? (
           <div className="border-t border-[#1a1a1a]/10 pt-20 pb-24 text-center">
             <BookOpen className="mx-auto text-[#a84432]/30 mb-4" size={40} />
-            <p className="font-serif text-xl text-[#777] font-light">
-              {t(ui.journal.comingSoon)}
-            </p>
-            <p className="font-mono text-sm text-[#888] mt-2">
-              {t(ui.journal.comingSoonSub)}
-            </p>
+            <p className="font-serif text-xl text-[#777] font-light">{t(ui.journal.comingSoon)}</p>
+            <p className="font-mono text-sm text-[#888] mt-2">{t(ui.journal.comingSoonSub)}</p>
           </div>
         ) : entries.length === 1 ? (
           <div className="border-t border-[#1a1a1a]/10">
-            {entries.map(entry => (
+            {entries.map((entry) => (
               <article
                 key={entry.id}
                 className="py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start group"
@@ -60,9 +57,15 @@ export default function Journal() {
                   <div className="text-[#a84432] font-bold uppercase tracking-widest flex items-center gap-1.5">
                     <span>{t(ui.journal.noteLabel)}001</span>
                   </div>
-                  <p className="font-semibold text-[#444] uppercase">{lang === 'en' && entry.categoryEn ? entry.categoryEn : entry.category}</p>
-                  <p className="flex items-center gap-1"><Calendar size={11} /> {formatEntryDate(entry.date, lang)}</p>
-                  <p className="flex items-center gap-1"><Clock size={11} /> {readingTimeLabel(entry, lang)}</p>
+                  <p className="font-semibold text-[#444] uppercase">
+                    {lang === 'en' && entry.categoryEn ? entry.categoryEn : entry.category}
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <Calendar size={11} /> {formatEntryDate(entry.date, lang)}
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <Clock size={11} /> {readingTimeLabel(entry, lang)}
+                  </p>
                 </div>
 
                 <div className="lg:col-span-9 space-y-4">
@@ -103,11 +106,20 @@ export default function Journal() {
               >
                 <div className="lg:col-span-3 font-mono text-xs text-[#555] space-y-1.5">
                   <div className="text-[#a84432] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                    <span>{t(ui.journal.noteLabel)}{String(entries.length - idx).padStart(3, '0')}</span>
+                    <span>
+                      {t(ui.journal.noteLabel)}
+                      {String(entries.length - idx).padStart(3, '0')}
+                    </span>
                   </div>
-                  <p className="font-semibold text-[#444] uppercase">{lang === 'en' && entry.categoryEn ? entry.categoryEn : entry.category}</p>
-                  <p className="flex items-center gap-1"><Calendar size={11} /> {formatEntryDate(entry.date, lang)}</p>
-                  <p className="flex items-center gap-1"><Clock size={11} /> {readingTimeLabel(entry, lang)}</p>
+                  <p className="font-semibold text-[#444] uppercase">
+                    {lang === 'en' && entry.categoryEn ? entry.categoryEn : entry.category}
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <Calendar size={11} /> {formatEntryDate(entry.date, lang)}
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <Clock size={11} /> {readingTimeLabel(entry, lang)}
+                  </p>
                 </div>
 
                 <div className="lg:col-span-9 space-y-4">

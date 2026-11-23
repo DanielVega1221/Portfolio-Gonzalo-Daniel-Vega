@@ -17,7 +17,9 @@ class AnalogSynth {
 
   private initCtx() {
     if (!this.ctx) {
-      const AudioCtor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      const AudioCtor =
+        window.AudioContext ??
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (AudioCtor) this.ctx = new AudioCtor();
     }
     if (this.ctx && this.ctx.state === 'suspended') {
@@ -32,20 +34,22 @@ class AnalogSynth {
       const ctx = this.ctx!;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      
+
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(140, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.05);
-      
+
       gain.gain.setValueAtTime(0.08, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-      
+
       osc.connect(gain);
       gain.connect(ctx.destination);
-      
+
       osc.start();
       osc.stop(ctx.currentTime + 0.05);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   playHeavyClick() {
@@ -55,20 +59,22 @@ class AnalogSynth {
       const ctx = this.ctx!;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      
+
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(80, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.12);
-      
+
       gain.gain.setValueAtTime(0.18, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-      
+
       osc.connect(gain);
       gain.connect(ctx.destination);
-      
+
       osc.start();
       osc.stop(ctx.currentTime + 0.12);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   playInsert() {
@@ -76,30 +82,32 @@ class AnalogSynth {
     try {
       this.initCtx();
       const ctx = this.ctx!;
-      
+
       // Spring mechanical click
       const osc1 = ctx.createOscillator();
       const osc2 = ctx.createOscillator();
       const gain = ctx.createGain();
-      
+
       osc1.frequency.setValueAtTime(95, ctx.currentTime);
       osc1.frequency.linearRampToValueAtTime(45, ctx.currentTime + 0.14);
-      
+
       osc2.frequency.setValueAtTime(180, ctx.currentTime);
       osc2.frequency.linearRampToValueAtTime(70, ctx.currentTime + 0.09);
-      
+
       gain.gain.setValueAtTime(0.2, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-      
+
       osc1.connect(gain);
       osc2.connect(gain);
       gain.connect(ctx.destination);
-      
+
       osc1.start();
       osc2.start();
       osc1.stop(ctx.currentTime + 0.15);
       osc2.stop(ctx.currentTime + 0.15);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   playEject() {
@@ -107,22 +115,24 @@ class AnalogSynth {
     try {
       this.initCtx();
       const ctx = this.ctx!;
-      
+
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      
+
       osc.frequency.setValueAtTime(260, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.1);
-      
+
       gain.gain.setValueAtTime(0.12, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-      
+
       osc.connect(gain);
       gain.connect(ctx.destination);
-      
+
       osc.start();
       osc.stop(ctx.currentTime + 0.1);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   startHiss() {
@@ -131,45 +141,49 @@ class AnalogSynth {
       this.initCtx();
       const ctx = this.ctx!;
       if (this.hissSource) return;
-      
+
       const bufferSize = 2 * ctx.sampleRate;
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const output = noiseBuffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
         output[i] = Math.random() * 2 - 1;
       }
-      
+
       const noiseNode = ctx.createBufferSource();
       noiseNode.buffer = noiseBuffer;
       noiseNode.loop = true;
-      
+
       const filter = ctx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(1000, ctx.currentTime);
-      
+
       const bpf = ctx.createBiquadFilter();
       bpf.type = 'bandpass';
       bpf.frequency.setValueAtTime(450, ctx.currentTime);
       bpf.Q.setValueAtTime(0.4, ctx.currentTime);
-      
+
       this.hissGain = ctx.createGain();
       this.hissGain.gain.setValueAtTime(0.003, ctx.currentTime); // subtle, ambient
-      
+
       noiseNode.connect(filter);
       filter.connect(bpf);
       bpf.connect(this.hissGain);
       this.hissGain.connect(ctx.destination);
-      
+
       noiseNode.start();
       this.hissSource = noiseNode;
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   stopHiss() {
     if (this.hissSource) {
       try {
         this.hissSource.stop();
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       this.hissSource = null;
       this.hissGain = null;
     }
@@ -186,7 +200,9 @@ class AnalogSynth {
         void this.ctx.close();
         this.ctx = null;
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 }
 
@@ -279,7 +295,7 @@ export default function StudioTapes() {
     const savedVolume = safeGet('st_volume');
 
     if (savedTapeId) {
-      const tape = studioTapes.find(t => t.id === savedTapeId);
+      const tape = studioTapes.find((t) => t.id === savedTapeId);
       if (tape) {
         setActiveTape(tape);
         setTapeFromMood(false);
@@ -341,7 +357,9 @@ export default function StudioTapes() {
     const audio = audioRef.current;
     if (!audio || _wiredElement === audio) return;
 
-    const AudioCtor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    const AudioCtor =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AudioCtor) return;
 
     try {
@@ -445,7 +463,7 @@ export default function StudioTapes() {
   useEffect(() => {
     if (!isPlaying || !activeTape || !audioError) return;
     const interval = setInterval(() => {
-      setCurrentTime(prev => {
+      setCurrentTime((prev) => {
         const next = prev + 1;
         if (next >= activeTape.durationSeconds) {
           setIsPlaying(false);
@@ -582,8 +600,8 @@ export default function StudioTapes() {
   return (
     <>
       {/* Hidden audio tag */}
-      <audio 
-        ref={audioRef} 
+      <audio
+        ref={audioRef}
         onTimeUpdate={() => {
           if (audioRef.current) {
             setCurrentTime(audioRef.current.currentTime);
@@ -620,23 +638,22 @@ export default function StudioTapes() {
             setIsOpen(true);
           }}
           className="relative flex items-center gap-2 md:gap-2.5 bg-[#f9f7f2] hover:bg-[#fffef0] border border-[#e5e2de] hover:border-[#1a1a1a]/20 px-2.5 md:px-3.5 py-2 md:py-2.5 rounded-sm shadow-xs transition-all duration-300 group"
-          aria-label="Abrir Studio Tapes"
           id="studio-tapes-trigger"
         >
           {/* Subtle spinning indicator when playing */}
           <div className="relative w-3.5 md:w-4 h-2 md:h-2.5 flex items-center justify-between border border-[#1a1a1a]/60 px-0.5 rounded-[1px]">
-            <motion.div 
+            <motion.div
               animate={isPlaying ? { rotate: 360 } : {}}
               transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
               className="w-1 h-1 rounded-full border-t border-r border-[#1a1a1a]/60"
             />
-            <motion.div 
+            <motion.div
               animate={isPlaying ? { rotate: 360 } : {}}
               transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
               className="w-1 h-1 rounded-full border-t border-r border-[#1a1a1a]/60"
             />
           </div>
-          
+
           <span className="font-mono text-[9px] md:text-[10px] tracking-widest text-[#1a1a1a] font-medium">
             {isPlaying ? t(ui.studioTapes.playing) : t(ui.studioTapes.tapes)}
           </span>
@@ -646,6 +663,7 @@ export default function StudioTapes() {
               {activeTape.subtitle}
             </span>
           )}
+          <span className="sr-only"> — {t(ui.studioTapes.openAction)}</span>
         </button>
       </div>
 
@@ -671,8 +689,10 @@ export default function StudioTapes() {
             {/* Wooden top-lip or paper craft border accent */}
             <div className="h-1 bg-[#a84432]" />
 
-            <div className="max-w-5xl mx-auto p-3 md:p-5 space-y-3 md:space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(85vh - 4px)' }}>
-              
+            <div
+              className="max-w-5xl mx-auto p-3 md:p-5 space-y-3 md:space-y-5 overflow-y-auto"
+              style={{ maxHeight: 'calc(85vh - 4px)' }}
+            >
               {/* Drawer Header */}
               <div className="flex justify-between items-center border-b border-[#1a1a1a]/10 pb-2 md:pb-3">
                 <div className="space-y-0.5">
@@ -705,7 +725,6 @@ export default function StudioTapes() {
 
               {/* Grid content: Player Deck on top for mobile, side-by-side on desktop */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-                
                 {/* Mobile-first: Player Deck first (so drop target is visible) */}
                 <div className="md:col-span-5 md:order-last space-y-3.5">
                   <span className="font-mono text-[9px] text-[#a84432] font-semibold tracking-wider block">
@@ -720,15 +739,17 @@ export default function StudioTapes() {
                     {/* Display window */}
                     <div className="bg-[#0b0a09] border border-[#2d2824] p-2.5 md:p-3 rounded-sm font-mono text-[10px] text-amber-400 space-y-1.5 md:space-y-2 shadow-[inset_0_2px_8px_rgba(0,0,0,0.95)] relative">
                       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,13,0)_95%,rgba(0,0,0,0.35)_95%)] bg-[size:100%_4px] pointer-events-none rounded-sm" />
-                      
+
                       <div className="flex justify-between items-center text-[8px] text-amber-600/60 uppercase tracking-widest font-semibold">
                         <span>{t(ui.studioTapes.signal)}</span>
                         <span className="flex items-center gap-1">
-                          <span className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-amber-400 animate-pulse shadow-[0_0_6px_#f59e0b]' : 'bg-neutral-800'}`} />
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-amber-400 animate-pulse shadow-[0_0_6px_#f59e0b]' : 'bg-neutral-800'}`}
+                          />
                           {isPlaying ? t(ui.studioTapes.play) : t(ui.studioTapes.standby)}
                         </span>
                       </div>
-                      
+
                       {activeTape ? (
                         <div className="space-y-1">
                           <div className="text-amber-300 font-bold uppercase truncate tracking-wide text-xs">
@@ -755,7 +776,7 @@ export default function StudioTapes() {
                         </div>
                       ) : (
                         <div className="text-center text-amber-700/40 py-2 uppercase tracking-widest text-[9px] font-bold">
-                            {t(ui.studioTapes.noTape)}
+                          {t(ui.studioTapes.noTape)}
                         </div>
                       )}
 
@@ -770,13 +791,13 @@ export default function StudioTapes() {
                     </div>
 
                     {/* Cassette Entry Slot */}
-                    <div 
+                    <div
                       id="cassette-slot"
                       className={`relative h-16 md:h-20 rounded-xs border transition-all duration-300 flex items-center justify-center overflow-hidden ${
-                        isOverSlot 
-                          ? 'border-[#a84432] bg-[#a84432]/10 scale-102 shadow-[0_0_12px_rgba(168,68,50,0.2)]' 
-                          : activeTape 
-                            ? 'border-[#2d2d2d] bg-[#0c0b0a]' 
+                        isOverSlot
+                          ? 'border-[#a84432] bg-[#a84432]/10 scale-102 shadow-[0_0_12px_rgba(168,68,50,0.2)]'
+                          : activeTape
+                            ? 'border-[#2d2d2d] bg-[#0c0b0a]'
                             : 'border-dashed border-[#3a3530] bg-[#11100f] hover:bg-[#151413]'
                       }`}
                     >
@@ -786,7 +807,7 @@ export default function StudioTapes() {
 
                       <AnimatePresence mode="wait">
                         {isInserting ? (
-                          <motion.div 
+                          <motion.div
                             initial={{ y: -50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: 50, opacity: 0 }}
@@ -795,13 +816,14 @@ export default function StudioTapes() {
                             {t(ui.studioTapes.inserting)}
                           </motion.div>
                         ) : activeTape ? (
-                          <motion.div 
+                          <motion.div
                             initial={{ opacity: 0, scale: 0.96 }}
                             animate={{ opacity: 1, scale: 1 }}
                             className="absolute inset-1.5 md:inset-2 rounded-xs border border-white/5 p-2 flex items-center justify-between shadow-inner"
-                            style={{ 
+                            style={{
                               backgroundColor: activeTape.coverColor,
-                              backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.05), transparent)' 
+                              backgroundImage:
+                                'linear-gradient(to bottom, rgba(255,255,255,0.05), transparent)',
                             }}
                           >
                             <div className="text-left pl-1">
@@ -815,7 +837,7 @@ export default function StudioTapes() {
 
                             <div className="flex items-center gap-2 md:gap-3.5 mr-0.5 md:mr-1">
                               <div className="relative w-6 h-6 md:w-8 md:h-8 rounded-full border border-black/30 bg-black/50 flex items-center justify-center">
-                                <motion.div 
+                                <motion.div
                                   animate={isPlaying && !isDrawerAnimating ? { rotate: 360 } : {}}
                                   transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                   className="w-4 md:w-5 h-4 md:h-5 rounded-full border-t border-r border-b border-dashed border-white/30"
@@ -823,7 +845,7 @@ export default function StudioTapes() {
                                 <div className="absolute inset-2 md:inset-2.5 bg-[#0c0b0a] rounded-full border border-white/10" />
                               </div>
                               <div className="relative w-6 h-6 md:w-8 md:h-8 rounded-full border border-black/30 bg-black/50 flex items-center justify-center">
-                                <motion.div 
+                                <motion.div
                                   animate={isPlaying && !isDrawerAnimating ? { rotate: 360 } : {}}
                                   transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                   className="w-4 md:w-5 h-4 md:h-5 rounded-full border-t border-r border-b border-dashed border-white/30"
@@ -853,65 +875,117 @@ export default function StudioTapes() {
                           <span>{t(ui.studioTapes.timeRemaining)}</span>
                         </div>
                         <div className="relative h-1 bg-[#1c1a18] rounded-full overflow-hidden border border-neutral-900 shadow-inner">
-                          <div 
+                          <div
                             className="h-full bg-amber-500 shadow-[0_0_6px_#f59e0b] transition-all duration-300"
-                            style={{ width: `${((audioDuration > 0 ? currentTime / audioDuration : currentTime / activeTape.durationSeconds) * 100) || 0}%` }}
+                            style={{
+                              width: `${(audioDuration > 0 ? currentTime / audioDuration : currentTime / activeTape.durationSeconds) * 100 || 0}%`,
+                            }}
                           />
                         </div>
                         <div className="flex justify-between font-mono text-[8px] md:text-[9px] text-amber-500/90 font-bold">
                           <span>{formatTime(currentTime)}</span>
-                          <span>-{formatTime(Math.max(0, (audioDuration > 0 ? audioDuration : activeTape.durationSeconds) - currentTime))}</span>
+                          <span>
+                            -
+                            {formatTime(
+                              Math.max(
+                                0,
+                                (audioDuration > 0 ? audioDuration : activeTape.durationSeconds) -
+                                  currentTime,
+                              ),
+                            )}
+                          </span>
                         </div>
                       </div>
                     )}
 
                     {/* Control Buttons */}
                     <div className="grid grid-cols-4 gap-1.5 md:gap-2 pt-1 md:pt-1.5">
-                      <button onClick={handlePlay} disabled={!activeTape || isPlaying}
+                      <button
+                        onClick={handlePlay}
+                        disabled={!activeTape || isPlaying}
                         type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
-                          isPlaying ? 'bg-amber-950/60 text-amber-400 border-amber-600/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-0.5 font-bold' 
-                          : activeTape ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white' 
-                          : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
+                          isPlaying
+                            ? 'bg-amber-950/60 text-amber-400 border-amber-600/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-0.5 font-bold'
+                            : activeTape
+                              ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white'
+                              : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
                         }`}
-                      ><span className={`text-[7px] md:text-[8px] ${isPlaying ? 'text-amber-400' : 'text-[#a84432]'}`}>▲</span> {t(ui.studioTapes.playBtn)}</button>
+                      >
+                        <span
+                          className={`text-[7px] md:text-[8px] ${isPlaying ? 'text-amber-400' : 'text-[#a84432]'}`}
+                        >
+                          ▲
+                        </span>{' '}
+                        {t(ui.studioTapes.playBtn)}
+                      </button>
 
-                      <button onClick={handlePause} disabled={!activeTape || !isPlaying}
+                      <button
+                        onClick={handlePause}
+                        disabled={!activeTape || !isPlaying}
                         type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
-                          !isPlaying && activeTape && currentTime > 0 ? 'bg-amber-950/60 text-amber-400 border-amber-600/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-0.5 font-bold' 
-                          : activeTape && isPlaying ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white'
-                          : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
+                          !isPlaying && activeTape && currentTime > 0
+                            ? 'bg-amber-950/60 text-amber-400 border-amber-600/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-0.5 font-bold'
+                            : activeTape && isPlaying
+                              ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white'
+                              : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
                         }`}
-                      ><span className="text-[7px] md:text-[8px] text-amber-500">❚❚</span> {t(ui.studioTapes.pauseBtn)}</button>
+                      >
+                        <span className="text-[7px] md:text-[8px] text-amber-500">❚❚</span>{' '}
+                        {t(ui.studioTapes.pauseBtn)}
+                      </button>
 
-                      <button onClick={handleStop} disabled={!activeTape}
+                      <button
+                        onClick={handleStop}
+                        disabled={!activeTape}
                         type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
-                          activeTape ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white' 
-                          : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
+                          activeTape
+                            ? 'bg-[#282522] text-[#e5e2de] border-[#3d3732] hover:bg-[#332e2a] hover:border-[#4d443b] active:translate-y-0.5 shadow-md hover:text-white'
+                            : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
                         }`}
-                      ><span className="text-[6px] md:text-[7px]">■</span> {t(ui.studioTapes.stopBtn)}</button>
+                      >
+                        <span className="text-[6px] md:text-[7px]">■</span>{' '}
+                        {t(ui.studioTapes.stopBtn)}
+                      </button>
 
-                      <button onClick={handleEject} disabled={!activeTape}
+                      <button
+                        onClick={handleEject}
+                        disabled={!activeTape}
                         type="button"
                         className={`py-1.5 md:py-2 px-1.5 md:px-2.5 rounded-xs font-mono text-[8px] md:text-[9px] font-semibold tracking-wider border uppercase transition-all flex items-center justify-center gap-0.5 md:gap-1 ${
-                          activeTape ? 'bg-[#3a1a16] text-[#ffa399] border-[#5d2b22] hover:bg-[#4d211c] hover:border-[#703328] active:translate-y-0.5 shadow-md' 
-                          : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
+                          activeTape
+                            ? 'bg-[#3a1a16] text-[#ffa399] border-[#5d2b22] hover:bg-[#4d211c] hover:border-[#703328] active:translate-y-0.5 shadow-md'
+                            : 'bg-[#151413] text-neutral-700 border-[#1c1a19] cursor-not-allowed'
                         }`}
-                      ><span className="text-[7px] md:text-[8px]">⏏</span> {t(ui.studioTapes.ejectBtn)}</button>
+                      >
+                        <span className="text-[7px] md:text-[8px]">⏏</span>{' '}
+                        {t(ui.studioTapes.ejectBtn)}
+                      </button>
                     </div>
 
                     {/* Volume Slider */}
                     <div className="flex items-center gap-2 md:gap-4 pt-2 md:pt-3 border-t border-[#23201d]">
-                      <span className="font-mono text-[7px] md:text-[8px] text-neutral-500 tracking-widest uppercase font-bold whitespace-nowrap">VOL</span>
+                      <span className="font-mono text-[7px] md:text-[8px] text-neutral-500 tracking-widest uppercase font-bold whitespace-nowrap">
+                        VOL
+                      </span>
                       <div className="flex-1 flex items-center gap-1.5 md:gap-2">
-                        <span className="font-mono text-[7px] md:text-[8px] text-neutral-600 font-bold">0</span>
-                        <input type="range" min="0" max="1" step="0.05" value={volume}
+                        <span className="font-mono text-[7px] md:text-[8px] text-neutral-600 font-bold">
+                          0
+                        </span>
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.05"
+                          value={volume}
                           onChange={(e) => setVolume(parseFloat(e.target.value))}
                           className="flex-1 h-1 bg-[#1e1c1a] rounded-full appearance-none cursor-pointer accent-[#a84432]"
                         />
-                        <span className="font-mono text-[7px] md:text-[8px] text-neutral-600 font-bold">10</span>
+                        <span className="font-mono text-[7px] md:text-[8px] text-neutral-600 font-bold">
+                          10
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -924,9 +998,7 @@ export default function StudioTapes() {
                       <span className="hidden md:inline">{t(ui.studioTapes.tray)}</span>
                       <span className="md:hidden">{t(ui.studioTapes.trayMobile)}</span>
                     </span>
-                    <span className="font-mono text-[8px] text-[#888]">
-                      {studioTapes.length}
-                    </span>
+                    <span className="font-mono text-[8px] text-[#888]">{studioTapes.length}</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 bg-[#fffef0] border border-[#e5e2de] p-2 md:p-3 rounded-sm">
@@ -946,8 +1018,8 @@ export default function StudioTapes() {
                           tabIndex={0}
                           aria-label={`${t(ui.a11y.insertTape)}: ${tape.subtitle}`}
                           className={`relative p-3 md:p-4 rounded-sm border transition-all duration-300 select-none cursor-pointer ${
-                            isActive 
-                              ? 'border-[#a84432]/40 opacity-50 bg-[#1a1a1a]/5' 
+                            isActive
+                              ? 'border-[#a84432]/40 opacity-50 bg-[#1a1a1a]/5'
                               : 'border-[#e5e2de] hover:border-[#1a1a1a]/20 shadow-2xs hover:shadow-xs'
                           }`}
                           style={{ backgroundColor: tape.coverColor + '10' }}
@@ -969,18 +1041,22 @@ export default function StudioTapes() {
                             </div>
 
                             {/* Little physical cassettes visualization - Draggable on desktop, clickable always */}
-                            <motion.div 
+                            <motion.div
                               drag={!isMobile}
                               dragSnapToOrigin
                               onDragStart={() => synth.playClick()}
                               onDrag={handleDragUpdate}
                               onDragEnd={(e, info) => handleDragEnd(info, tape)}
-                              whileDrag={!isMobile ? { 
-                                rotate: 4, 
-                                scale: 1.08, 
-                                zIndex: 50,
-                                boxShadow: "0 15px 35px rgba(0,0,0,0.25)"
-                              } : undefined}
+                              whileDrag={
+                                !isMobile
+                                  ? {
+                                      rotate: 4,
+                                      scale: 1.08,
+                                      zIndex: 50,
+                                      boxShadow: '0 15px 35px rgba(0,0,0,0.25)',
+                                    }
+                                  : undefined
+                              }
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleInsertTape(tape);
@@ -992,8 +1068,12 @@ export default function StudioTapes() {
                               <div className="absolute inset-x-1.5 md:inset-x-2 inset-y-1 md:inset-y-1.5 bg-[#f9f7f2] rounded-xs flex items-center justify-around px-1.5 md:px-2 border border-[#1a1a1a]/10 pointer-events-none">
                                 {/* Left Reel */}
                                 <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border border-[#1a1a1a]/20 bg-[#fffef0] flex items-center justify-center">
-                                  <motion.div 
-                                    animate={isPlaying && isActive && !isDrawerAnimating ? { rotate: 360 } : {}}
+                                  <motion.div
+                                    animate={
+                                      isPlaying && isActive && !isDrawerAnimating
+                                        ? { rotate: 360 }
+                                        : {}
+                                    }
                                     transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                     className="w-2.5 md:w-3 h-2.5 md:h-3 rounded-full border-t border-b border-l border-[#1a1a1a]/50"
                                   />
@@ -1003,8 +1083,12 @@ export default function StudioTapes() {
                                 </span>
                                 {/* Right Reel */}
                                 <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border border-[#1a1a1a]/20 bg-[#fffef0] flex items-center justify-center">
-                                  <motion.div 
-                                    animate={isPlaying && isActive && !isDrawerAnimating ? { rotate: 360 } : {}}
+                                  <motion.div
+                                    animate={
+                                      isPlaying && isActive && !isDrawerAnimating
+                                        ? { rotate: 360 }
+                                        : {}
+                                    }
                                     transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                                     className="w-2.5 md:w-3 h-2.5 md:h-3 rounded-full border-t border-b border-l border-[#1a1a1a]/50"
                                   />
@@ -1013,7 +1097,9 @@ export default function StudioTapes() {
                             </motion.div>
 
                             <p className="text-[9px] md:text-[10px] text-[#555] font-light leading-snug italic">
-                              {lang === 'en' && tape.descriptionEn ? tape.descriptionEn : tape.description}
+                              {lang === 'en' && tape.descriptionEn
+                                ? tape.descriptionEn
+                                : tape.description}
                             </p>
                           </div>
                         </div>
@@ -1021,9 +1107,7 @@ export default function StudioTapes() {
                     })}
                   </div>
                 </div>
-
               </div>
-
             </div>
           </motion.div>
         )}

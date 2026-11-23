@@ -31,6 +31,20 @@ export const ui = {
     cv: { es: 'CV', en: 'CV' },
   },
 
+  // ── Cierre de casos de estudio y notas ──
+  outro: {
+    title: {
+      es: '¿Querés ver cómo trabajo en equipo?',
+      en: 'Want to see how I work on a team?',
+    },
+    desc: {
+      es: 'Busco un rol Full Stack remoto, pero también me interesa un proyecto con contexto real. Si estás armando equipo o necesitás ayuda, hablemos.',
+      en: "I'm looking for a remote Full Stack role, but I'm also interested in a project with real context. If you're building a team or need help, let's talk.",
+    },
+    contact: { es: 'Escribirme', en: 'Get in touch' },
+    linkedin: { es: 'Ver LinkedIn', en: 'View LinkedIn' },
+  },
+
   // ── Home ──
   home: {
     edition: { es: 'Portfolio 2026', en: 'Portfolio 2026' },
@@ -41,8 +55,8 @@ export const ui = {
     },
     heroTag: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
     heroBody: {
-      es: '5 proyectos con clientes reales. Decisiones, límites y resultados documentados.',
-      en: '5 projects with real clients. Decisions, limits and results documented.',
+      es: 'Busco incorporarme a un equipo Full Stack remoto (LATAM / internacional). 5 proyectos con clientes reales: decisiones, límites y resultados documentados.',
+      en: 'Looking for a remote Full Stack role (LATAM / international teams). 5 projects with real clients: decisions, limits and results documented.',
     },
     exchange: { es: 'PROYECTOS DESTACADOS', en: 'FEATURED PROJECTS' },
     exchangeDesc: {
@@ -85,7 +99,13 @@ export const ui = {
       en: 'React · Next.js · TypeScript · Node.js · Tailwind CSS',
     },
     downloadCV: { es: 'Descargar CV', en: 'Download CV' },
-    available: { es: 'Disponible para trabajar', en: 'Available for work' },
+    available: { es: 'Disponible para incorporarme', en: 'Available to join a team' },
+    remote: {
+      es: 'REMOTO LATAM / INTERNACIONAL',
+      en: 'REMOTE — LATAM / INTERNATIONAL',
+    },
+    timezone: { es: 'GMT-3 (ARGENTINA)', en: 'GMT-3 (ARGENTINA)' },
+    workingEnglish: { es: 'INGLÉS DE TRABAJO', en: 'WORKING ENGLISH' },
     experienceText: {
       es: 'UXnicorp — 2024 al presente — 5 clientes reales. Full Stack Developer.',
       en: 'UXnicorp — 2024 to present — 5 real clients. Full Stack Developer.',
@@ -126,10 +146,15 @@ export const ui = {
       es: 'Arranqué con proyectos chicos para la facultad. Hoy construyo productos digitales para empresas y profesionales dentro de UXnicorp. Diseño, programo, hablo con clientes y gestiono el equipo.',
       en: 'I started with small university projects. Today I build digital products for businesses and professionals at UXnicorp. I design, code, talk to clients, and manage the team.',
     },
-    section00Card3Title: { es: 'Disponibilidad', en: 'Availability' },
+    section00Card3Title: { es: 'Qué busco', en: "What I'm looking for" },
     section00Card3Text: {
-      es: 'Trabajo remoto desde Catamarca. Abierto a oportunidades presenciales si el proyecto lo amerita. Me mueve la gente con la que trabajo y los problemas que puedo ayudar a resolver.',
-      en: "I work remotely from Catamarca. Open to on-site opportunities if the project is worth it. I'm driven by the people I work with and the problems I can help solve.",
+      es: 'Busco incorporarme a un equipo Full Stack remoto para LATAM o proyectos internacionales, con foco en producto. Trabajo desde GMT-3 (Argentina) y estoy disponible para empezar.',
+      en: "I'm looking for a Full Stack role on a remote LATAM or international team, with a product focus. I work from GMT-3 (Argentina) and am available to start.",
+    },
+    section00Card4Title: { es: 'Idiomas', en: 'Languages' },
+    section00Card4Text: {
+      es: 'Inglés de trabajo: entiendo y escribo con soltura y participo en reuniones técnicas sin problema. La fluidez al hablar es lo que sigo mejorando.',
+      en: "Working English: I read and write comfortably and take part in technical calls. Speaking fluency is what I'm still polishing.",
     },
     section01: { es: 'UXNICORP', en: 'UXNICORP' },
     section01Title: {
@@ -253,8 +278,35 @@ export const ui = {
     chapter: { es: 'CAPÍTULO V — DIÁLOGO HONESTO', en: 'CHAPTER V — HONEST CONVERSATION' },
     title: { es: 'Establezcamos una conversación', en: "Let's start a conversation" },
     desc: {
-      es: 'Si tenés una idea, un problema complejo de negocio, o simplemente una forma parecida de ver el desarrollo de producto, escribime. Leo todo personalmente.',
-      en: 'If you have an idea, a complex business problem, or just a similar way of looking at product development, write to me. I read everything personally.',
+      es: 'Dos caminos: si estás armando equipo, escribime directo; si tenés un proyecto, contame qué querés resolver. Leo todo personalmente.',
+      en: 'Two ways in: if you are building a team, reach out directly; if you have a project, tell me what you want to solve. I read everything personally.',
+    },
+    hiringLabel: {
+      es: 'PARA RECRUITERS Y EQUIPOS',
+      en: 'FOR RECRUITERS AND TEAMS',
+    },
+    hiringTitle: {
+      es: '¿Buscás sumar alguien al equipo?',
+      en: 'Looking to add someone to your team?',
+    },
+    hiringDesc: {
+      es: 'Soy Full Stack Developer, trabajo remoto para LATAM y equipos internacionales, desde GMT-3 (Argentina). Disponible para incorporarme.',
+      en: "I'm a Full Stack Developer working remotely for LATAM and international teams, from GMT-3 (Argentina). Available to join.",
+    },
+    hiringEmail: { es: 'Email', en: 'Email' },
+    hiringLinkedIn: { es: 'LinkedIn', en: 'LinkedIn' },
+    hiringCv: { es: 'Descargar CV', en: 'Download CV' },
+    freelancerLabel: {
+      es: 'PARA PROYECTOS FREELANCE',
+      en: 'FOR FREELANCE PROJECTS',
+    },
+    freelancerTitle: {
+      es: '¿Tenés un problema que resolver?',
+      en: 'Have a problem to solve?',
+    },
+    freelancerDesc: {
+      es: 'Contame el contexto, cómo funciona hoy y qué resultado buscás. Respondo en 24–48 hs hábiles.',
+      en: 'Tell me the context, how it works today and what outcome you need. I reply within 24–48 business hours.',
     },
     reasonLabel: { es: 'Quiero escribir porque:', en: 'I want to write because:' },
     // `key` es estable y es lo que viaja al servidor: el backend decide qué
@@ -488,6 +540,7 @@ export const ui = {
     },
     player: { es: 'REPRODUCTOR ANALÓGICO', en: 'ANALOG PLAYER' },
     noFile: { es: '⚠ Archivo no encontrado — simulando', en: '⚠ File not found — simulating' },
+    openAction: { es: 'Abrir Studio Tapes', en: 'Open Studio Tapes' },
     playBtn: { es: 'Play', en: 'Play' },
     pauseBtn: { es: 'Pause', en: 'Pause' },
     stopBtn: { es: 'Stop', en: 'Stop' },
@@ -530,6 +583,133 @@ export const ui = {
     },
     none: { es: 'Nada', en: 'None' },
     noneHint: { es: 'Solo papel, sin criaturas', en: 'Paper only, no creatures' },
+  },
+
+  // ── Estanque Zen (/zen): juguete interactivo, no un caso de estudio ──
+  zen: {
+    chapter: { es: 'APÉNDICE — UN DESCANSO', en: 'APPENDIX — A BREATHER' },
+    title: {
+      es: 'Un estanque para bajar el ritmo',
+      en: 'A pond to slow down',
+    },
+    controlsTitle: { es: 'CÓMO JUGAR', en: 'HOW TO PLAY' },
+    control1: {
+      es: 'Tocá el agua para lanzar la boya.',
+      en: 'Tap the water to cast the bobber.',
+    },
+    control2: {
+      es: 'Esperá el pique y tocá rápido: si no clavás a tiempo, perdés un intento.',
+      en: 'Wait for the bite and tap fast: miss the hook-up and you lose an attempt.',
+    },
+    control3: {
+      es: 'Cuando picó, mantené para subir la zona verde y soltá para bajarla: el Koi se mueve solo y la pesca avanza mientras lo cubrís.',
+      en: 'Once hooked, hold to raise the green zone and release to lower it: the koi moves on its own and the catch advances while it stays covered.',
+    },
+    control4: {
+      es: 'Pescá las 4 variedades de Koi: cada patrón —tranquilo, ondulante, ascendente o juguetón— se siente distinto en la barra.',
+      en: 'Catch all 4 koi varieties: each pattern —calm, wavy, rising or playful— feels different on the bar.',
+    },
+    valuesTitle: {
+      es: 'CUÁNTO VALE CADA KOI',
+      en: 'WHAT EACH KOI IS WORTH',
+    },
+    valuesNote: {
+      es: 'Puntos base. Tamaño, racha y captura perfecta (x1.5) suman extra si mantenés al Koi en la zona verde.',
+      en: 'Base points. Size, streak and a perfect catch (x1.5) add on top when you keep the koi in the green zone.',
+    },
+    keyboard: {
+      es: 'En teclado: barra espaciadora, Flecha arriba o W para lanzar y clavar; mantené para subir la zona verde.',
+      en: 'On keyboard: spacebar, Up arrow or W to cast and set the hook; hold to raise the green zone.',
+    },
+    pondLabel: { es: 'Estanque de Koi interactivo', en: 'Interactive koi pond' },
+    backProjects: { es: 'Ver proyectos', en: 'View projects' },
+    moodEntry: { es: 'Entrar al estanque', en: 'Step into the pond' },
+    moodEntryHint: {
+      es: 'Versión jugable del fondo Koi',
+      en: 'Playable version of the Koi backdrop',
+    },
+    score: { es: 'Puntos', en: 'Points' },
+    record: { es: 'Récord', en: 'Best' },
+    newRecord: { es: 'NUEVO', en: 'NEW' },
+    streak: { es: 'Racha', en: 'Streak' },
+    lures: {
+      es: 'Intentos restantes · perdés uno si no clavás o si el pez se suelta',
+      en: 'Attempts left · lose one if you miss the bite or the fish gets away',
+    },
+    species: {
+      es: 'Variedades de Koi que pescaste. Hay 4 en total.',
+      en: 'Koi varieties you have caught. There are 4 in total.',
+    },
+    speciesFound: { es: 'pescada', en: 'caught' },
+    speciesHidden: { es: 'aún no pescada', en: 'not caught yet' },
+    caughtPrefix: { es: 'Pescaste un', en: 'You caught a' },
+    reset: { es: 'Reiniciar', en: 'Reset' },
+    resetNotice: {
+      es: 'Todo reiniciado: puntaje, intentos y Koi pescados',
+      en: 'Everything reset: score, attempts and koi caught',
+    },
+    missedBite: {
+      es: 'No clavaste a tiempo · perdiste un intento',
+      en: 'Too slow to set the hook · you lost an attempt',
+    },
+    fishEscaped: {
+      es: 'El pez se soltó · perdiste un intento',
+      en: 'The fish got away · you lost an attempt',
+    },
+    catchProgress: { es: 'Avance de pesca', en: 'Catch progress' },
+    luresShort: { es: 'Intentos', en: 'Attempts' },
+    reelingHint: {
+      es: 'Mantené para subir la zona verde · soltá para bajar',
+      en: 'Hold to raise the green zone · release to lower it',
+    },
+    greenZone: { es: 'ZONA VERDE', en: 'GREEN ZONE' },
+    fishMarker: { es: 'KOI', en: 'KOI' },
+    perfect: { es: '★ PERFECTA', en: '★ PERFECT' },
+    perfectShort: { es: '★ x1.5', en: '★ x1.5' },
+    reelBarLabel: {
+      es: 'Zona verde y posición del Koi durante la pesca',
+      en: 'Green zone and koi position while reeling',
+    },
+    behaviorCalm: { es: 'Tranquilo', en: 'Calm' },
+    behaviorSmooth: { es: 'Ondulante', en: 'Wavy' },
+    behaviorRiser: { es: 'Ascendente', en: 'Rising' },
+    behaviorDart: { es: 'Juguetón', en: 'Playful' },
+    idle: {
+      es: 'Tocá el agua para lanzar la boya',
+      en: 'Tap the water to cast the bobber',
+    },
+    casting: { es: 'Lanzando…', en: 'Casting…' },
+    waiting: {
+      es: 'Esperando tranquilo… (tocá de nuevo para mover la boya)',
+      en: 'Waiting quietly… (tap again to move the bobber)',
+    },
+    nibble: { es: 'Un Koi se acerca curioso…', en: 'A koi is curious…' },
+    bite: { es: '¡Picó! Tocá la pantalla ahora', en: 'Bite! Tap the screen now' },
+    biteCanvas: { es: '¡PICÓ!', en: 'BITE!' },
+    tooEarly: {
+      es: 'Casi… esperaba un segundo más',
+      en: 'Close… one more second next time',
+    },
+    lostFish: {
+      es: 'Se soltó suave · probá soltar cuando tira',
+      en: 'It slipped away · try letting go when it pulls',
+    },
+    session: { es: 'SESIÓN DE PESCA', en: 'FISHING SESSION' },
+    newRecordTitle: { es: '¡Nuevo récord!', en: 'New best!' },
+    restTitle: { es: 'Buen descanso', en: 'Nice break' },
+    pointsShort: { es: 'Puntaje', en: 'Score' },
+    bestRecord: { es: 'Mejor récord', en: 'Personal best' },
+    caught: { es: 'Atrapados', en: 'Caught' },
+    speciesShort: { es: 'Koi pescados', en: 'Koi caught' },
+    bestCatchEver: { es: 'Mayor captura histórica:', en: 'Best catch ever:' },
+    playAgain: { es: 'Pescar de nuevo', en: 'Fish again' },
+    canvasLabel: {
+      es: 'Estanque Koi interactivo para pescar. Tocá para lanzar, mantené para recoger.',
+      en: 'Interactive koi pond for fishing. Tap to cast, hold to reel.',
+    },
+    sizeSmall: { es: 'Chico', en: 'Small' },
+    sizeMedium: { es: 'Mediano', en: 'Medium' },
+    sizeLarge: { es: 'Grande', en: 'Large' },
   },
 
   // ── Journal ──
@@ -587,7 +767,10 @@ export const ui = {
  */
 export const criteriaLabels: Record<CriteriaLevel, { es: string; en: string }> = {
   'Demo Conceptual': { es: 'Demo conceptual', en: 'Conceptual demo' },
-  'Demo Funcional': { es: 'Demo funcional', en: 'Functional demo' },
+  'Demo Funcional': {
+    es: 'Demo funcional / Prueba de concepto',
+    en: 'Functional demo / Proof of concept',
+  },
   'Herramienta Interna': { es: 'Herramienta interna', en: 'Internal tool' },
   'Herramienta Personal': { es: 'Herramienta personal', en: 'Personal tool' },
   'Recurso Abierto': { es: 'Recurso abierto', en: 'Open resource' },

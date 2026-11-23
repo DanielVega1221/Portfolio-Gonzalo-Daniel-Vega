@@ -14,24 +14,27 @@
 
 export const GALLERY_COUNTS: Record<string, number> = {
   'brunn-studio': 3,
-  'lumen': 3,
-  'marea': 3,
+  lumen: 3,
+  marea: 3,
   'stro-atelier': 3,
   'zabira-studio': 3,
   'content-studio': 3,
   'uxnicorp-academy': 3,
   'la-pagina-de-uxnicorp': 3,
-  'myvisor': 3,
-  'electropower': 3,
+  myvisor: 3,
+  electropower: 3,
   'jimena-vilte': 3,
-  'patagenda': 3,
-  'ducksale': 3,
+  patagenda: 3,
+  ducksale: 3,
   'comercial-rio-hondo': 3,
-  'isdep': 3,
+  isdep: 3,
 };
 
 /** Rutas de las capturas de un proyecto, en orden. Vacío si no tiene galería. */
 export function galleryImages(projectId: string): string[] {
   const count = GALLERY_COUNTS[projectId] ?? 0;
-  return Array.from({ length: count }, (_, i) => `/projects/${projectId}/${String(i + 1).padStart(2, '0')}.webp`);
+  return Array.from(
+    { length: count },
+    (_, i) => `/projects/${projectId}/${String(i + 1).padStart(2, '0')}.webp`,
+  );
 }

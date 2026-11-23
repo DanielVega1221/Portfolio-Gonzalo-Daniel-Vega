@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion } from 'motion/react';
-import { Check, AlertTriangle } from 'lucide-react';
+import { Check, AlertTriangle, Mail, Linkedin, Download } from 'lucide-react';
 import { useT } from '../i18n/useT';
 import { useLanguage } from '../i18n/useLanguage';
 import { ui } from '../i18n/translations';
+import { profile, absoluteCvDownloadUrl } from '../data/profile';
 
 export default function Contact() {
   const [contactName, setContactName] = useState('');
@@ -11,7 +12,9 @@ export default function Contact() {
   const [contactEmail, setContactEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(
+    null,
+  );
   const feedbackTimerRef = useRef<number | null>(null);
   const honeypotRef = useRef<HTMLInputElement | null>(null);
   const t = useT();
@@ -79,7 +82,10 @@ export default function Contact() {
       setContactEmail('');
       setContactMessage('');
     } catch (err) {
-      setFeedback({ type: 'error', text: err instanceof Error ? err.message : t(ui.contact.errorGeneric) });
+      setFeedback({
+        type: 'error',
+        text: err instanceof Error ? err.message : t(ui.contact.errorGeneric),
+      });
     } finally {
       setIsSubmitting(false);
       armFeedbackTimer();
@@ -96,7 +102,9 @@ export default function Contact() {
     >
       <section id="contact-view" className="max-w-xl mx-auto space-y-12">
         <div className="space-y-4 text-center">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.contact.chapter)}</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">
+            {t(ui.contact.chapter)}
+          </p>
           <h1 className="text-serif text-3xl md:text-4xl font-light text-[#1a1a1a] tracking-tight leading-tight">
             {t(ui.contact.title)}
           </h1>
@@ -105,13 +113,64 @@ export default function Contact() {
           </p>
         </div>
 
+        <div className="bg-[#1a1a1a] text-[#f9f7f2] border border-[#1a1a1a] p-8 md:p-10 rounded-sm shadow-xs space-y-6">
+          <div className="space-y-3">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-[#e8a99c] font-bold">
+              {t(ui.contact.hiringLabel)}
+            </p>
+            <h2 className="text-serif text-2xl md:text-3xl font-light tracking-tight leading-tight">
+              {t(ui.contact.hiringTitle)}
+            </h2>
+            <p className="text-sm text-[#d8d4ca] font-light leading-relaxed">
+              {t(ui.contact.hiringDesc)}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <a
+              href={`mailto:${profile.email}`}
+              className="inline-flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-wider border border-[#f9f7f2]/25 hover:border-[#e8a99c] px-3 py-2.5 rounded-sm transition-colors"
+            >
+              <Mail size={13} aria-hidden="true" /> {t(ui.contact.hiringEmail)}
+            </a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-wider border border-[#f9f7f2]/25 hover:border-[#e8a99c] px-3 py-2.5 rounded-sm transition-colors"
+            >
+              <Linkedin size={13} aria-hidden="true" /> {t(ui.contact.hiringLinkedIn)}
+            </a>
+            <a
+              href={absoluteCvDownloadUrl(lang)}
+              className="inline-flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-wider bg-[#a84432] hover:bg-[#a84432]/90 px-3 py-2.5 rounded-sm transition-colors"
+            >
+              <Download size={13} aria-hidden="true" /> {t(ui.contact.hiringCv)}
+            </a>
+          </div>
+        </div>
+
+        <div className="space-y-3 pt-2">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-[#a84432] font-bold">
+            {t(ui.contact.freelancerLabel)}
+          </p>
+          <h2 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
+            {t(ui.contact.freelancerTitle)}
+          </h2>
+          <p className="text-sm text-[#555] font-light leading-relaxed">
+            {t(ui.contact.freelancerDesc)}
+          </p>
+        </div>
+
         <div className="bg-[#fffef0] border border-[#e5e2de] p-8 md:p-12 rounded-sm shadow-xs relative">
           {feedback && (
-            <div className={`mb-6 p-4 rounded-sm text-xs font-mono flex items-center gap-2 ${
-              feedback.type === 'success'
-                ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                : 'bg-red-50 border border-red-200 text-red-800'
-            }`}>
+            <div
+              className={`mb-6 p-4 rounded-sm text-xs font-mono flex items-center gap-2 ${
+                feedback.type === 'success'
+                  ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                  : 'bg-red-50 border border-red-200 text-red-800'
+              }`}
+            >
               {feedback.type === 'success' ? <Check size={14} /> : <AlertTriangle size={14} />}
               {feedback.text}
             </div>
@@ -119,7 +178,9 @@ export default function Contact() {
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-3">
-              <label className="font-mono text-sm text-[#666] uppercase tracking-wider block">{t(ui.contact.reasonLabel)}</label>
+              <label className="font-mono text-sm text-[#666] uppercase tracking-wider block">
+                {t(ui.contact.reasonLabel)}
+              </label>
               <div className="flex flex-wrap gap-2">
                 {ui.contact.reasons.map((reason, idx) => (
                   <button
@@ -139,7 +200,12 @@ export default function Contact() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="contact-name" className="font-mono text-sm text-[#666] uppercase tracking-wider block">{t(ui.contact.nameLabel)}</label>
+              <label
+                htmlFor="contact-name"
+                className="font-mono text-sm text-[#666] uppercase tracking-wider block"
+              >
+                {t(ui.contact.nameLabel)}
+              </label>
               <input
                 type="text"
                 id="contact-name"
@@ -151,7 +217,12 @@ export default function Contact() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="contact-email" className="font-mono text-sm text-[#666] uppercase tracking-wider block">{t(ui.contact.emailLabel)}</label>
+              <label
+                htmlFor="contact-email"
+                className="font-mono text-sm text-[#666] uppercase tracking-wider block"
+              >
+                {t(ui.contact.emailLabel)}
+              </label>
               <input
                 type="email"
                 id="contact-email"
@@ -164,7 +235,12 @@ export default function Contact() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="contact-message" className="font-mono text-sm text-[#666] uppercase tracking-wider block">{t(ui.contact.messageLabel)}</label>
+              <label
+                htmlFor="contact-message"
+                className="font-mono text-sm text-[#666] uppercase tracking-wider block"
+              >
+                {t(ui.contact.messageLabel)}
+              </label>
               <textarea
                 id="contact-message"
                 required
@@ -191,7 +267,10 @@ export default function Contact() {
                 lo descarta sin enviar nada. Va fuera de pantalla y no se marca
                 como autocomplete porque un autocompletador legítimo lo llenaría
                 y descartaría el mensaje de verdad. */}
-            <div aria-hidden="true" className="absolute left-[-9999px] top-0 h-0 w-0 overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="absolute left-[-9999px] top-0 h-0 w-0 overflow-hidden"
+            >
               <label htmlFor="contact-website">Website</label>
               <input
                 id="contact-website"
@@ -219,7 +298,9 @@ export default function Contact() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-[#25D366] text-white px-6 py-3 rounded-sm font-mono text-xs uppercase tracking-wider font-semibold hover:bg-[#20bd5a] transition-colors"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
             {t(ui.contact.casualBtn)}
           </a>
         </div>
@@ -229,12 +310,8 @@ export default function Contact() {
             {t(ui.contact.bottomTitle)}
           </h3>
           <div className="space-y-2">
-            <p className="font-sans text-sm text-[#555] leading-relaxed">
-              {t(ui.contact.bottom1)}
-            </p>
-            <p className="font-sans text-sm text-[#555] leading-relaxed">
-              {t(ui.contact.bottom2)}
-            </p>
+            <p className="font-sans text-sm text-[#555] leading-relaxed">{t(ui.contact.bottom1)}</p>
+            <p className="font-sans text-sm text-[#555] leading-relaxed">{t(ui.contact.bottom2)}</p>
             <p className="font-sans text-sm text-[#555] leading-relaxed pt-2">
               {t(ui.contact.bottom3)}
             </p>

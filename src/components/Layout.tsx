@@ -192,7 +192,7 @@ export default function Layout() {
               type="button"
               onClick={toggleLang}
               className="font-mono text-xs uppercase tracking-wider text-[#555] hover:text-[#a84432] transition-colors cursor-pointer ml-2"
-              aria-label={t(ui.nav.switchLang)}
+              aria-label={`${lang === 'es' ? 'EN' : 'ES'} — ${t(ui.nav.switchLang)}`}
             >
               {lang === 'es' ? 'EN' : 'ES'}
             </button>
@@ -235,6 +235,13 @@ export default function Layout() {
             >
               {t(ui.footer.cv)}
             </a>
+            <span>•</span>
+            <Link
+              to={localizePath('/zen', lang)}
+              className="hover:text-[#a84432] transition-colors"
+            >
+              ZEN
+            </Link>
             <span>•</span>
             <a href={`mailto:${profile.email}`} className="hover:text-[#a84432] transition-colors">
               EMAIL

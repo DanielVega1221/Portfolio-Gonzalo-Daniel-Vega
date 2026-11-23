@@ -7,6 +7,7 @@ export const PAGES = [
   '/journal',
   '/sobre-mi',
   '/dialogo',
+  '/zen',
 ];
 
 export const PROJECTS = [

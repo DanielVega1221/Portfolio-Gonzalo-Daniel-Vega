@@ -10,7 +10,7 @@
 #
 # El script es best-effort a proposito: si un nombre de paquete no existe en la
 # imagen, se ignora en vez de tumbar el build. La verificacion real la hace
-# scripts/prerender.mjs, que valida cada una de las 48 rutas y falla si Chromium
+# scripts/prerender.mjs, que valida cada una de las 50 rutas y falla si Chromium
 # no arranca o el HTML sale incompleto.
 #
 # No-op fuera de Linux (build local en Windows/macOS).

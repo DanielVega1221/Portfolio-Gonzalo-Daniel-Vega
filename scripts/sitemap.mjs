@@ -7,7 +7,7 @@ const BASE = site.url.replace(/\/+$/, '');
 
 /**
  * `lastmod` no es la fecha del build. Con `new Date()`, cada despliegue
- * reescribía las 48 fechas, así que Google veía que todas las páginas cambiaban
+ * reescribía las 50 fechas, así que Google veía que todas las páginas cambiaban
  * en cada push aunque el contenido fuera idéntico. Va la fecha del último
  * commit que tocó contenido publicable; si no hay git (build en tarball) cae al
  * build date, que es mejor que romper.
@@ -32,13 +32,17 @@ const LASTMOD = lastmod();
 // otherwise its og:image would 404 in the prerendered HTML.
 function verifyCovers() {
   const dir = 'public/projects';
-  const missing = PROJECTS.filter(id => {
+  const missing = PROJECTS.filter((id) => {
     if (NO_COVER_PROJECTS.has(id)) return false;
     return !existsSync(`${dir}/${id}.jpg`);
   });
   if (missing.length > 0) {
-    console.error(`ERROR: project cover(s) missing or not declared in NO_COVER_PROJECTS: ${missing.join(', ')}`);
-    console.error('Add the cover as public/projects/<id>.jpg, or declare it in scripts/routes.mjs NO_COVER_PROJECTS.');
+    console.error(
+      `ERROR: project cover(s) missing or not declared in NO_COVER_PROJECTS: ${missing.join(', ')}`,
+    );
+    console.error(
+      'Add the cover as public/projects/<id>.jpg, or declare it in scripts/routes.mjs NO_COVER_PROJECTS.',
+    );
     process.exit(1);
   }
 }
@@ -59,7 +63,7 @@ function verifyGalleries() {
 
   const declared = new Map();
   for (const line of block[1].split('\n')) {
-    const match = line.match(/^\s*'([^']+)'\s*:\s*(\d+)\s*,?\s*$/);
+    const match = line.match(/^\s*'?([A-Za-z0-9-]+)'?\s*:\s*(\d+)\s*,?\s*$/);
     if (match) declared.set(match[1], Number(match[2]));
   }
 
@@ -91,8 +95,8 @@ verifyGalleries();
 
 const esPaths = [
   ...PAGES,
-  ...PROJECTS.map(p => `/proyectos/${p}`),
-  ...JOURNAL.map(j => `/journal/${j}`),
+  ...PROJECTS.map((p) => `/proyectos/${p}`),
+  ...JOURNAL.map((j) => `/journal/${j}`),
 ];
 
 function urlEntry(path) {

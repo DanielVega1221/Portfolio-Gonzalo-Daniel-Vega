@@ -22,37 +22,43 @@ export default function Portfolio() {
   const { lang } = useLanguage();
   const t = useT();
 
-  const filterOptions = useMemo(() => [
-    { id: 'all' as const, label: t(ui.portfolio.filters.all) },
-    { id: 'personal' as const, label: t(ui.portfolio.filters.personal) },
-    { id: 'tool' as const, label: t(ui.portfolio.filters.tool) },
-    { id: 'real' as const, label: t(ui.portfolio.filters.real) },
-    { id: 'particular' as const, label: t(ui.portfolio.filters.particular) },
-    { id: 'career' as const, label: t(ui.portfolio.filters.career) },
-  ], [t]);
+  const filterOptions = useMemo(
+    () => [
+      { id: 'all' as const, label: t(ui.portfolio.filters.all) },
+      { id: 'personal' as const, label: t(ui.portfolio.filters.personal) },
+      { id: 'tool' as const, label: t(ui.portfolio.filters.tool) },
+      { id: 'real' as const, label: t(ui.portfolio.filters.real) },
+      { id: 'particular' as const, label: t(ui.portfolio.filters.particular) },
+      { id: 'career' as const, label: t(ui.portfolio.filters.career) },
+    ],
+    [t],
+  );
 
-  const typeLabelMap: Record<CaseStudy['type'], string> = useMemo(() => ({
-    personal: t(ui.portfolio.filters.personal),
-    tool: t(ui.portfolio.filters.tool),
-    real: t(ui.portfolio.filters.real),
-    particular: t(ui.portfolio.filters.particular),
-    career: t(ui.portfolio.filters.career),
-  }), [t]);
+  const typeLabelMap: Record<CaseStudy['type'], string> = useMemo(
+    () => ({
+      personal: t(ui.portfolio.filters.personal),
+      tool: t(ui.portfolio.filters.tool),
+      real: t(ui.portfolio.filters.real),
+      particular: t(ui.portfolio.filters.particular),
+      career: t(ui.portfolio.filters.career),
+    }),
+    [t],
+  );
 
-  const allProjects = useMemo(() =>
-    caseStudies.map(p => lang === 'en' ? (getProjectEn(p.id) || p) : p),
-    [lang]
+  const allProjects = useMemo(
+    () => caseStudies.map((p) => (lang === 'en' ? getProjectEn(p.id) || p : p)),
+    [lang],
   );
 
   const filteredProjects = useMemo(() => {
-    return allProjects.filter(project => {
+    return allProjects.filter((project) => {
       const matchesType = typeFilter === 'all' || project.type === typeFilter;
       const query = searchQuery.toLowerCase();
       const matchesSearch =
         project.title.toLowerCase().includes(query) ||
         project.subtitle.toLowerCase().includes(query) ||
         project.tagline.toLowerCase().includes(query) ||
-        project.tools.some(t => t.toLowerCase().includes(query)) ||
+        project.tools.some((t) => t.toLowerCase().includes(query)) ||
         project.pointOfDeparture.toLowerCase().includes(query) ||
         project.investigation.toLowerCase().includes(query);
       return matchesType && matchesSearch;
@@ -61,7 +67,7 @@ export default function Portfolio() {
 
   const shownProjects = useMemo(
     () => filteredProjects.slice(0, displayCount),
-    [filteredProjects, displayCount]
+    [filteredProjects, displayCount],
   );
 
   const hasMore = displayCount < filteredProjects.length;
@@ -78,7 +84,9 @@ export default function Portfolio() {
     >
       <section id="portfolio-view" className="space-y-16">
         <div className="max-w-3xl space-y-4">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.portfolio.chapter)}</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">
+            {t(ui.portfolio.chapter)}
+          </p>
           <h1 className="text-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#1a1a1a] tracking-tight leading-tight">
             {t(ui.portfolio.title)}
           </h1>
@@ -89,18 +97,18 @@ export default function Portfolio() {
 
         <div className="border-t border-b border-[#1a1a1a]/10 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
           <div className="md:col-span-5 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a84432]" size={16} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  resetDisplay();
-                }}
-                placeholder={t(ui.portfolio.searchPlaceholder)}
-                aria-label={t(ui.portfolio.searchLabel)}
-                className="w-full bg-[#fffef0] border border-[#e5e2de] pl-10 pr-4 py-2.5 text-sm font-mono rounded-sm focus:outline-none focus:border-[#a84432] text-[#1a1a1a] transition-colors"
-              />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a84432]" size={16} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                resetDisplay();
+              }}
+              placeholder={t(ui.portfolio.searchPlaceholder)}
+              aria-label={t(ui.portfolio.searchLabel)}
+              className="w-full bg-[#fffef0] border border-[#e5e2de] pl-10 pr-4 py-2.5 text-sm font-mono rounded-sm focus:outline-none focus:border-[#a84432] text-[#1a1a1a] transition-colors"
+            />
           </div>
 
           <div className="md:col-span-7 flex flex-wrap gap-2 justify-start md:justify-end">
@@ -170,9 +178,13 @@ export default function Portfolio() {
 
                 <div className="lg:col-span-6 space-y-6">
                   <div className="flex items-center gap-3 font-mono text-[11px] text-[#666] uppercase tracking-widest">
-                    <span className="font-bold text-[#a84432]">{t(ui.portfolio.chapterLabel)} {project.chapterNumber}</span>
+                    <span className="font-bold text-[#a84432]">
+                      {t(ui.portfolio.chapterLabel)} {project.chapterNumber}
+                    </span>
                     <span>•</span>
-                    <span>{t(ui.portfolio.yearLabel)} {project.year}</span>
+                    <span>
+                      {t(ui.portfolio.yearLabel)} {project.year}
+                    </span>
                     <span>•</span>
                     <span className="text-[#444] font-semibold">{typeLabelMap[project.type]}</span>
                   </div>
@@ -191,28 +203,43 @@ export default function Portfolio() {
                     {project.tagline}
                   </p>
 
-                  {project.metric && (() => {
-                    const antesMatch = project.metric.match(/Antes:\s*(.+?)(?:\s*Después:|\s*After:)/);
-                    const beforeMatch = project.metric.match(/Before:\s*(.+?)(?:\s*After:)/);
-                    const antes = antesMatch?.[1] || beforeMatch?.[1] || '';
-                    const despues = project.metric.split(/Despu.s:\s*|After:\s*/)[1]?.replace(/\.$/, '') || '';
-                    return (
-                      <div className="grid grid-cols-2 gap-2 pt-1">
-                        <div className="bg-red-50/50 border border-red-200/60 rounded-xs p-2">
-                          <span className="font-mono text-[10px] uppercase tracking-wider text-red-400 font-bold block mb-0.5">{t(ui.portfolio.before)}</span>
-                          <p className="font-mono text-[10px] text-[#666] leading-relaxed">{antes}</p>
+                  {project.metric &&
+                    (() => {
+                      const antesMatch = project.metric.match(
+                        /Antes:\s*(.+?)(?:\s*Después:|\s*After:)/,
+                      );
+                      const beforeMatch = project.metric.match(/Before:\s*(.+?)(?:\s*After:)/);
+                      const antes = antesMatch?.[1] || beforeMatch?.[1] || '';
+                      const despues =
+                        project.metric.split(/Despu.s:\s*|After:\s*/)[1]?.replace(/\.$/, '') || '';
+                      return (
+                        <div className="grid grid-cols-2 gap-2 pt-1">
+                          <div className="bg-red-50/50 border border-red-200/60 rounded-xs p-2">
+                            <span className="font-mono text-[10px] uppercase tracking-wider text-red-400 font-bold block mb-0.5">
+                              {t(ui.portfolio.before)}
+                            </span>
+                            <p className="font-mono text-[10px] text-[#666] leading-relaxed">
+                              {antes}
+                            </p>
+                          </div>
+                          <div className="bg-emerald-50/50 border border-emerald-200/60 rounded-xs p-2">
+                            <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-0.5">
+                              {t(ui.portfolio.after)}
+                            </span>
+                            <p className="font-mono text-[10px] text-emerald-800 leading-relaxed">
+                              {despues}
+                            </p>
+                          </div>
                         </div>
-                        <div className="bg-emerald-50/50 border border-emerald-200/60 rounded-xs p-2">
-                          <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-0.5">{t(ui.portfolio.after)}</span>
-                          <p className="font-mono text-[10px] text-emerald-800 leading-relaxed">{despues}</p>
-                        </div>
-                      </div>
-                    );
-                  })()}
+                      );
+                    })()}
 
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {project.tools.map(t => (
-                      <span key={t} className="text-[10px] font-mono bg-[#efede8] text-[#444] px-2 py-0.5 rounded-sm">
+                    {project.tools.map((t) => (
+                      <span
+                        key={t}
+                        className="text-[10px] font-mono bg-[#efede8] text-[#444] px-2 py-0.5 rounded-sm"
+                      >
                         {t}
                       </span>
                     ))}
@@ -253,7 +280,7 @@ export default function Portfolio() {
             <div className="flex justify-center pt-4">
               <button
                 type="button"
-                onClick={() => setDisplayCount(d => d + 6)}
+                onClick={() => setDisplayCount((d) => d + 6)}
                 className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#f9f7f2] bg-[#a84432] hover:bg-[#a84432]/90 px-6 py-3 rounded-sm transition-colors"
               >
                 {t(ui.portfolio.loadMore)}

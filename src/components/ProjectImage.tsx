@@ -27,7 +27,17 @@ const TYPE_LABELS: Record<CaseStudy['type'], keyof typeof ui.portfolio.filters> 
   career: 'career',
 };
 
-export default function ProjectImage({ title, subtitle, chapterNumber, type, projectId, url, screenshot, priority = false, className = '' }: ProjectImageProps) {
+export default function ProjectImage({
+  title,
+  subtitle,
+  chapterNumber,
+  type,
+  projectId,
+  url,
+  screenshot,
+  priority = false,
+  className = '',
+}: ProjectImageProps) {
   const t = useT();
   // `screenshot` cubre los proyectos sin sitio web publico; si no, la captura
   // automatica que vivia en la URL del proyecto.
@@ -38,7 +48,9 @@ export default function ProjectImage({ title, subtitle, chapterNumber, type, pro
   const showCover = screenshotPath !== null && !coverFailed;
 
   return (
-    <div className={`relative w-full aspect-[16/10] overflow-hidden bg-[#efede8] border border-[#e5e2de] rounded-sm group-hover:border-[#1a1a1a]/30 transition-colors ${className}`}>
+    <div
+      className={`relative w-full aspect-[16/10] overflow-hidden bg-[#efede8] border border-[#e5e2de] rounded-sm group-hover:border-[#1a1a1a]/30 transition-colors ${className}`}
+    >
       {showCover ? (
         <img
           src={screenshotPath}

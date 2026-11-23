@@ -1,8 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Calendar, CheckCircle2, AlertTriangle, RefreshCw, Award, Anchor, ExternalLink, FolderKanban, X } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  AlertTriangle,
+  RefreshCw,
+  Award,
+  Anchor,
+  ExternalLink,
+  FolderKanban,
+  X,
+} from 'lucide-react';
 import { caseStudies } from '../data/projects';
+import { profile } from '../data/profile';
 import { CaseStudy } from '../types';
 import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
@@ -16,10 +28,10 @@ export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
   const pid = id ?? '';
   const navigate = useNavigate();
-  const project = caseStudies.find(p => p.id === pid);
+  const project = caseStudies.find((p) => p.id === pid);
   const { lang } = useLanguage();
   const t = useT();
-  const projectData = (lang === 'en' ? (getProjectEn(pid) || project) : project) ?? null;
+  const projectData = (lang === 'en' ? getProjectEn(pid) || project : project) ?? null;
   const [showGallery, setShowGallery] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
@@ -57,7 +69,9 @@ export default function ProjectDetail() {
   if (!project || !projectData) {
     return (
       <div className="max-w-5xl mx-auto px-6 py-24 text-center">
-        <h1 className="font-serif text-3xl font-light text-[#1a1a1a] mb-4">{t(ui.projectDetail.notFound)}</h1>
+        <h1 className="font-serif text-3xl font-light text-[#1a1a1a] mb-4">
+          {t(ui.projectDetail.notFound)}
+        </h1>
         <button
           type="button"
           onClick={() => navigate(localizePath('/proyectos', lang))}
@@ -76,9 +90,10 @@ export default function ProjectDetail() {
     particular: t(ui.portfolio.filters.particular),
     career: t(ui.portfolio.filters.career),
   };
-  const badgeColor = projectData.type === 'personal'
-    ? 'border-[#a84432]/20 text-[#a84432] bg-[#a84432]/5'
-    : 'border-[#1a1a1a]/10 text-[#444] bg-[#1a1a1a]/5';
+  const badgeColor =
+    projectData.type === 'personal'
+      ? 'border-[#a84432]/20 text-[#a84432] bg-[#a84432]/5'
+      : 'border-[#1a1a1a]/10 text-[#444] bg-[#1a1a1a]/5';
   const onBack = () => navigate(localizePath('/proyectos', lang));
   const images = galleryImages(projectData.id);
   const totalImages = images.length;
@@ -107,15 +122,19 @@ export default function ProjectDetail() {
 
       <header className="space-y-6 mb-12">
         <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-[#777]">
-          <span className="text-[#a84432] font-semibold tracking-wider">{t(ui.portfolio.chapterLabel)} {projectData.chapterNumber}</span>
+          <span className="text-[#a84432] font-semibold tracking-wider">
+            {t(ui.portfolio.chapterLabel)} {projectData.chapterNumber}
+          </span>
           <span className="opacity-30">•</span>
           <span className="flex items-center gap-1">
             <Calendar size={12} className="opacity-70" /> {projectData.year}
           </span>
           <span className="opacity-30">•</span>
-           <span className={`px-2 py-0.5 border rounded-xs text-[10px] uppercase tracking-wider font-semibold ${badgeColor}`}>
-             {typeBadgeLabels[projectData.type]}
-           </span>
+          <span
+            className={`px-2 py-0.5 border rounded-xs text-[10px] uppercase tracking-wider font-semibold ${badgeColor}`}
+          >
+            {typeBadgeLabels[projectData.type]}
+          </span>
         </div>
 
         <h1 className="text-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-[#1a1a1a] leading-[1.05]">
@@ -126,27 +145,33 @@ export default function ProjectDetail() {
           {projectData.subtitle}
         </p>
 
-        {projectData.metric && (() => {
-          const antesMatch = projectData.metric.match(/Antes:\s*(.+?)(?:\s*Después:|\s*After:)/);
-          const beforeMatch = projectData.metric.match(/Before:\s*(.+?)(?:\s*After:)/);
-          const antes = antesMatch?.[1] || beforeMatch?.[1] || '';
-          const despues = projectData.metric.split(/Despu.s:\s*|After:\s*/)[1]?.replace(/\.$/, '') || '';
-          return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
-              <div className="bg-red-50/40 border border-red-200/50 rounded-xs p-5">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-red-400 font-bold block mb-1.5">{t(ui.portfolio.before)}</span>
-                <p className="font-mono text-sm text-[#666] leading-relaxed">{antes}</p>
-              </div>
-              <div className="bg-emerald-50/40 border border-emerald-200/50 rounded-xs p-5 relative">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-1.5">{t(ui.portfolio.after)}</span>
-                <p className="font-mono text-sm text-emerald-800 leading-relaxed">{despues}</p>
-                <div className="absolute -top-2 -right-2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-[10px] font-bold">✓</span>
+        {projectData.metric &&
+          (() => {
+            const antesMatch = projectData.metric.match(/Antes:\s*(.+?)(?:\s*Después:|\s*After:)/);
+            const beforeMatch = projectData.metric.match(/Before:\s*(.+?)(?:\s*After:)/);
+            const antes = antesMatch?.[1] || beforeMatch?.[1] || '';
+            const despues =
+              projectData.metric.split(/Despu.s:\s*|After:\s*/)[1]?.replace(/\.$/, '') || '';
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
+                <div className="bg-red-50/40 border border-red-200/50 rounded-xs p-5">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-red-400 font-bold block mb-1.5">
+                    {t(ui.portfolio.before)}
+                  </span>
+                  <p className="font-mono text-sm text-[#666] leading-relaxed">{antes}</p>
+                </div>
+                <div className="bg-emerald-50/40 border border-emerald-200/50 rounded-xs p-5 relative">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-1.5">
+                    {t(ui.portfolio.after)}
+                  </span>
+                  <p className="font-mono text-sm text-emerald-800 leading-relaxed">{despues}</p>
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-[10px] font-bold">✓</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })()}
+            );
+          })()}
 
         <div className="border-l-4 border-[#a84432] pl-6 py-2 my-8">
           <p className="text-xl md:text-2xl font-light text-[#2a2a2a] font-serif italic leading-relaxed text-halo-paper">
@@ -176,7 +201,9 @@ export default function ProjectDetail() {
         <div className="lg:col-span-8 space-y-16">
           <section className="space-y-4">
             <div className="flex items-center gap-3 mb-2">
-              <span className="font-mono text-xs font-semibold text-[#a84432]">{t(ui.projectDetail.sectionContext)}</span>
+              <span className="font-mono text-xs font-semibold text-[#a84432]">
+                {t(ui.projectDetail.sectionContext)}
+              </span>
               <div className="flex-1 h-[1px] bg-[#1a1a1a]/10"></div>
             </div>
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
@@ -189,7 +216,9 @@ export default function ProjectDetail() {
 
           <section className="space-y-4">
             <div className="flex items-center gap-3 mb-2">
-              <span className="font-mono text-xs font-semibold text-[#a84432]">{t(ui.projectDetail.sectionInvestigation)}</span>
+              <span className="font-mono text-xs font-semibold text-[#a84432]">
+                {t(ui.projectDetail.sectionInvestigation)}
+              </span>
               <div className="flex-1 h-[1px] bg-[#1a1a1a]/10"></div>
             </div>
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
@@ -198,10 +227,15 @@ export default function ProjectDetail() {
             <div className="text-[#333] leading-relaxed font-light space-y-4 whitespace-pre-line text-base md:text-lg reading-wash text-halo-paper">
               {projectData.investigation.split('\n\n').map((paragraph, index) => {
                 if (paragraph.trim().startsWith('-')) {
-                  const items = paragraph.split('\n').map(item => item.replace('-', '').trim());
+                  const items = paragraph.split('\n').map((item) => item.replace('-', '').trim());
                   return (
-                    <ul key={index} className="list-disc pl-6 space-y-2 text-[#444] leading-relaxed font-light my-6">
-                      {items.map((item, i) => <li key={i}>{item}</li>)}
+                    <ul
+                      key={index}
+                      className="list-disc pl-6 space-y-2 text-[#444] leading-relaxed font-light my-6"
+                    >
+                      {items.map((item, i) => (
+                        <li key={i}>{item}</li>
+                      ))}
                     </ul>
                   );
                 }
@@ -218,7 +252,9 @@ export default function ProjectDetail() {
             <div className="absolute top-4 right-6 font-mono text-[10px] uppercase tracking-widest text-[#a84432] font-semibold flex items-center gap-1">
               <Award size={12} /> {t(ui.projectDetail.insightRevealed)}
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#888] block mb-2">{t(ui.projectDetail.synthesis)}</span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#888] block mb-2">
+              {t(ui.projectDetail.synthesis)}
+            </span>
             <h4 className="text-serif text-xl md:text-2xl font-light text-[#1a1a1a] leading-relaxed italic mb-4">
               "{projectData.insight}"
             </h4>
@@ -230,7 +266,9 @@ export default function ProjectDetail() {
           {projectData.options && projectData.options.length > 0 && (
             <section className="space-y-6">
               <div className="flex items-center gap-3 mb-2">
-                <span className="font-mono text-xs font-semibold text-[#a84432]">{t(ui.projectDetail.sectionTactics)}</span>
+                <span className="font-mono text-xs font-semibold text-[#a84432]">
+                  {t(ui.projectDetail.sectionTactics)}
+                </span>
                 <div className="flex-1 h-[1px] bg-[#1a1a1a]/10"></div>
               </div>
               <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
@@ -241,9 +279,16 @@ export default function ProjectDetail() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                 {projectData.options.map((opt, idx) => (
-                  <div key={idx} className="bg-[#efede8]/40 border border-[#e5e2de]/80 p-5 rounded-xs space-y-2">
-                    <span className="font-mono text-[10px] text-[#a84432] font-bold uppercase tracking-wider block">{t(ui.projectDetail.option)} {idx + 1}</span>
-                    <h5 className="font-serif text-base font-semibold text-[#1a1a1a]">{opt.title}</h5>
+                  <div
+                    key={idx}
+                    className="bg-[#efede8]/40 border border-[#e5e2de]/80 p-5 rounded-xs space-y-2"
+                  >
+                    <span className="font-mono text-[10px] text-[#a84432] font-bold uppercase tracking-wider block">
+                      {t(ui.projectDetail.option)} {idx + 1}
+                    </span>
+                    <h5 className="font-serif text-base font-semibold text-[#1a1a1a]">
+                      {opt.title}
+                    </h5>
                     <p className="text-[#555] font-light text-xs leading-relaxed">{opt.text}</p>
                   </div>
                 ))}
@@ -253,7 +298,9 @@ export default function ProjectDetail() {
 
           <section className="space-y-4">
             <div className="flex items-center gap-3 mb-2">
-              <span className="font-mono text-xs font-semibold text-[#a84432]">{t(ui.projectDetail.sectionDetermination)}</span>
+              <span className="font-mono text-xs font-semibold text-[#a84432]">
+                {t(ui.projectDetail.sectionDetermination)}
+              </span>
               <div className="flex-1 h-[1px] bg-[#1a1a1a]/10"></div>
             </div>
             <h3 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
@@ -319,29 +366,41 @@ export default function ProjectDetail() {
 
             <div className="space-y-5 text-sm">
               <div>
-                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">{t(ui.projectDetail.project)}</span>
-                <p className="font-serif text-sm font-semibold text-[#1a1a1a]">{projectData.title}</p>
+                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">
+                  {t(ui.projectDetail.project)}
+                </span>
+                <p className="font-serif text-sm font-semibold text-[#1a1a1a]">
+                  {projectData.title}
+                </p>
               </div>
 
               <div>
-                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">{t(ui.projectDetail.rubro)}</span>
+                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">
+                  {t(ui.projectDetail.rubro)}
+                </span>
                 <p className="font-sans text-[#1a1a1a] font-medium">{projectData.subtitle}</p>
               </div>
 
               <div>
-                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">{t(ui.projectDetail.year)}</span>
+                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">
+                  {t(ui.projectDetail.year)}
+                </span>
                 <p className="font-sans text-[#1a1a1a] font-medium">{projectData.year}</p>
               </div>
 
               <div>
-                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">{t(ui.projectDetail.scope)}</span>
+                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">
+                  {t(ui.projectDetail.scope)}
+                </span>
                 <p className="font-sans text-[#a84432] font-semibold uppercase tracking-wider">
                   {projectData.criteriaLevel ? t(criteriaLabels[projectData.criteriaLevel]) : null}
                 </p>
               </div>
 
               <div className="pt-4 border-t border-[#1a1a1a]/10">
-                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-2">{t(ui.projectDetail.tools)}</span>
+                <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-2">
+                  {t(ui.projectDetail.tools)}
+                </span>
                 <div className="flex flex-wrap gap-1.5">
                   {projectData.tools.map((tool) => (
                     <span
@@ -356,10 +415,16 @@ export default function ProjectDetail() {
 
               {(projectData.url || projectData.repoFront || projectData.repoBack) && (
                 <div className="pt-4 border-t border-[#1a1a1a]/10 space-y-2">
-                  <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">{t(ui.projectDetail.links)}</span>
+                  <span className="font-mono text-[11px] text-[#555] uppercase tracking-wider block mb-1">
+                    {t(ui.projectDetail.links)}
+                  </span>
                   {projectData.url && (
-                    <a href={projectData.url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 font-mono text-[11px] text-[#a84432] hover:text-[#1a1a1a] font-semibold uppercase tracking-wider transition-colors">
+                    <a
+                      href={projectData.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 font-mono text-[11px] text-[#a84432] hover:text-[#1a1a1a] font-semibold uppercase tracking-wider transition-colors"
+                    >
                       <ExternalLink size={11} /> {t(ui.projectDetail.viewProject)}
                     </a>
                   )}
@@ -394,17 +459,45 @@ export default function ProjectDetail() {
           </div>
 
           <div className="bg-[#efede8]/60 p-6 rounded-sm border-l-2 border-[#a84432] space-y-3">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#a84432] font-semibold block">{t(ui.projectDetail.criteria)}</span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#a84432] font-semibold block">
+              {t(ui.projectDetail.criteria)}
+            </span>
             <p className="text-sm text-[#555] leading-relaxed font-light italic">
               "{projectData.criteriaInsight}"
             </p>
           </div>
 
           <div className="font-mono text-[10px] text-[#555] uppercase text-center tracking-widest pt-4">
-            {t(ui.projectDetail.register)}{projectData.id.toUpperCase()}
+            {t(ui.projectDetail.register)}
+            {projectData.id.toUpperCase()}
           </div>
         </aside>
       </div>
+
+      <section className="mt-16 bg-[#fffef0] border border-[#e5e2de] border-l-4 border-l-[#a84432] p-8 md:p-10 rounded-sm text-center space-y-4">
+        <h2 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
+          {t(ui.outro.title)}
+        </h2>
+        <p className="text-sm text-[#555] font-light leading-relaxed max-w-xl mx-auto">
+          {t(ui.outro.desc)}
+        </p>
+        <div className="flex flex-wrap justify-center gap-3 pt-2">
+          <Link
+            to={localizePath('/dialogo', lang)}
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#f9f7f2] bg-[#a84432] hover:bg-[#a84432]/90 px-4 py-2.5 rounded-sm transition-colors"
+          >
+            {t(ui.outro.contact)}
+          </Link>
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#a84432] border border-[#a84432] hover:bg-[#a84432]/5 px-4 py-2.5 rounded-sm transition-colors"
+          >
+            {t(ui.outro.linkedin)}
+          </a>
+        </div>
+      </section>
 
       {showGallery && (
         <div
@@ -414,11 +507,19 @@ export default function ProjectDetail() {
           aria-modal="true"
           aria-label={t(ui.projectDetail.galleryTitle)}
         >
-          <div ref={galleryRef} className="bg-[#fffef0] border border-[#e5e2de] rounded-sm p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
+          <div
+            ref={galleryRef}
+            className="bg-[#fffef0] border border-[#e5e2de] rounded-sm p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-6">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#a84432] font-semibold block">{t(ui.projectDetail.galleryTitle)}</span>
-                <h3 className="font-serif text-xl font-light text-[#1a1a1a]">{projectData.title}</h3>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-[#a84432] font-semibold block">
+                  {t(ui.projectDetail.galleryTitle)}
+                </span>
+                <h3 className="font-serif text-xl font-light text-[#1a1a1a]">
+                  {projectData.title}
+                </h3>
               </div>
               <button
                 type="button"
@@ -435,46 +536,46 @@ export default function ProjectDetail() {
                 const n = i + 1;
                 const failed = failedImages.has(n);
                 return (
-                <button
-                  key={src}
-                  type="button"
-                  disabled={failed}
-                  onClick={() => setLightboxIndex(i)}
-                  aria-label={`${t(ui.a11y.openImage)} ${projectData.title} ${String(n).padStart(2, '0')}`}
-                  className="aspect-[4/3] bg-[#efede8] border border-[#e5e2de] rounded-xs flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-[#a84432]/40 transition-colors group p-0 disabled:cursor-default disabled:hover:border-[#e5e2de]"
-                >
-                  <div className="absolute inset-0 bg-[#1a1a1a]/0 group-hover:bg-[#1a1a1a]/5 transition-colors z-10 flex items-center justify-center pointer-events-none">
-                    <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity font-mono text-[11px] uppercase tracking-wider bg-[#1a1a1a]/60 px-2 py-1 rounded-xs">
-                      {t(ui.projectDetail.amplify)}
-                    </span>
-                  </div>
-                  {!failed && (
-                    <img
-                      src={src}
-                      alt={`${projectData.title} — ${String(n).padStart(2, '0')}`}
-                      width={640}
-                      height={480}
-                      className="absolute inset-0 w-full h-full object-cover object-top"
-                      loading="lazy"
-                      decoding="async"
-                      onError={() =>
-                        setFailedImages(prev => {
-                          const next = new Set(prev);
-                          next.add(n);
-                          return next;
-                        })
-                      }
-                    />
-                  )}
-                  {failed && (
-                    <div className="text-center space-y-2 pointer-events-none">
-                      <FolderKanban size={24} className="text-[#1a1a1a]/15 mx-auto" />
-                      <p className="font-mono text-[10px] text-[#1a1a1a]/20 uppercase tracking-wider">
-                        {projectData.title} — {String(n).padStart(2, '0')}
-                      </p>
+                  <button
+                    key={src}
+                    type="button"
+                    disabled={failed}
+                    onClick={() => setLightboxIndex(i)}
+                    aria-label={`${t(ui.a11y.openImage)} ${projectData.title} ${String(n).padStart(2, '0')}`}
+                    className="aspect-[4/3] bg-[#efede8] border border-[#e5e2de] rounded-xs flex items-center justify-center relative overflow-hidden cursor-pointer hover:border-[#a84432]/40 transition-colors group p-0 disabled:cursor-default disabled:hover:border-[#e5e2de]"
+                  >
+                    <div className="absolute inset-0 bg-[#1a1a1a]/0 group-hover:bg-[#1a1a1a]/5 transition-colors z-10 flex items-center justify-center pointer-events-none">
+                      <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity font-mono text-[11px] uppercase tracking-wider bg-[#1a1a1a]/60 px-2 py-1 rounded-xs">
+                        {t(ui.projectDetail.amplify)}
+                      </span>
                     </div>
-                  )}
-                </button>
+                    {!failed && (
+                      <img
+                        src={src}
+                        alt={`${projectData.title} — ${String(n).padStart(2, '0')}`}
+                        width={640}
+                        height={480}
+                        className="absolute inset-0 w-full h-full object-cover object-top"
+                        loading="lazy"
+                        decoding="async"
+                        onError={() =>
+                          setFailedImages((prev) => {
+                            const next = new Set(prev);
+                            next.add(n);
+                            return next;
+                          })
+                        }
+                      />
+                    )}
+                    {failed && (
+                      <div className="text-center space-y-2 pointer-events-none">
+                        <FolderKanban size={24} className="text-[#1a1a1a]/15 mx-auto" />
+                        <p className="font-mono text-[10px] text-[#1a1a1a]/20 uppercase tracking-wider">
+                          {projectData.title} — {String(n).padStart(2, '0')}
+                        </p>
+                      </div>
+                    )}
+                  </button>
                 );
               })}
             </div>
@@ -506,7 +607,10 @@ export default function ProjectDetail() {
 
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); setLightboxIndex(i => Math.max(0, (i ?? 0) - 1)); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxIndex((i) => Math.max(0, (i ?? 0) - 1));
+            }}
             aria-label={t(ui.a11y.previous)}
             className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white disabled:opacity-20 z-10 cursor-pointer"
             disabled={lightboxIndex === 0}
@@ -522,19 +626,24 @@ export default function ProjectDetail() {
             className="max-w-[90vw] max-h-[85vh] object-contain rounded-sm shadow-2xl"
             onClick={(e) => e.stopPropagation()}
             onError={() => {
-              setFailedImages(prev => new Set(prev).add(lightboxIndex + 1));
+              setFailedImages((prev) => new Set(prev).add(lightboxIndex + 1));
               setLightboxIndex(null);
             }}
           />
 
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); setLightboxIndex(i => Math.min(totalImages - 1, (i ?? 0) + 1)); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxIndex((i) => Math.min(totalImages - 1, (i ?? 0) + 1));
+            }}
             aria-label={t(ui.a11y.next)}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white disabled:opacity-20 z-10 cursor-pointer"
             disabled={lightboxIndex === totalImages - 1}
           >
-            <span className="block rotate-180"><ArrowLeft size={36} /></span>
+            <span className="block rotate-180">
+              <ArrowLeft size={36} />
+            </span>
           </button>
 
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-xs text-white/40 uppercase tracking-wider">
@@ -552,9 +661,9 @@ export default function ProjectDetail() {
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
           {t(ui.projectDetail.back)}
         </button>
-<span className="font-mono text-xs text-[#999]">
-            {t(ui.projectDetail.footer)} {projectData.year} — SFV Catamarca, Catamarca
-          </span>
+        <span className="font-mono text-xs text-[#999]">
+          {t(ui.projectDetail.footer)} {projectData.year} — SFV Catamarca, Catamarca
+        </span>
       </div>
     </motion.article>
   );

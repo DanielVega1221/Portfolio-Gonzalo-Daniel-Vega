@@ -4,12 +4,12 @@
 @import '@fontsource/ibm-plex-mono/latin-400.css';
 @import '@fontsource/ibm-plex-mono/latin-500.css';
 @import '@fontsource/ibm-plex-mono/latin-600.css';
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Fraunces", Georgia, serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 /* Tokens compartidos con el fondo de mariposas (se leen desde el canvas).
@@ -124,7 +124,7 @@ body {
 .masking-tape {
   background-color: #e5e2de;
   opacity: 0.7;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
   transform: rotate(1deg);
   position: relative;
 }
@@ -136,8 +136,14 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translate(-50%, 8px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 
 .animate-fade-in {
@@ -162,3 +168,58 @@ body {
   outline-offset: 2px;
 }
 
+/* Landscape de teléfono: el encabezado y el estanque compiten por altura.
+   Comprimimos solo ahí; portrait y desktop quedan intactos. */
+@media (orientation: landscape) and (max-height: 480px) {
+  .zen-page {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    row-gap: 1rem;
+  }
+
+  .zen-header {
+    row-gap: 0.5rem;
+  }
+
+  .zen-header p:first-child {
+    display: none;
+  }
+
+  .zen-header h1 {
+    font-size: 1.75rem;
+    line-height: 1.05;
+  }
+
+  .zen-pond {
+    height: min(85svh, 340px);
+    min-height: 300px;
+  }
+
+  .zen-keyboard-hint {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .zen-hud {
+    padding: 0.5rem;
+  }
+
+  .zen-hud [data-hud-control] {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .zen-reel-label {
+    display: none;
+  }
+
+  .zen-reel-track {
+    height: 7rem;
+  }
+
+  .zen-action-hint {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 9px;
+  }
+}

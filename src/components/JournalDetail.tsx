@@ -1,18 +1,24 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Clock, Calendar, Quote, Info, Feather } from 'lucide-react';
 import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
 import { journalEntries } from '../data/journal';
-import { formatEntryDate, readingTimeLabel, notebookNumber, fieldNotebookLabel } from '../lib/journalMeta';
+import { profile } from '../data/profile';
+import {
+  formatEntryDate,
+  readingTimeLabel,
+  notebookNumber,
+  fieldNotebookLabel,
+} from '../lib/journalMeta';
 
 export default function JournalDetail() {
   const { lang } = useLanguage();
   const t = useT();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const entry = journalEntries.find(e => e.id === id);
+  const entry = journalEntries.find((e) => e.id === id);
 
   if (!entry) {
     return (
@@ -36,14 +42,21 @@ export default function JournalDetail() {
       const trimmed = paragraph.trim();
 
       if (trimmed.startsWith('*') && !trimmed.startsWith('**')) {
-        const items = paragraph.split('\n').map(item => item.replace('*', '').trim());
+        const items = paragraph.split('\n').map((item) => item.replace('*', '').trim());
         return (
-          <ul key={index} className="list-disc pl-6 space-y-3 text-[#333] leading-relaxed font-light my-8">
+          <ul
+            key={index}
+            className="list-disc pl-6 space-y-3 text-[#333] leading-relaxed font-light my-8"
+          >
             {items.map((item, i) => (
               <li key={i} className="pl-1">
                 {item.split('**').map((chunk, j) => {
                   if (j % 2 === 1) {
-                    return <strong key={j} className="font-semibold text-[#1a1a1a]">{chunk}</strong>;
+                    return (
+                      <strong key={j} className="font-semibold text-[#1a1a1a]">
+                        {chunk}
+                      </strong>
+                    );
                   }
                   return chunk;
                 })}
@@ -55,8 +68,11 @@ export default function JournalDetail() {
 
       if (trimmed.startsWith('###')) {
         return (
-          <h4 key={index} className="text-serif text-2xl font-light text-[#1a1a1a] mt-12 mb-6 tracking-tight border-b border-[#1a1a1a]/10 pb-2">
-            <span className="text-[#a84432] mr-2">§</span>
+          <h4
+            key={index}
+            className="text-serif text-2xl font-light text-[#1a1a1a] mt-12 mb-6 tracking-tight border-b border-[#1a1a1a]/10 pb-2"
+          >
+            <span className="text-[#a84432] mr-2">§ </span>
             {trimmed.replace('###', '').trim()}
           </h4>
         );
@@ -64,7 +80,10 @@ export default function JournalDetail() {
 
       if (trimmed.startsWith('>')) {
         return (
-          <blockquote key={index} className="border-l-4 border-[#a84432] bg-[#fffef0] p-6 md:p-8 my-10 rounded-r-sm italic font-serif text-[#2a2a2a] text-lg shadow-xs leading-relaxed relative">
+          <blockquote
+            key={index}
+            className="border-l-4 border-[#a84432] bg-[#fffef0] p-6 md:p-8 my-10 rounded-r-sm italic font-serif text-[#2a2a2a] text-lg shadow-xs leading-relaxed relative"
+          >
             <Quote className="text-[#a84432]/5 absolute -top-2 right-4 w-12 h-12" />
             {trimmed.replace('>', '').trim()}
           </blockquote>
@@ -74,7 +93,10 @@ export default function JournalDetail() {
       const formattedText = trimmed.split('**').map((chunk, i) => {
         if (i % 2 === 1) {
           return (
-            <strong key={i} className="font-semibold text-[#a84432] bg-[#a84432]/5 px-1 py-0.5 rounded-sm">
+            <strong
+              key={i}
+              className="font-semibold text-[#a84432] bg-[#a84432]/5 px-1 py-0.5 rounded-sm"
+            >
               {chunk}
             </strong>
           );
@@ -83,7 +105,10 @@ export default function JournalDetail() {
       });
 
       return (
-        <p key={index} className="text-[#333] leading-relaxed font-light text-base md:text-lg mb-6 first-letter:font-serif">
+        <p
+          key={index}
+          className="text-[#333] leading-relaxed font-light text-base md:text-lg mb-6 first-letter:font-serif"
+        >
           {formattedText}
         </p>
       );
@@ -139,7 +164,9 @@ export default function JournalDetail() {
           <div className="absolute top-4 right-4 text-[#a84432]/30">
             <Info size={16} />
           </div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#a84432] font-bold mb-2">{t(ui.journal.abstract)}</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#a84432] font-bold mb-2">
+            {t(ui.journal.abstract)}
+          </p>
           <p className="text-base text-[#333] font-serif italic leading-relaxed">
             "{lang === 'en' && entry.taglineEn ? entry.taglineEn : entry.tagline}"
           </p>
@@ -155,8 +182,12 @@ export default function JournalDetail() {
           <div className="flex items-center gap-1.5 font-mono text-xs text-[#a84432] font-bold uppercase tracking-wider">
             <Feather size={14} /> {t(ui.journal.author)}
           </div>
-          <p className="text-serif text-base font-semibold text-[#1a1a1a]">{t(ui.journal.authorName)}</p>
-          <p className="font-mono text-[11px] text-[#555] uppercase tracking-widest">{t(ui.journal.authorRole)}</p>
+          <p className="text-serif text-base font-semibold text-[#1a1a1a]">
+            {t(ui.journal.authorName)}
+          </p>
+          <p className="font-mono text-[11px] text-[#555] uppercase tracking-widest">
+            {t(ui.journal.authorRole)}
+          </p>
         </div>
       </div>
 
@@ -167,7 +198,32 @@ export default function JournalDetail() {
         </p>
       </div>
 
-      <div className="flex justify-between items-center text-xs font-mono">
+      <section className="bg-[#fffef0] border border-[#e5e2de] border-l-4 border-l-[#a84432] p-8 rounded-sm text-center space-y-4">
+        <h2 className="text-serif text-2xl md:text-3xl font-light text-[#1a1a1a] tracking-tight">
+          {t(ui.outro.title)}
+        </h2>
+        <p className="text-sm text-[#555] font-light leading-relaxed max-w-xl mx-auto">
+          {t(ui.outro.desc)}
+        </p>
+        <div className="flex flex-wrap justify-center gap-3 pt-2">
+          <Link
+            to={localizePath('/dialogo', lang)}
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#f9f7f2] bg-[#a84432] hover:bg-[#a84432]/90 px-4 py-2.5 rounded-sm transition-colors"
+          >
+            {t(ui.outro.contact)}
+          </Link>
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#a84432] border border-[#a84432] hover:bg-[#a84432]/5 px-4 py-2.5 rounded-sm transition-colors"
+          >
+            {t(ui.outro.linkedin)}
+          </a>
+        </div>
+      </section>
+
+      <div className="flex justify-between items-center text-xs font-mono mt-12">
         <button
           type="button"
           onClick={onBack}

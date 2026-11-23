@@ -64,18 +64,36 @@ type PaletteKey = Exclude<ButterflySpecies, 'mixed'>;
 function mixHex(a: string, b: string, amount: number): string {
   const toRgb = (hex: string) => {
     const clean = hex.replace('#', '');
-    const full = clean.length === 3 ? clean.split('').map((c) => c + c).join('') : clean;
+    const full =
+      clean.length === 3
+        ? clean
+            .split('')
+            .map((c) => c + c)
+            .join('')
+        : clean;
     const value = Number.parseInt(full.slice(0, 6), 16);
     return Number.isNaN(value) ? [0, 0, 0] : [(value >> 16) & 255, (value >> 8) & 255, value & 255];
   };
   const from = toRgb(a);
   const to = toRgb(b);
-  return `#${from.map((v, i) => Math.round(v + (to[i] - v) * amount).toString(16).padStart(2, '0')).join('')}`;
+  return `#${from
+    .map((v, i) =>
+      Math.round(v + (to[i] - v) * amount)
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
 }
 
 function rgba(hex: string, alpha: number): string {
   const clean = hex.replace('#', '');
-  const full = clean.length === 3 ? clean.split('').map((c) => c + c).join('') : clean;
+  const full =
+    clean.length === 3
+      ? clean
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : clean;
   const value = Number.parseInt(full.slice(0, 6), 16);
   const r = (value >> 16) & 255;
   const g = (value >> 8) & 255;
@@ -85,9 +103,18 @@ function rgba(hex: string, alpha: number): string {
 
 /** Las "especies" se traducen a la paleta del portfolio, no a los azules/neones
  *  del componente original: terracota, ámbar, tinta, papel y gris suave. */
-function buildPalettes(p: ButterflyPalette): Record<PaletteKey, { dark: PaletteColors; light: PaletteColors }> {
+function buildPalettes(
+  p: ButterflyPalette,
+): Record<PaletteKey, { dark: PaletteColors; light: PaletteColors }> {
   const pair = (inner: string, mid: string, edge: string, spot: string, glowAlpha: number) => ({
-    light: { wingInner: inner, wingMid: mid, wingEdge: edge, spot, body: p.ink, glow: rgba(mid, glowAlpha) },
+    light: {
+      wingInner: inner,
+      wingMid: mid,
+      wingEdge: edge,
+      spot,
+      body: p.ink,
+      glow: rgba(mid, glowAlpha),
+    },
     dark: {
       wingInner: mixHex(inner, p.paper, 0.16),
       wingMid: mid,
@@ -103,8 +130,20 @@ function buildPalettes(p: ButterflyPalette): Record<PaletteKey, { dark: PaletteC
 
   // Los puntos de las alas van en tonos cálidos del tema, nunca en papel/blanco.
   return {
-    morpho: pair(mixHex(p.accent, p.paper, 0.35), p.accent, mixHex(p.accent, p.ink, 0.38), p.pollen, 0.3),
-    monarch: pair(mixHex(p.pollen, p.paper, 0.34), p.pollen, mixHex(p.pollen, p.ink, 0.38), p.accent, 0.3),
+    morpho: pair(
+      mixHex(p.accent, p.paper, 0.35),
+      p.accent,
+      mixHex(p.accent, p.ink, 0.38),
+      p.pollen,
+      0.3,
+    ),
+    monarch: pair(
+      mixHex(p.pollen, p.paper, 0.34),
+      p.pollen,
+      mixHex(p.pollen, p.ink, 0.38),
+      p.accent,
+      0.3,
+    ),
     luna: pair(
       mixHex(p.pollen, p.paper, 0.36),
       mixHex(p.pollen, p.soft, 0.32),
@@ -145,7 +184,13 @@ function buildKoiPalettes(p: ButterflyPalette): Record<PaletteKey, KoiPalette> {
   });
 
   return {
-    morpho: variety(mixHex(p.paper, p.pollen, 0.2), p.accent, mixHex(p.accent, p.pollen, 0.4), p.accent, 0.3),
+    morpho: variety(
+      mixHex(p.paper, p.pollen, 0.2),
+      p.accent,
+      mixHex(p.accent, p.pollen, 0.4),
+      p.accent,
+      0.3,
+    ),
     monarch: variety(mixHex(p.pollen, p.paper, 0.42), p.pollen, p.accent, p.pollen, 0.3),
     luna: variety(
       mixHex(mixHex(p.paper, p.soft, 0.22), p.pollen, 0.14),
@@ -224,9 +269,7 @@ function createCreature(
   overrideY?: number,
 ): CreatureEntity {
   const paletteKey =
-    species === 'mixed'
-      ? MIXED_KEYS[Math.floor(Math.random() * MIXED_KEYS.length)]
-      : species;
+    species === 'mixed' ? MIXED_KEYS[Math.floor(Math.random() * MIXED_KEYS.length)] : species;
   const angle = Math.random() * Math.PI * 2;
   const isKoi = creature === 'koi';
 
@@ -297,7 +340,14 @@ function drawButterflyShape(
     // Ala superior
     ctx.beginPath();
     ctx.moveTo(0, -radius * 0.14);
-    ctx.bezierCurveTo(radius * 0.45, -radius * 0.92, radius * 1.12, -radius * 0.65, radius * 0.96, -radius * 0.02);
+    ctx.bezierCurveTo(
+      radius * 0.45,
+      -radius * 0.92,
+      radius * 1.12,
+      -radius * 0.65,
+      radius * 0.96,
+      -radius * 0.02,
+    );
     ctx.bezierCurveTo(radius * 0.85, radius * 0.22, radius * 0.32, radius * 0.16, 0, radius * 0.06);
     ctx.closePath();
     ctx.fill();
@@ -305,7 +355,14 @@ function drawButterflyShape(
     // Ala inferior
     ctx.beginPath();
     ctx.moveTo(0, radius * 0.04);
-    ctx.bezierCurveTo(radius * 0.48, radius * 0.06, radius * 0.82, radius * 0.36, radius * 0.62, radius * 0.78);
+    ctx.bezierCurveTo(
+      radius * 0.48,
+      radius * 0.06,
+      radius * 0.82,
+      radius * 0.36,
+      radius * 0.62,
+      radius * 0.78,
+    );
     ctx.bezierCurveTo(radius * 0.44, radius * 0.96, radius * 0.14, radius * 0.66, 0, radius * 0.34);
     ctx.closePath();
     ctx.fill();
@@ -464,13 +521,7 @@ function drawKoiFish(
 
   ctx.save();
   ctx.beginPath();
-  ctx.arc(
-    spine[0].x,
-    spine[0].y,
-    widths[0] * 0.95,
-    angle - Math.PI / 2,
-    angle + Math.PI / 2,
-  );
+  ctx.arc(spine[0].x, spine[0].y, widths[0] * 0.95, angle - Math.PI / 2, angle + Math.PI / 2);
   for (let i = 0; i < numSegs; i++) ctx.lineTo(leftPts[i].x, leftPts[i].y);
   for (let i = numSegs - 1; i >= 0; i--) ctx.lineTo(rightPts[i].x, rightPts[i].y);
   ctx.closePath();
@@ -484,15 +535,7 @@ function drawKoiFish(
 
   ctx.fillStyle = palette.patchPrimary;
   ctx.beginPath();
-  ctx.ellipse(
-    spine[1].x,
-    spine[1].y,
-    widths[1] * 1.15,
-    widths[1] * 0.85,
-    angle,
-    0,
-    Math.PI * 2,
-  );
+  ctx.ellipse(spine[1].x, spine[1].y, widths[1] * 1.15, widths[1] * 0.85, angle, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.beginPath();
@@ -654,7 +697,12 @@ export default function AtmosphereBackground({
         const gap = currentCell >= 12 ? 1.5 : 1;
         for (let r = 0; r < rows; r++) {
           for (let c = 0; c < cols; c++) {
-            gridBackdropCtx.fillRect(c * currentCell, r * currentCell, currentCell - gap, currentCell - gap);
+            gridBackdropCtx.fillRect(
+              c * currentCell,
+              r * currentCell,
+              currentCell - gap,
+              currentCell - gap,
+            );
           }
         }
       }
@@ -708,7 +756,14 @@ export default function AtmosphereBackground({
     }
 
     if (blobsRef.current.length === 0) {
-      const hues = [palette.accent, palette.pollen, palette.soft, palette.accent, palette.pollen, palette.soft];
+      const hues = [
+        palette.accent,
+        palette.pollen,
+        palette.soft,
+        palette.accent,
+        palette.pollen,
+        palette.soft,
+      ];
       for (let i = 0; i < 6; i++) {
         blobsRef.current.push({
           x: Math.random() * width,
@@ -811,8 +866,7 @@ export default function AtmosphereBackground({
             const dx = b.x - other.x;
             const dy = b.y - other.y;
             const d2 = dx * dx + dy * dy;
-            const personal =
-              (b.size + other.size) * 0.5 * cfg.scale * (isKoi ? 1.05 : 1.15);
+            const personal = (b.size + other.size) * 0.5 * cfg.scale * (isKoi ? 1.05 : 1.15);
             if (d2 < personal * personal && d2 > 1) {
               const dist = Math.sqrt(d2);
               const strength = 1 - dist / personal;
@@ -928,7 +982,10 @@ export default function AtmosphereBackground({
           if (b.y < -margin) b.y = height + margin;
           if (b.y > height + margin) b.y = -margin;
 
-          if (cfg.showAmbientParticles && (Math.floor((elapsed * 24) % 2) === 0 || b.trail.length === 0)) {
+          if (
+            cfg.showAmbientParticles &&
+            (Math.floor((elapsed * 24) % 2) === 0 || b.trail.length === 0)
+          ) {
             const trailColor = isKoi
               ? koiPalettes[b.paletteKey].patchPrimary
               : palettes[b.paletteKey][cfg.theme].wingMid;
@@ -967,7 +1024,14 @@ export default function AtmosphereBackground({
 
       if (cfg.showAmbientParticles) {
         for (const blob of blobsRef.current) {
-          const grad = sceneCtx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.radius);
+          const grad = sceneCtx.createRadialGradient(
+            blob.x,
+            blob.y,
+            0,
+            blob.x,
+            blob.y,
+            blob.radius,
+          );
           grad.addColorStop(0, blob.hue);
           grad.addColorStop(1, 'rgba(0,0,0,0)');
           sceneCtx.globalAlpha = cfg.theme === 'dark' ? 0.22 : 0.14;
@@ -1015,7 +1079,9 @@ export default function AtmosphereBackground({
         } else {
           const pal = palettes[b.paletteKey][cfg.theme];
           const isGliding = b.glideTimer < 0 && b.excitement < 0.2;
-          const flapCompression = isGliding ? 0.96 : 0.24 + 0.76 * ((Math.sin(b.flapPhase) + 1) * 0.5);
+          const flapCompression = isGliding
+            ? 0.96
+            : 0.24 + 0.76 * ((Math.sin(b.flapPhase) + 1) * 0.5);
           drawButterflyShape(sceneCtx, b.x, b.y, b.angle, b.size * cfg.scale, flapCompression, pal);
         }
       }

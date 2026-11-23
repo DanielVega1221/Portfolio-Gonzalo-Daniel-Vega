@@ -30,8 +30,10 @@ const SITE_PREVIEW = {
   imageHeight: 630,
 };
 
-const SITE_PREVIEW_ALT =
-  'Gonzalo Daniel Vega, Full Stack Developer en Catamarca, Argentina';
+const SITE_PREVIEW_ALT: Record<Lang, string> = {
+  es: 'Gonzalo Daniel Vega, Full Stack Developer remoto desde Catamarca, Argentina',
+  en: 'Gonzalo Daniel Vega, Full Stack Developer working remotely from Catamarca, Argentina',
+};
 
 const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
   '/': {
@@ -45,7 +47,7 @@ const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
     en: {
       title: 'Gonzalo Daniel Vega — Full Stack Developer',
       description:
-        'Professional portfolio. Full Stack Developer with a product mindset. React, Next.js, TypeScript, Node.js. From Catamarca, Argentina.',
+        'Professional portfolio. Full Stack Developer with a product mindset. React, Next.js, TypeScript, Node.js. Working remotely from Catamarca, Argentina.',
       ...SITE_PREVIEW,
       type: 'website',
     },
@@ -114,6 +116,22 @@ const defaults: Record<string, { es: PageMetaInfo; en: PageMetaInfo }> = {
       type: 'website',
     },
   },
+  '/zen': {
+    es: {
+      title: 'Estanque Zen — Gonzalo Daniel Vega',
+      description:
+        'Un estanque Koi interactivo en ASCII: un juguete de canvas sin librerías, hecho por Gonzalo Daniel Vega, Full Stack Developer remoto.',
+      ...SITE_PREVIEW,
+      type: 'website',
+    },
+    en: {
+      title: 'Zen Pond — Gonzalo Daniel Vega',
+      description:
+        'An interactive ASCII koi pond: a library-free canvas toy by Gonzalo Daniel Vega, remote Full Stack Developer.',
+      ...SITE_PREVIEW,
+      type: 'website',
+    },
+  },
 };
 
 function roundPath(pathname: string): string {
@@ -125,9 +143,12 @@ function roundPath(pathname: string): string {
 // typo'd URLs get indexed as duplicates of the page they fall back to.
 function isIndexable(pathname: string): boolean {
   const base = roundPath(pathname);
-  if (base === '/' || ['/proyectos', '/journal', '/sobre-mi', '/dialogo'].includes(base)) return true;
-  if (base.startsWith('/proyectos/')) return caseStudies.some(p => p.id === base.slice('/proyectos/'.length));
-  if (base.startsWith('/journal/')) return journalEntries.some(e => e.id === base.slice('/journal/'.length));
+  if (base === '/' || ['/proyectos', '/journal', '/sobre-mi', '/dialogo', '/zen'].includes(base))
+    return true;
+  if (base.startsWith('/proyectos/'))
+    return caseStudies.some((p) => p.id === base.slice('/proyectos/'.length));
+  if (base.startsWith('/journal/'))
+    return journalEntries.some((e) => e.id === base.slice('/journal/'.length));
   return false;
 }
 
@@ -139,12 +160,15 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
 
   if (base.startsWith('/proyectos/')) {
     const id = base.replace('/proyectos/', '');
-    const project = lang === 'en' ? (getProjectEn(id) || caseStudies.find(p => p.id === id)) : caseStudies.find(p => p.id === id);
+    const project =
+      lang === 'en'
+        ? getProjectEn(id) || caseStudies.find((p) => p.id === id)
+        : caseStudies.find((p) => p.id === id);
     if (project) {
       // La portada se resuelve siempre contra los datos en español: `screenshot` es
       // la captura propia del proyecto y `url` la captura automatica. No cambia con
       // el idioma, asi que no tiene por qué leerse del set en inglés.
-      const esProject = caseStudies.find(p => p.id === id);
+      const esProject = caseStudies.find((p) => p.id === id);
       const cover = esProject?.screenshot ?? (esProject?.url ? `/projects/${id}.jpg` : null);
       return {
         title: `${project.title} — Gonzalo Daniel Vega`,
@@ -161,7 +185,7 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
 
   if (base.startsWith('/journal/')) {
     const id = base.replace('/journal/', '');
-    const entry = journalEntries.find(e => e.id === id);
+    const entry = journalEntries.find((e) => e.id === id);
     if (entry) {
       const title = lang === 'en' && entry.titleEn ? entry.titleEn : entry.title;
       const description = lang === 'en' && entry.taglineEn ? entry.taglineEn : entry.tagline;
@@ -180,6 +204,7 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
 
   if (base === '/sobre-mi') return localized('/sobre-mi');
   if (base === '/dialogo') return localized('/dialogo');
+  if (base === '/zen') return localized('/zen');
 
   return localized('/');
 }
@@ -188,13 +213,16 @@ function getMeta(pathname: string, lang: Lang): PageMetaInfo {
  * Texto alternativo del preview. Para un proyecto es su nombre (la imagen es su
  * portada); para el resto, la tarjeta de presentación del sitio.
  */
-function imageAltFor(pathname: string, meta: PageMetaInfo): string {
+function imageAltFor(pathname: string, meta: PageMetaInfo, lang: Lang): string {
   const base = roundPath(pathname);
   if (base.startsWith('/proyectos/')) {
-    const project = caseStudies.find(p => p.id === base.slice('/proyectos/'.length));
-    if (project) return `Portada de ${project.title}`;
+    const project = caseStudies.find((p) => p.id === base.slice('/proyectos/'.length));
+    if (project) {
+      const cover = lang === 'en' ? getProjectEn(project.id) || project : project;
+      return lang === 'en' ? `Cover of ${cover.title}` : `Portada de ${project.title}`;
+    }
   }
-  if (meta.image === SITE_PREVIEW.image) return SITE_PREVIEW_ALT;
+  if (meta.image === SITE_PREVIEW.image) return SITE_PREVIEW_ALT[lang];
   return meta.title;
 }
 
@@ -223,7 +251,7 @@ function upsertAlternate(hreflang: string, href: string) {
 
 function upsertJsonLd(json: object) {
   const selector = 'script[data-pagemeta="route"]';
-  document.querySelectorAll(selector).forEach(el => el.remove());
+  document.querySelectorAll(selector).forEach((el) => el.remove());
   if (!json) return;
   const script = document.createElement('script');
   script.type = 'application/ld+json';
@@ -232,13 +260,91 @@ function upsertJsonLd(json: object) {
   document.head.appendChild(script);
 }
 
+const PERSON_COPY: Record<
+  Lang,
+  {
+    description: string;
+    worksFor: string;
+    offerName: string;
+    offerDescription: string;
+    knowsAbout: string[];
+  }
+> = {
+  es: {
+    description:
+      'Full Stack Developer remoto para LATAM y equipos internacionales. React, Next.js, TypeScript y Node.js. Disponible, GMT-3 (Argentina).',
+    worksFor: 'Agencia de desarrollo web',
+    offerName: 'Desarrollo Web Full Stack',
+    offerDescription:
+      'Desarrollo de aplicaciones web a medida con React, Next.js, TypeScript y Node.js.',
+    knowsAbout: [
+      'React',
+      'TypeScript',
+      'Next.js',
+      'Astro',
+      'Tailwind CSS',
+      'Node.js',
+      'PostgreSQL',
+      'MongoDB',
+      'Desarrollo Web',
+      'Diseño de Producto',
+    ],
+  },
+  en: {
+    description:
+      'Full Stack Developer working remotely for LATAM and international teams. React, Next.js, TypeScript and Node.js. Available, GMT-3 (Argentina).',
+    worksFor: 'Web development agency',
+    offerName: 'Full Stack Web Development',
+    offerDescription: 'Custom web applications built with React, Next.js, TypeScript and Node.js.',
+    knowsAbout: [
+      'React',
+      'TypeScript',
+      'Next.js',
+      'Astro',
+      'Tailwind CSS',
+      'Node.js',
+      'PostgreSQL',
+      'MongoDB',
+      'Web Development',
+      'Product Design',
+    ],
+  },
+};
+
+/** El JSON-LD de `Person` vive en index.html y antes quedaba en español en /en. */
+function updatePersonJsonLd(lang: Lang) {
+  const script = document.querySelector<HTMLScriptElement>(
+    'script[type="application/ld+json"]:not([data-pagemeta="route"])',
+  );
+  if (!script) return;
+  try {
+    const json = JSON.parse(script.textContent || '{}') as Record<string, unknown>;
+    if (json['@type'] !== 'Person') return;
+    const copy = PERSON_COPY[lang];
+    json.description = copy.description;
+    json.knowsAbout = copy.knowsAbout;
+    const worksFor = json.worksFor as Record<string, unknown> | undefined;
+    if (worksFor) worksFor.description = copy.worksFor;
+    const makesOffer = json.makesOffer as Record<string, unknown> | undefined;
+    const itemOffered = makesOffer?.itemOffered as Record<string, unknown> | undefined;
+    if (itemOffered) {
+      itemOffered.name = copy.offerName;
+      itemOffered.description = copy.offerDescription;
+    }
+    script.textContent = JSON.stringify(json, null, 2);
+  } catch {
+    // Si el bloque base deja de ser JSON válido, no lo reescribimos: mejor
+    // conservar lo que haya que romper el head entero.
+  }
+}
+
 function buildJsonLd(pathname: string, lang: Lang, meta: PageMetaInfo) {
   const url = pathname === '/' ? BASE_URL : `${BASE_URL}${pathname}`;
   const base = roundPath(pathname);
 
   if (base.startsWith('/journal/')) {
     const id = base.replace('/journal/', '');
-    const entry = journalEntries.find(e => e.id === id);
+    const entry = journalEntries.find((e) => e.id === id);
     return {
       '@context': 'https://schema.org',
       '@type': 'Article',
@@ -252,7 +358,7 @@ function buildJsonLd(pathname: string, lang: Lang, meta: PageMetaInfo) {
 
   if (base.startsWith('/proyectos/')) {
     const id = base.replace('/proyectos/', '');
-    const project = caseStudies.find(p => p.id === id);
+    const project = caseStudies.find((p) => p.id === id);
     return {
       '@context': 'https://schema.org',
       '@type': 'CreativeWork',
@@ -304,7 +410,7 @@ export default function PageMeta() {
     upsertMeta('property', 'og:image:height', String(meta.imageHeight));
     // Sin alt, el preview se publica como imagen vacia: los lectores de
     // pantalla no tienen nada que leer y las plataformas lo adivinan.
-    const imageAlt = imageAltFor(pathname, meta);
+    const imageAlt = imageAltFor(pathname, meta, lang);
     upsertMeta('property', 'og:image:alt', imageAlt);
     upsertMeta('property', 'og:type', meta.type);
     upsertMeta('property', 'og:locale', lang === 'es' ? 'es_AR' : 'en_US');
@@ -322,6 +428,7 @@ export default function PageMeta() {
     upsertAlternate('x-default', alternateEs);
 
     upsertJsonLd(buildJsonLd(pathname, lang, meta));
+    updatePersonJsonLd(lang);
   }, [location.pathname, lang]);
 
   return null;

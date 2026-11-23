@@ -62,9 +62,14 @@ const BARCODE = '1101001000010110110010101101011100101101001';
 
 function Barcode({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox={`0 0 ${BARCODE.length} 24`} preserveAspectRatio="none" className={className} aria-hidden="true">
+    <svg
+      viewBox={`0 0 ${BARCODE.length} 24`}
+      preserveAspectRatio="none"
+      className={className}
+      aria-hidden="true"
+    >
       {BARCODE.split('').map((bit, i) =>
-        bit === '1' ? <rect key={i} x={i} y={0} width={1} height={24} fill="#1a1a1a" /> : null
+        bit === '1' ? <rect key={i} x={i} y={0} width={1} height={24} fill="#1a1a1a" /> : null,
       )}
     </svg>
   );
@@ -200,9 +205,18 @@ export default function DevBadge({
       });
   };
 
-  const grain = <div className={`absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-multiply`} style={{ backgroundImage: GRAIN }} />;
+  const grain = (
+    <div
+      className={`absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-multiply`}
+      style={{ backgroundImage: GRAIN }}
+    />
+  );
   // Lamination edge: a hairline of light just inside the trim.
-  const laminate = <div className={`absolute inset-0 ${RADIUS} shadow-[inset_0_0_0_1px_rgba(255,255,255,0.75)] pointer-events-none z-20`} />;
+  const laminate = (
+    <div
+      className={`absolute inset-0 ${RADIUS} shadow-[inset_0_0_0_1px_rgba(255,255,255,0.75)] pointer-events-none z-20`}
+    />
+  );
   // The strap drops a soft shadow on the top of the credential.
   const castShadow = (
     <div
@@ -214,7 +228,11 @@ export default function DevBadge({
   return (
     <div className="relative flex flex-col items-center select-none w-full max-w-xs mx-auto">
       {/* 1. PENDULUM NODE */}
-      <motion.div animate={lanyardControls} style={{ transformOrigin: 'top center' }} className="flex flex-col items-center relative">
+      <motion.div
+        animate={lanyardControls}
+        style={{ transformOrigin: 'top center' }}
+        className="flex flex-col items-center relative"
+      >
         {/* Strap: click to shake */}
         <div
           role="button"
@@ -235,9 +253,17 @@ export default function DevBadge({
           </div>
 
           {/* Ribbon with a woven texture and shaded edges */}
-          <div style={{ height: `${lanyardLength}px` }} className="w-11 relative flex justify-center">
+          <div
+            style={{ height: `${lanyardLength}px` }}
+            className="w-11 relative flex justify-center"
+          >
             <div
-              style={{ height: `${lanyardLength}px`, backgroundColor: lanyardColor, backgroundImage: WEAVE, boxShadow: STRAP_SHADOW }}
+              style={{
+                height: `${lanyardLength}px`,
+                backgroundColor: lanyardColor,
+                backgroundImage: WEAVE,
+                boxShadow: STRAP_SHADOW,
+              }}
               className="w-10 absolute rounded-xs flex items-center justify-center overflow-hidden shadow-[3px_3px_8px_-2px_rgba(26,26,26,0.45)]"
             >
               <div className="text-[7px] tracking-[0.26em] font-mono uppercase text-[#fffef0]/90 whitespace-nowrap rotate-90">
@@ -247,7 +273,9 @@ export default function DevBadge({
           </div>
 
           {/* Clasp: the credential overlaps its lower third, the slot stays visible */}
-          <div className={`w-11 h-3.5 ${METAL} rounded-b-sm border border-[#a9a59b] border-t-0 flex items-start justify-center -mt-0.5`}>
+          <div
+            className={`w-11 h-3.5 ${METAL} rounded-b-sm border border-[#a9a59b] border-t-0 flex items-start justify-center -mt-0.5`}
+          >
             <div className="w-6 h-1 rounded-full bg-[#8f8b81] shadow-[inset_0_1px_1px_rgba(26,26,26,0.4),0_1px_0_rgba(255,255,255,0.65)]" />
           </div>
           <div className="h-1.5" aria-hidden="true" />
@@ -280,7 +308,10 @@ export default function DevBadge({
               className="w-full h-full relative"
             >
               {/* FRONT: photo to the edges, gradient into the paper */}
-              <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }} className={`${CARD_FACE} flex flex-col`}>
+              <div
+                style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+                className={`${CARD_FACE} flex flex-col`}
+              >
                 <div className={SLOT} />
                 {castShadow}
                 {grain}
@@ -309,8 +340,20 @@ export default function DevBadge({
                     loading="lazy"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 pointer-events-none mix-blend-soft-light" style={{ background: 'linear-gradient(160deg, #fff4d6 0%, #ffffff 45%, #3a3026 100%)', opacity: 0.4 }} />
-                  <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(120% 90% at 50% 30%, rgba(26,26,26,0) 55%, rgba(26,26,26,0.16) 100%)' }} />
+                  <div
+                    className="absolute inset-0 pointer-events-none mix-blend-soft-light"
+                    style={{
+                      background: 'linear-gradient(160deg, #fff4d6 0%, #ffffff 45%, #3a3026 100%)',
+                      opacity: 0.4,
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background:
+                        'radial-gradient(120% 90% at 50% 30%, rgba(26,26,26,0) 55%, rgba(26,26,26,0.16) 100%)',
+                    }}
+                  />
                   <div
                     className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
                     style={{
@@ -381,7 +424,9 @@ export default function DevBadge({
                     <FileText className="w-3 h-3 shrink-0" />
                     <span className="whitespace-nowrap">{t(ui.badge.cvTitle)}</span>
                   </div>
-                  <span className="text-[9px] font-mono text-[#8a8680] whitespace-nowrap">{t(ui.badge.scanLabel)}</span>
+                  <span className="text-[9px] font-mono text-[#8a8680] whitespace-nowrap">
+                    {t(ui.badge.scanLabel)}
+                  </span>
                 </div>
 
                 {/* QR on a printed plate: the server sends Content-Disposition, so it downloads */}
@@ -425,7 +470,9 @@ export default function DevBadge({
                       <span className="text-[8px] font-mono text-[#9a968c] uppercase tracking-[0.14em] shrink-0">
                         {t(ui.badge.linkedinLabel)}
                       </span>
-                      <span className="text-[10px] font-mono font-medium truncate">{t(ui.badge.linkedinCta)}</span>
+                      <span className="text-[10px] font-mono font-medium truncate">
+                        {t(ui.badge.linkedinCta)}
+                      </span>
                       <ExternalLink className="w-2.5 h-2.5 shrink-0 text-[#cbc8bf] ml-auto" />
                     </a>
                   )}
@@ -447,7 +494,11 @@ export default function DevBadge({
                         {t(ui.badge.emailLabel)}
                       </span>
                       <span className="text-[10px] font-mono text-[#555] truncate">
-                        {copiedEmail ? t(ui.badge.copiedEmail) : copyFailed ? t(ui.badge.copyEmailFailed) : profile.email}
+                        {copiedEmail
+                          ? t(ui.badge.copiedEmail)
+                          : copyFailed
+                            ? t(ui.badge.copyEmailFailed)
+                            : profile.email}
                       </span>
                       {/* Tras un fallo el chip vuelve a "COPIAR", no a "COPIADO":
                           el mensaje de error ya esta en la fila de arriba y el
@@ -463,7 +514,10 @@ export default function DevBadge({
                   <Barcode className="h-4 w-24" />
                   <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); toggleFlip(); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFlip();
+                    }}
                     aria-label={t(ui.badge.flipAria)}
                     className="flex items-center gap-1.5 text-[9.5px] font-mono text-[#a84432] hover:text-[#1a1a1a] whitespace-nowrap transition-colors cursor-pointer"
                   >

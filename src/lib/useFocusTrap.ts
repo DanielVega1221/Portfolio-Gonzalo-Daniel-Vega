@@ -22,10 +22,7 @@ const FOCUSABLE = [
  *
  * Se captura la fase para ganarle al resto de handlers de teclado de la pagina.
  */
-export function useFocusTrap(
-  containerRef: RefObject<HTMLElement | null>,
-  active: boolean
-) {
+export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, active: boolean) {
   useEffect(() => {
     if (!active) return;
     const container = containerRef.current;
@@ -35,7 +32,7 @@ export function useFocusTrap(
 
     const focusables = () =>
       Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true'
+        (el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true',
       );
 
     // Al abrir, el foco entra al primer control util del dialogo.

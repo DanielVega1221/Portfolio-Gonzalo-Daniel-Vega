@@ -29,13 +29,15 @@ import { JournalEntry } from '../types';
 export const journalEntries: JournalEntry[] = [
   {
     id: 'el-problema-de-terminar',
-    title: 'No tengo 70 proyectos. Tengo 15, y a algunos no los pidió nadie',
-    titleEn: "I don't have 70 projects. I have 15. Some of them nobody asked for",
+    title: 'Por qué 15 proyectos bien explicados valen más que 70 demos',
+    titleEn: 'Why 15 well-explained projects beat 70 demos',
     date: '2026-09-10',
     category: 'Producto',
     categoryEn: 'Product',
-    tagline: 'En mi portfolio hay demos que nadie pagó y un sistema de reservas con pagos que quedó sin un solo usuario. Esto es lo que aprendí sobre "terminar" un proyecto.',
-    taglineEn: "My portfolio has demos nobody paid for and a booking system with payments that ended up with zero users. Here's what I learned about \"finishing\" a project.",
+    tagline:
+      'En mi portfolio hay demos que nadie pagó y un sistema de reservas con pagos que quedó sin un solo usuario. Esto es lo que aprendí sobre "terminar" un proyecto.',
+    taglineEn:
+      'My portfolio has demos nobody paid for and a booking system with payments that ended up with zero users. Here\'s what I learned about "finishing" a project.',
     content: `Casi todo el mundo te dice que un junior necesita muchos proyectos para que lo miren. Diez, veinte, cincuenta. Cuantos más, mejor.
 
 Yo tengo quince. Y cuatro de esos son demos conceptuales de arquitectura, interiorismo y un café que nadie me pidió ni pagó. Hay otra que es una plataforma de reservas con pagos de verdad, roles, bases de datos y un sistema de concurrencia que quedó muy bien armado. Esa tampoco tiene un solo usuario, porque el cliente se bajó por presupuesto antes del lanzamiento.
@@ -66,7 +68,7 @@ Cuatro de mis proyectos son demos conceptuales: BRÜNN, un estudio de arquitectu
 
 Pero no son lastre. Son demos. Su objetivo era investigar un rubro, entender cómo piensa un estudio, aprender a transmitir criterio. Y ese objetivo lo cumplieron. MAREA incluso dejó a mitad de camino el concepto más fuerte que tenía, el del espacio que cambia según el horario. Lo dejé anotado en la ficha del proyecto, sin esconderlo. Eso es lo que hay que mirar de una demo: no la demo en sí, sino que yo sé exactamente hasta dónde llegué y por qué.
 
-El caso que más me enseñó es el que no figura como demo. **Zabira** es una plataforma de reservas para un estudio de pilates: landing premium, dashboard con roles, reservas atómicas sobre una base de datos con concurrencia, membresías activadas por webhooks de Mercado Pago y autenticación con JWT. Es el sistema más completo que armé hasta acá.
+El caso que más me enseñó es el que más se parece a un producto real. **Zabira** es una plataforma de reservas para un estudio de pilates: landing premium, dashboard con roles, reservas atómicas sobre una base de datos con concurrencia, membresías activadas por webhooks de Mercado Pago y autenticación con JWT. Es el sistema más completo que armé hasta acá.
 
 No tiene un solo usuario. El cliente se bajó por presupuesto antes del lanzamiento.
 
@@ -117,7 +119,7 @@ Four of my projects are conceptual demos: BRÜNN, an architecture studio; LÜMEN
 
 But they're not dead weight. They're demos. Their goal was to research an industry, understand how a studio thinks, learn to communicate judgment. And they fulfilled that goal. MAREA even left halfway its strongest concept, the space that changes depending on the time of day. I wrote it down on the project's page, without hiding it. That's what you should look at in a demo: not the demo itself, but that I know exactly how far I got and why.
 
-The case that taught me the most is the one that doesn't show up as a demo. **Zabira** is a booking platform for a pilates studio: premium landing, dashboard with roles, atomic bookings on a database with concurrency, memberships activated by Mercado Pago webhooks and JWT authentication. It's the most complete system I've built so far.
+The case that taught me the most is the one that looks most like a real product. **Zabira** is a booking platform for a pilates studio: premium landing, dashboard with roles, atomic bookings on a database with concurrency, memberships activated by Mercado Pago webhooks and JWT authentication. It's the most complete system I've built so far.
 
 It has zero users. The client walked away over budget before launch.
 
@@ -146,8 +148,10 @@ And if you look at my list and see demos nobody asked for and a complete system 
     date: '2025-12-01',
     category: 'Historia Personal',
     categoryEn: 'Personal Story',
-    tagline: 'De ver a un amigo programar a crear nuestra propia agencia. La historia de cómo me metí en el desarrollo web sin planearlo demasiado.',
-    taglineEn: 'From watching a friend code to building our own agency. The story of how I got into web development without planning too much.',
+    tagline:
+      'De ver a un amigo programar a crear nuestra propia agencia. La historia de cómo me metí en el desarrollo web sin planearlo demasiado.',
+    taglineEn:
+      'From watching a friend code to building our own agency. The story of how I got into web development without planning too much.',
     content: `Arranqué sin querer, en realidad.
 
 A finales de 2024 yo estaba en los primeros años de Ingeniería en Informática y lo único que había visto era Java de escritorio. Nada de front, nada de back, nada de frameworks. Un día veo a Mauro, un amigo, programando cosas web. Se la pasaba todo el día haciendo proyectos, todo el día, todos los días. Era divertido verlo, aunque yo no entendía nada. Me quedaba al lado tratando de descifrar qué hacía mientras él iba y venía entre archivos.
@@ -247,7 +251,7 @@ I don't have the degree yet. And that's fine. What I have is fifteen projects I 
     category: 'Negocio',
     categoryEn: 'Business',
     tagline: 'El código es el 50%. El otro 50% es entender qué necesita el cliente.',
-    taglineEn: "Code is 50%. The other 50% is understanding what the client actually needs.",
+    taglineEn: 'Code is 50%. The other 50% is understanding what the client actually needs.',
     content: `En la facultad no te enseñan a hablar con clientes. Te enseñan patrones de diseño, complejidad algorítmica y normalización de bases de datos. Pero el día que te sentás frente a alguien que te paga por resolverle un problema, todo eso pasa a segundo plano.
 
 La primera vez que hablé con un cliente no sabía ni qué preguntar. Él hablaba de su negocio, yo pensaba en tecnologías. Él quería vender más, yo pensaba en qué stack usar. Tuvimos que aprender a la fuerza.

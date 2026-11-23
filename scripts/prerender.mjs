@@ -81,7 +81,7 @@ async function prerender() {
       const lib = msg.match(/([\w.+-]+\.so[.\d]*): cannot open/)?.[1] || '(desconocida)';
       console.error(
         `\nPrerender: falta la libreria del sistema ${lib}.\n` +
-          `Chromium no arranca sin ella y el build no puede prerenderizar las 48 rutas.\n` +
+          `Chromium no arranca sin ella y el build no puede prerenderizar las 50 rutas.\n` +
           `En Vercel (Amazon Linux 2023, dnf) anade el equivalente en scripts/vercel-build-deps.sh.\n` +
           `En local (Debian/Ubuntu): npx playwright install-deps chromium\n\n${msg}`
       );
@@ -154,7 +154,7 @@ async function prerender() {
  *
  * Antes el catch final imprimia "Prerender skipped" y salia con codigo 0 para
  * *cualquier* fallo, incluido que Chromium no arrancara. El resultado era un
- * deploy verde con las 48 rutas sirviendo el index.html vacio del SPA: sin
+ * deploy verde con las 50 rutas sirviendo el index.html vacio del SPA: sin
  * title, sin og:image, sin canonical, y sin contenido para los buscadores. Un
  * error silencioso de infraestructura que se ve como un despliegue exitoso.
  *

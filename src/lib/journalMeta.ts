@@ -59,7 +59,7 @@ export function readingTimeLabel(entry: JournalEntry, lang: Lang): string {
 
 /** Las notas se ordenan de mas nueva a mas vieja; el indice es estable. */
 const sortedNewestFirst = [...journalEntries].sort(
-  (a, b) => parseIsoDate(b.date).getTime() - parseIsoDate(a.date).getTime()
+  (a, b) => parseIsoDate(b.date).getTime() - parseIsoDate(a.date).getTime(),
 );
 
 /**

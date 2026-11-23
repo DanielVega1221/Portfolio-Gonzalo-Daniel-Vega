@@ -30,9 +30,5 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     navigate(localizePath(location.pathname + location.search + location.hash, next));
   }, [lang, location.pathname, location.search, location.hash, navigate]);
 
-  return (
-    <LangContext.Provider value={{ lang, toggleLang }}>
-      {children}
-    </LangContext.Provider>
-  );
+  return <LangContext.Provider value={{ lang, toggleLang }}>{children}</LangContext.Provider>;
 }

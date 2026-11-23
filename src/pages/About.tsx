@@ -1,5 +1,14 @@
 import { motion } from 'motion/react';
-import { Palette, Code, Users, Megaphone, GraduationCap, Briefcase, MapPin } from 'lucide-react';
+import {
+  Palette,
+  Code,
+  Users,
+  Megaphone,
+  GraduationCap,
+  Briefcase,
+  MapPin,
+  Globe,
+} from 'lucide-react';
 import DevBadge from '../components/DevBadge';
 import { profile, absoluteCvDownloadUrl } from '../data/profile';
 import { useLanguage } from '../i18n/useLanguage';
@@ -18,11 +27,15 @@ export default function About() {
       transition={{ duration: 0.3 }}
       className="max-w-6xl mx-auto px-6 py-12 md:py-16"
     >
-      <div id="about-view" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-
+      <div
+        id="about-view"
+        className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start"
+      >
         {/* Left Column: Headline and Credential */}
         <div className="lg:col-span-5 space-y-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">{t(ui.about.chapter)}</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-[#a84432] font-bold">
+            {t(ui.about.chapter)}
+          </p>
 
           <h1 className="text-serif text-4xl sm:text-5xl font-light text-[#1a1a1a] tracking-tight leading-[1.1]">
             {t(ui.about.headline)}
@@ -51,9 +64,10 @@ export default function About() {
 
         {/* Right Column: Content */}
         <div className="lg:col-span-7 space-y-12">
-
           <div className="border-b border-[#1a1a1a]/10 pb-4">
-            <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-widest">{t(ui.about.logbook)}</span>
+            <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-widest">
+              {t(ui.about.logbook)}
+            </span>
           </div>
 
           {/* Section 0: De dónde vengo */}
@@ -70,29 +84,53 @@ export default function About() {
               <p>{t(ui.about.section00p1)}</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
                 <div className="flex items-center gap-2">
                   <GraduationCap size={14} className="text-[#a84432]" />
-                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">{t(ui.about.section00Card1Title)}</span>
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section00Card1Title)}
+                  </span>
                 </div>
-                <p className="text-xs text-[#555] font-light leading-relaxed">{t(ui.about.section00Card1Text)}</p>
+                <p className="text-xs text-[#555] font-light leading-relaxed">
+                  {t(ui.about.section00Card1Text)}
+                </p>
               </div>
 
               <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
                 <div className="flex items-center gap-2">
                   <Briefcase size={14} className="text-[#a84432]" />
-                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">{t(ui.about.section00Card2Title)}</span>
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section00Card2Title)}
+                  </span>
                 </div>
-                <p className="text-xs text-[#555] font-light leading-relaxed">{t(ui.about.section00Card2Text)}</p>
+                <p className="text-xs text-[#555] font-light leading-relaxed">
+                  {t(ui.about.section00Card2Text)}
+                </p>
               </div>
 
               <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
                 <div className="flex items-center gap-2">
                   <MapPin size={14} className="text-[#a84432]" />
-                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">{t(ui.about.section00Card3Title)}</span>
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section00Card3Title)}
+                  </span>
                 </div>
-                <p className="text-xs text-[#555] font-light leading-relaxed">{t(ui.about.section00Card3Text)}</p>
+                <p className="text-xs text-[#555] font-light leading-relaxed">
+                  {t(ui.about.section00Card3Text)}
+                </p>
+              </div>
+
+              <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
+                <div className="flex items-center gap-2">
+                  <Globe size={14} className="text-[#a84432]" />
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section00Card4Title)}
+                  </span>
+                </div>
+                <p className="text-xs text-[#555] font-light leading-relaxed">
+                  {t(ui.about.section00Card4Text)}
+                </p>
               </div>
             </div>
           </section>
@@ -115,36 +153,52 @@ export default function About() {
               <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
                 <div className="flex items-center gap-2">
                   <Palette size={14} className="text-[#a84432]" />
-                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">{t(ui.about.section01Design)}</span>
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section01Design)}
+                  </span>
                 </div>
-                <p className="text-xs text-[#555] font-light leading-relaxed">{t(ui.about.section01DesignText)}</p>
+                <p className="text-xs text-[#555] font-light leading-relaxed">
+                  {t(ui.about.section01DesignText)}
+                </p>
               </div>
 
               <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
                 <div className="flex items-center gap-2">
                   <Code size={14} className="text-[#a84432]" />
-                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">{t(ui.about.section01Dev)}</span>
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section01Dev)}
+                  </span>
                 </div>
-                <p className="text-xs text-[#555] font-light leading-relaxed">{t(ui.about.section01DevText)}</p>
+                <p className="text-xs text-[#555] font-light leading-relaxed">
+                  {t(ui.about.section01DevText)}
+                </p>
               </div>
 
               <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
                 <div className="flex items-center gap-2">
                   <Megaphone size={14} className="text-[#a84432]" />
-                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">{t(ui.about.section01Clients)}</span>
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section01Clients)}
+                  </span>
                 </div>
                 <p className="text-xs text-[#555] font-light leading-relaxed">
                   {t(ui.about.section01ClientsText)}
-                  <span className="block mt-1 text-[#a84432] font-medium">{t(ui.about.section01Leads)} {t(ui.about.section01LeadsText)}</span>
+                  <span className="block mt-1 text-[#a84432] font-medium">
+                    {t(ui.about.section01Leads)} {t(ui.about.section01LeadsText)}
+                  </span>
                 </p>
               </div>
 
               <div className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
                 <div className="flex items-center gap-2">
                   <Users size={14} className="text-[#a84432]" />
-                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">{t(ui.about.section01Team)}</span>
+                  <span className="font-mono text-[11px] text-[#a84432] font-bold uppercase tracking-wider">
+                    {t(ui.about.section01Team)}
+                  </span>
                 </div>
-                <p className="text-xs text-[#555] font-light leading-relaxed">{t(ui.about.section01TeamText)}</p>
+                <p className="text-xs text-[#555] font-light leading-relaxed">
+                  {t(ui.about.section01TeamText)}
+                </p>
               </div>
             </div>
 
@@ -179,10 +233,17 @@ export default function About() {
                 const n = idx + 1;
                 const pk = ui.about.principles as Record<string, { es: string; en: string }>;
                 return (
-                  <div key={key} className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2">
+                  <div
+                    key={key}
+                    className="bg-[#fffef0] border border-[#e5e2de] p-5 rounded-xs space-y-2"
+                  >
                     <span className="font-mono text-[10px] text-[#a84432] font-bold uppercase tracking-wider block">{`${t(ui.about.principleLabel)} ${String(n).padStart(2, '0')}`}</span>
-                    <h4 className="font-serif text-base font-semibold text-[#1a1a1a]">{t(pk[`${key}Title`])}</h4>
-                    <p className="text-sm text-[#444] font-light leading-relaxed">{t(pk[`${key}Text`])}</p>
+                    <h4 className="font-serif text-base font-semibold text-[#1a1a1a]">
+                      {t(pk[`${key}Title`])}
+                    </h4>
+                    <p className="text-sm text-[#444] font-light leading-relaxed">
+                      {t(pk[`${key}Text`])}
+                    </p>
                   </div>
                 );
               })}
@@ -228,7 +289,6 @@ export default function About() {
             <span>{t(ui.about.footerBiography)}</span>
             <span className="text-[#a84432] font-bold">G. D. V.</span>
           </div>
-
         </div>
       </div>
     </motion.div>
