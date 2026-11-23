@@ -103,7 +103,6 @@ export default function Zen() {
             </div>
           ))}
         </div>
-        <p className="font-mono text-[10px] tracking-wide text-[#777]">{t(ui.zen.valuesNote)}</p>
       </section>
 
       <footer className="border-t border-[#1a1a1a]/10 pt-6 flex flex-wrap gap-6 font-mono text-xs text-[#666]">

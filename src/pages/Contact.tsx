@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion } from 'motion/react';
-import { Check, AlertTriangle, Mail, Linkedin, Download } from 'lucide-react';
+import { Check, AlertTriangle, Mail, Linkedin, Download, Copy } from 'lucide-react';
 import { useT } from '../i18n/useT';
 import { useLanguage } from '../i18n/useLanguage';
 import { ui } from '../i18n/translations';
@@ -8,7 +8,10 @@ import { profile, absoluteCvDownloadUrl } from '../data/profile';
 
 export default function Contact() {
   const [contactName, setContactName] = useState('');
-  const [contactReasonIdx, setContactReasonIdx] = useState<number | null>(null);
+  // Preseleccionado: el motivo es una pista, no un bloqueo. Sigue viajando la
+  // clave estable al backend, así que los acuses y el CV no cambian.
+  const [contactReasonIdx, setContactReasonIdx] = useState(0);
+  const [copied, setCopied] = useState(false);
   const [contactEmail, setContactEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,6 +19,7 @@ export default function Contact() {
     null,
   );
   const feedbackTimerRef = useRef<number | null>(null);
+  const copyTimerRef = useRef<number | null>(null);
   const honeypotRef = useRef<HTMLInputElement | null>(null);
   const t = useT();
   // El acuse de recibo se manda en el idioma en que estaba la página. El servidor
@@ -27,8 +31,30 @@ export default function Contact() {
       if (feedbackTimerRef.current !== null) {
         clearTimeout(feedbackTimerRef.current);
       }
+      if (copyTimerRef.current !== null) {
+        clearTimeout(copyTimerRef.current);
+      }
     };
   }, []);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+    } catch {
+      // contextos sin permiso de portapapeles (http, navegadores viejos)
+      const helper = document.createElement('textarea');
+      helper.value = profile.email;
+      helper.style.position = 'fixed';
+      helper.style.opacity = '0';
+      document.body.appendChild(helper);
+      helper.select();
+      document.execCommand('copy');
+      helper.remove();
+    }
+    setCopied(true);
+    if (copyTimerRef.current !== null) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = window.setTimeout(() => setCopied(false), 2000);
+  };
 
   const armFeedbackTimer = () => {
     if (feedbackTimerRef.current !== null) {
@@ -40,15 +66,8 @@ export default function Contact() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-    if (contactReasonIdx === null) {
-      setFeedback({ type: 'error', text: t(ui.contact.errorReason) });
-      armFeedbackTimer();
-      return;
-    }
     setIsSubmitting(true);
     setFeedback(null);
-    // Se resuelve acá, después del guard de null, para que el tipo sea reason y
-    // no reason | undefined.
     const reason = ui.contact.reasons[contactReasonIdx];
     try {
       const res = await fetch('/api/contact', {
@@ -78,7 +97,7 @@ export default function Contact() {
       }
       setFeedback({ type: 'success', text: t(ui.contact.success) });
       setContactName('');
-      setContactReasonIdx(null);
+      setContactReasonIdx(0);
       setContactEmail('');
       setContactMessage('');
     } catch (err) {
@@ -147,6 +166,25 @@ export default function Contact() {
             >
               <Download size={13} aria-hidden="true" /> {t(ui.contact.hiringCv)}
             </a>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-t border-[#f9f7f2]/15 pt-4 font-mono text-[11px] tracking-wide">
+            <span className="text-[#f9f7f2]">{profile.email}</span>
+            <button
+              type="button"
+              onClick={copyEmail}
+              aria-label={`${t(ui.contact.copyEmail)}: ${profile.email}`}
+              className="inline-flex items-center gap-1.5 text-[#e8a99c] hover:text-[#f9f7f2] transition-colors cursor-pointer"
+            >
+              {copied ? (
+                <Check size={12} aria-hidden="true" />
+              ) : (
+                <Copy size={12} aria-hidden="true" />
+              )}
+              <span aria-live="polite">
+                {copied ? t(ui.contact.copied) : t(ui.contact.copyEmail)}
+              </span>
+            </button>
           </div>
         </div>
 
@@ -303,19 +341,6 @@ export default function Contact() {
             </svg>
             {t(ui.contact.casualBtn)}
           </a>
-        </div>
-
-        <div className="text-center space-y-4 pt-8 border-t border-[#1a1a1a]/10">
-          <h3 className="font-serif text-2xl md:text-3xl font-light text-[#a84432] tracking-tight">
-            {t(ui.contact.bottomTitle)}
-          </h3>
-          <div className="space-y-2">
-            <p className="font-sans text-sm text-[#555] leading-relaxed">{t(ui.contact.bottom1)}</p>
-            <p className="font-sans text-sm text-[#555] leading-relaxed">{t(ui.contact.bottom2)}</p>
-            <p className="font-sans text-sm text-[#555] leading-relaxed pt-2">
-              {t(ui.contact.bottom3)}
-            </p>
-          </div>
         </div>
       </section>
     </motion.div>

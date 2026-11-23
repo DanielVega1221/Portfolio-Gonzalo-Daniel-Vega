@@ -275,11 +275,11 @@ export const ui = {
 
   // ── Contact ──
   contact: {
-    chapter: { es: 'CAPÍTULO V — DIÁLOGO HONESTO', en: 'CHAPTER V — HONEST CONVERSATION' },
-    title: { es: 'Establezcamos una conversación', en: "Let's start a conversation" },
+    chapter: { es: 'CAPÍTULO V — CONTACTO', en: 'CHAPTER V — CONTACT' },
+    title: { es: 'Hablemos.', en: "Let's talk." },
     desc: {
-      es: 'Dos caminos: si estás armando equipo, escribime directo; si tenés un proyecto, contame qué querés resolver. Leo todo personalmente.',
-      en: 'Two ways in: if you are building a team, reach out directly; if you have a project, tell me what you want to solve. I read everything personally.',
+      es: 'Elegí por dónde arrancamos. Leo todo personalmente.',
+      en: 'Pick where we start. I read everything personally.',
     },
     hiringLabel: {
       es: 'PARA RECRUITERS Y EQUIPOS',
@@ -290,10 +290,12 @@ export const ui = {
       en: 'Looking to add someone to your team?',
     },
     hiringDesc: {
-      es: 'Soy Full Stack Developer, trabajo remoto para LATAM y equipos internacionales, desde GMT-3 (Argentina). Disponible para incorporarme.',
-      en: "I'm a Full Stack Developer working remotely for LATAM and international teams, from GMT-3 (Argentina). Available to join.",
+      es: 'Full Stack Developer · remoto para LATAM y equipos internacionales · GMT-3 (Argentina) · disponible para incorporarme.',
+      en: 'Full Stack Developer · remote for LATAM and international teams · GMT-3 (Argentina) · available to join.',
     },
     hiringEmail: { es: 'Email', en: 'Email' },
+    copyEmail: { es: 'Copiar correo', en: 'Copy email' },
+    copied: { es: '¡Copiado!', en: 'Copied!' },
     hiringLinkedIn: { es: 'LinkedIn', en: 'LinkedIn' },
     hiringCv: { es: 'Descargar CV', en: 'Download CV' },
     freelancerLabel: {
@@ -301,12 +303,12 @@ export const ui = {
       en: 'FOR FREELANCE PROJECTS',
     },
     freelancerTitle: {
-      es: '¿Tenés un problema que resolver?',
-      en: 'Have a problem to solve?',
+      es: '¿Tenés un proyecto en mente?',
+      en: 'Have a project in mind?',
     },
     freelancerDesc: {
-      es: 'Contame el contexto, cómo funciona hoy y qué resultado buscás. Respondo en 24–48 hs hábiles.',
-      en: 'Tell me the context, how it works today and what outcome you need. I reply within 24–48 business hours.',
+      es: 'Contame qué querés resolver y qué resultado esperás. Respondo en 24–48 hs hábiles.',
+      en: 'Tell me what you need to solve and the outcome you expect. I reply within 24–48 business hours.',
     },
     reasonLabel: { es: 'Quiero escribir porque:', en: 'I want to write because:' },
     // `key` es estable y es lo que viaja al servidor: el backend decide qué
@@ -314,21 +316,16 @@ export const ui = {
     // Si tocás el copy de `es`/`en` no se rompe nada; si agregás un motivo nuevo,
     // agregalo también a REASON_KEYS en api/_emails.ts.
     reasons: [
-      { key: 'work', es: 'Tengo un problema complejo', en: 'I have a complex problem' },
-      { key: 'product', es: 'Quiero conversar sobre producto', en: 'I want to talk about product' },
-      {
-        key: 'hiring',
-        es: 'Quiero sumar tu criterio a un equipo',
-        en: 'I want to add your judgment to a team',
-      },
-      { key: 'hi', es: 'Solo quería saludar', en: 'I just wanted to say hi' },
+      { key: 'work', es: 'Proyecto o problema concreto', en: 'A concrete project or problem' },
+      { key: 'product', es: 'Conversar sobre producto', en: 'Talk about product' },
+      { key: 'hi', es: 'Decir hola', en: 'Just saying hi' },
     ],
     nameLabel: { es: 'Tu nombre', en: 'Your name' },
     namePlaceholder: { es: 'Juan Pérez', en: 'John Doe' },
     emailLabel: { es: 'Tu correo de contacto', en: 'Your contact email' },
     messageLabel: {
-      es: '¿Cuál es el problema, contexto o idea?',
-      en: "What's the problem, context, or idea?",
+      es: 'Contame un poco más',
+      en: 'Tell me a bit more',
     },
     messagePlaceholder: {
       es: 'Describime qué querés resolver, cómo funciona actualmente o sobre qué querés intercambiar opiniones...',
@@ -384,27 +381,14 @@ export const ui = {
       },
     },
     casualTitle: {
-      es: '¿Querés charlar de manera casual o simplemente intercambiar ideas?',
-      en: 'Want to chat casually or just exchange ideas?',
+      es: '¿Charlamos?',
+      en: 'Want to chat?',
     },
     casualDesc: {
-      es: 'Me encanta conversar. Si te pinta hablar de tecnología, de proyectos, de la vida o de lo que sea, escribime sin compromiso.',
-      en: 'I love to chat. If you feel like talking about tech, projects, life, or whatever, write to me — no strings attached.',
+      es: 'Si preferís escribir sin formulario, pasame un mensaje por WhatsApp.',
+      en: 'If you would rather skip the form, send me a note on WhatsApp.',
     },
     casualBtn: { es: 'Charlar por WhatsApp', en: 'Chat on WhatsApp' },
-    bottomTitle: { es: 'Si llegaste hasta acá', en: 'If you made it this far' },
-    bottom1: {
-      es: 'Capaz tenemos una forma parecida de pensar.',
-      en: 'Maybe we think in similar ways.',
-    },
-    bottom2: {
-      es: 'O capaz no, pero igual estaría bueno hablar.',
-      en: "Or maybe not, but it'd still be good to talk.",
-    },
-    bottom3: {
-      es: 'Si tenés una idea, un problema, o simplemente querés intercambiar cómo vemos las cosas, podemos charlar.',
-      en: 'If you have an idea, a problem, or just want to exchange how we see things, we can talk.',
-    },
     emailPlaceholder: { es: 'nombre@ejemplo.com', en: 'name@example.com' },
   },
 
@@ -612,10 +596,6 @@ export const ui = {
     valuesTitle: {
       es: 'CUÁNTO VALE CADA KOI',
       en: 'WHAT EACH KOI IS WORTH',
-    },
-    valuesNote: {
-      es: 'Puntos base. Tamaño, racha y captura perfecta (x1.5) suman extra si mantenés al Koi en la zona verde.',
-      en: 'Base points. Size, streak and a perfect catch (x1.5) add on top when you keep the koi in the green zone.',
     },
     keyboard: {
       es: 'En teclado: barra espaciadora, Flecha arriba o W para lanzar y clavar; mantené para subir la zona verde.',
