@@ -115,13 +115,13 @@ export default function ProjectDetail() {
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
           {t(ui.projectDetail.back)}
         </button>
-        <span className="font-mono text-[11px] text-[#888] uppercase tracking-[0.2em]">
+        <span className="font-mono text-[11px] text-[#666] uppercase tracking-[0.2em]">
           {t(ui.projectDetail.journal)} {projectData.year}
         </span>
       </div>
 
       <header className="space-y-6 mb-12">
-        <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-[#777]">
+        <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-[#666]">
           <span className="text-[#a84432] font-semibold tracking-wider">
             {t(ui.portfolio.chapterLabel)} {projectData.chapterNumber}
           </span>
@@ -155,13 +155,13 @@ export default function ProjectDetail() {
             return (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
                 <div className="bg-red-50/40 border border-red-200/50 rounded-xs p-5">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-red-400 font-bold block mb-1.5">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-red-700 font-bold block mb-1.5">
                     {t(ui.portfolio.before)}
                   </span>
                   <p className="font-mono text-sm text-[#666] leading-relaxed">{antes}</p>
                 </div>
                 <div className="bg-emerald-50/40 border border-emerald-200/50 rounded-xs p-5 relative">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-1.5">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-700 font-bold block mb-1.5">
                     {t(ui.portfolio.after)}
                   </span>
                   <p className="font-mono text-sm text-emerald-800 leading-relaxed">{despues}</p>
@@ -191,7 +191,7 @@ export default function ProjectDetail() {
           screenshot={projectData.screenshot}
           className="shadow-xs"
         />
-        <div className="flex justify-between items-center mt-3 text-[11px] font-mono text-[#888] px-1 uppercase tracking-widest">
+        <div className="flex justify-between items-center mt-3 text-[11px] font-mono text-[#666] px-1 uppercase tracking-widest">
           <span>{t(ui.projectDetail.figure)}</span>
           <span>© Gonzalo Daniel Vega</span>
         </div>
@@ -252,7 +252,7 @@ export default function ProjectDetail() {
             <div className="absolute top-4 right-6 font-mono text-[10px] uppercase tracking-widest text-[#a84432] font-semibold flex items-center gap-1">
               <Award size={12} /> {t(ui.projectDetail.insightRevealed)}
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#888] block mb-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#666] block mb-2">
               {t(ui.projectDetail.synthesis)}
             </span>
             <h4 className="text-serif text-xl md:text-2xl font-light text-[#1a1a1a] leading-relaxed italic mb-4">
@@ -525,7 +525,7 @@ export default function ProjectDetail() {
                 type="button"
                 onClick={() => setShowGallery(false)}
                 aria-label={t(ui.a11y.close)}
-                className="text-[#888] hover:text-[#1a1a1a] cursor-pointer"
+                className="text-[#666] hover:text-[#1a1a1a] cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -661,7 +661,7 @@ export default function ProjectDetail() {
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
           {t(ui.projectDetail.back)}
         </button>
-        <span className="font-mono text-xs text-[#999]">
+        <span className="font-mono text-xs text-[#666]">
           {t(ui.projectDetail.footer)} {projectData.year} — SFV Catamarca, Catamarca
         </span>
       </div>

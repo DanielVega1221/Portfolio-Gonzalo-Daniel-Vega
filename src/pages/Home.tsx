@@ -213,7 +213,7 @@ export default function Home() {
             </section>
 
             <div className="pt-4 border-t border-[#1a1a1a]/10">
-              <p className="font-mono text-[11px] text-[#888] uppercase tracking-widest mb-1">
+              <p className="font-mono text-[11px] text-[#666] uppercase tracking-widest mb-1">
                 {t(ui.home.base)}
               </p>
               <p className="text-sm font-serif text-[#1a1a1a] font-medium">{t(ui.home.location)}</p>
@@ -238,7 +238,7 @@ export default function Home() {
                     {t(ui.nav.projects)}
                   </span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>
-                  <span className="font-mono text-[11px] uppercase opacity-50">
+                  <span className="font-mono text-[11px] uppercase opacity-70">
                     {t(ui.home.indexProjects)}
                   </span>
                 </Link>
@@ -254,7 +254,7 @@ export default function Home() {
                     {t(ui.nav.journal)}
                   </span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>
-                  <span className="font-mono text-[11px] uppercase opacity-50">
+                  <span className="font-mono text-[11px] uppercase opacity-70">
                     {t(ui.home.indexJournal)}
                   </span>
                 </Link>
@@ -270,7 +270,7 @@ export default function Home() {
                     {t(ui.nav.about)}
                   </span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>
-                  <span className="font-mono text-[11px] uppercase opacity-50">
+                  <span className="font-mono text-[11px] uppercase opacity-70">
                     {t(ui.home.indexAbout)}
                   </span>
                 </Link>
@@ -286,7 +286,7 @@ export default function Home() {
                     {t(ui.nav.contact)}
                   </span>
                   <span className="flex-1 border-b border-dotted border-[#1a1a1a]/20 mx-4"></span>
-                  <span className="font-mono text-[11px] uppercase opacity-50">
+                  <span className="font-mono text-[11px] uppercase opacity-70">
                     {t(ui.home.indexContact)}
                   </span>
                 </Link>

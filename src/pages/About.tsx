@@ -285,7 +285,7 @@ export default function About() {
           </section>
 
           {/* Footer */}
-          <div className="pt-8 border-t border-[#1a1a1a]/10 flex justify-between items-center text-xs font-mono text-[#888]">
+          <div className="pt-8 border-t border-[#1a1a1a]/10 flex justify-between items-center text-xs font-mono text-[#666]">
             <span>{t(ui.about.footerBiography)}</span>
             <span className="text-[#a84432] font-bold">G. D. V.</span>
           </div>

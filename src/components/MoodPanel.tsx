@@ -158,7 +158,7 @@ export default function MoodPanel() {
                   <h2 className="font-serif text-base font-light tracking-tight text-[#1a1a1a]">
                     {t(ui.mood.title)}
                   </h2>
-                  <p className="font-mono text-[8px] text-[#777] uppercase tracking-widest">
+                  <p className="font-mono text-[8px] text-[#666] uppercase tracking-widest">
                     {t(ui.mood.subtitle)}
                   </p>
                 </div>
@@ -200,7 +200,7 @@ export default function MoodPanel() {
                             {t(ui.mood[MODE_LABELS[option]])}
                           </span>
                           <span
-                            className={`block mt-1 font-mono text-[8px] leading-none tracking-wide ${isActive ? 'opacity-70' : 'text-[#888]'}`}
+                            className={`block mt-1 font-mono text-[8px] leading-none tracking-wide ${isActive ? 'opacity-70' : 'text-[#666]'}`}
                           >
                             {t(ui.mood[MODE_HINTS[option]])}
                           </span>
@@ -225,7 +225,7 @@ export default function MoodPanel() {
                     <span className="block font-serif text-sm leading-none">
                       {t(ui.zen.moodEntry)}
                     </span>
-                    <span className="block mt-1 font-mono text-[8px] leading-none tracking-wide text-[#888]">
+                    <span className="block mt-1 font-mono text-[8px] leading-none tracking-wide text-[#666]">
                       {t(ui.zen.moodEntryHint)}
                     </span>
                   </span>

@@ -1,8 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
 import { KOI_VARIETIES, type KoiBehavior } from '../data/koi';
-import { useLanguage, localizePath } from '../i18n/useLanguage';
 import { useT } from '../i18n/useT';
 import { ui } from '../i18n/translations';
 
@@ -17,7 +15,6 @@ const BEHAVIOR_LABELS: Record<KoiBehavior, keyof typeof ui.zen> = {
 
 export default function Zen() {
   const t = useT();
-  const { lang } = useLanguage();
 
   return (
     <motion.div
@@ -52,7 +49,7 @@ export default function Zen() {
           </Suspense>
         </div>
 
-        <p className="zen-keyboard-hint border-t border-[#e5e2de] px-4 py-3 font-mono text-[10px] text-[#777] tracking-wide">
+        <p className="zen-keyboard-hint border-t border-[#e5e2de] px-4 py-3 font-mono text-[10px] text-[#666] tracking-wide">
           {t(ui.zen.keyboard)}
         </p>
       </section>
@@ -92,33 +89,18 @@ export default function Zen() {
                 />
                 <div className="min-w-0">
                   <span className="block truncate text-xs text-[#333]">{v.name}</span>
-                  <span className="block font-mono text-[9px] uppercase tracking-wider text-[#777]">
+                  <span className="block font-mono text-[9px] uppercase tracking-wider text-[#666]">
                     {t(ui.zen[BEHAVIOR_LABELS[v.behavior]])}
                   </span>
                 </div>
               </div>
               <span className="font-mono text-xs font-semibold tabular-nums text-[#a84432]">
-                {v.basePoints} <span className="text-[9px] text-[#777]">pts</span>
+                {v.basePoints} <span className="text-[9px] text-[#666]">pts</span>
               </span>
             </div>
           ))}
         </div>
       </section>
-
-      <footer className="border-t border-[#1a1a1a]/10 pt-6 flex flex-wrap gap-6 font-mono text-xs text-[#666]">
-        <Link
-          to={localizePath('/proyectos', lang)}
-          className="hover:text-[#a84432] transition-colors"
-        >
-          → {t(ui.zen.backProjects)}
-        </Link>
-        <Link
-          to={localizePath('/dialogo', lang)}
-          className="hover:text-[#a84432] transition-colors"
-        >
-          → {t(ui.nav.contact)}
-        </Link>
-      </footer>
     </motion.div>
   );
 }

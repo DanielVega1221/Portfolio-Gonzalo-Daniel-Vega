@@ -23,7 +23,7 @@ export default function JournalDetail() {
   if (!entry) {
     return (
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
-        <p className="font-mono text-sm text-[#777]">{t(ui.journal.notFound)}</p>
+        <p className="font-mono text-sm text-[#666]">{t(ui.journal.notFound)}</p>
         <button
           type="button"
           onClick={() => navigate(localizePath('/journal', lang))}
@@ -132,13 +132,13 @@ export default function JournalDetail() {
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
           {t(ui.journal.backToNotes)}
         </button>
-        <span className="font-mono text-[10px] text-[#888] uppercase tracking-[0.2em]">
+        <span className="font-mono text-[10px] text-[#666] uppercase tracking-[0.2em]">
           {t(ui.journal.journalHeader)}
         </span>
       </div>
 
       <div className="space-y-6 mb-12">
-        <div className="flex flex-wrap items-center gap-4 font-mono text-xs text-[#777]">
+        <div className="flex flex-wrap items-center gap-4 font-mono text-xs text-[#666]">
           <span className="text-[#a84432] font-semibold tracking-widest">
             {t(ui.journal.notebook)} {notebookNumber(entry.id)}
           </span>
@@ -232,7 +232,7 @@ export default function JournalDetail() {
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
           {t(ui.journal.backToJournal)}
         </button>
-        <span className="text-[#999]">{fieldNotebookLabel(entry, lang)}</span>
+        <span className="text-[#666]">{fieldNotebookLabel(entry, lang)}</span>
       </div>
     </motion.article>
   );

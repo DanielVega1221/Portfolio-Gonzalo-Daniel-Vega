@@ -1597,7 +1597,7 @@ export default function KoiFishingGame({ className = '' }: KoiFishingGameProps) 
 
   const hudCard =
     'pointer-events-auto rounded-sm border border-[#e5e2de] bg-[#fffef0]/95 shadow-sm';
-  const hudLabel = 'font-mono text-[9px] uppercase tracking-widest text-[#777]';
+  const hudLabel = 'font-mono text-[9px] uppercase tracking-widest text-[#666]';
   const hudValue = 'font-mono text-base font-semibold tabular-nums text-[#1a1a1a] sm:text-lg';
 
   return (
@@ -1788,7 +1788,7 @@ export default function KoiFishingGame({ className = '' }: KoiFishingGameProps) 
 
           {activeFish && (
             <div
-              className={`zen-reel-label ${hudCard} rounded-xs px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-[#777]`}
+              className={`zen-reel-label ${hudCard} rounded-xs px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-[#666]`}
             >
               {t(ui.zen[BEHAVIOR_LABELS[activeFish.behavior]])}
             </div>
@@ -1814,7 +1814,7 @@ export default function KoiFishingGame({ className = '' }: KoiFishingGameProps) 
             <span className="font-medium">
               {t(ui.zen.caughtPrefix)} {hud.lastCatch.name}
             </span>
-            <span className="text-[#777]">
+            <span className="text-[#666]">
               · {t(ui.zen[SIZE_TIER_KEYS[hud.lastCatch.sizeKey]])}
             </span>
             <span className="font-mono font-semibold text-[#a84432]">+{hud.lastCatch.points}</span>
@@ -1867,8 +1867,18 @@ export default function KoiFishingGame({ className = '' }: KoiFishingGameProps) 
               {t(ui.zen.session)}
             </div>
             <h2 className="mt-1 text-serif text-2xl font-light">
-              {hud.isNewRecord ? t(ui.zen.newRecordTitle) : t(ui.zen.restTitle)}
+              {hud.isNewRecord
+                ? t(ui.zen.newRecordTitle)
+                : hud.score > 0
+                  ? t(ui.zen.congratsTitle)
+                  : t(ui.zen.zeroTitle)}
             </h2>
+            <p className="mx-auto mt-2 max-w-[17rem] text-xs leading-relaxed text-[#555]">
+              {hud.score > 0
+                ? t(ui.zen.congratsScore).replace('{score}', String(hud.score))
+                : t(ui.zen.zeroScore)}{' '}
+              {hud.isNewRecord && t(ui.zen.congratsRecord)}
+            </p>
 
             <div className="mt-5 grid grid-cols-2 gap-3 text-left">
               <div className="rounded-xs border border-[#e5e2de] bg-[#f9f7f2] p-3">

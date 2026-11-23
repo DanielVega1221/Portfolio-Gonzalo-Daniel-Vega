@@ -71,7 +71,7 @@ export default function ProjectImage({
           <h4 className="font-serif text-xl font-light text-[#666] tracking-tight text-center leading-tight">
             {title}
           </h4>
-          <p className="font-mono text-[10px] text-[#999] uppercase tracking-wider mt-2">
+          <p className="font-mono text-[10px] text-[#666] uppercase tracking-wider mt-2">
             {subtitle}
           </p>
         </div>

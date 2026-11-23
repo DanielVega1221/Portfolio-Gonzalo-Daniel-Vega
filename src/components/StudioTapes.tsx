@@ -702,7 +702,7 @@ export default function StudioTapes() {
                       STUDIO TAPES
                     </h3>
                   </div>
-                  <p className="hidden md:block font-mono text-[8px] text-[#777] uppercase tracking-widest">
+                  <p className="hidden md:block font-mono text-[8px] text-[#666] uppercase tracking-widest">
                     {t(ui.studioTapes.subtitle)}
                   </p>
                 </div>
@@ -998,7 +998,7 @@ export default function StudioTapes() {
                       <span className="hidden md:inline">{t(ui.studioTapes.tray)}</span>
                       <span className="md:hidden">{t(ui.studioTapes.trayMobile)}</span>
                     </span>
-                    <span className="font-mono text-[8px] text-[#888]">{studioTapes.length}</span>
+                    <span className="font-mono text-[8px] text-[#666]">{studioTapes.length}</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 bg-[#fffef0] border border-[#e5e2de] p-2 md:p-3 rounded-sm">

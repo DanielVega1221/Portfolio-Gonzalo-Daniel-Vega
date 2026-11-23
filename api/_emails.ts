@@ -83,18 +83,18 @@ interface Variant {
   badges?: Bilingual;
 }
 
-// `paragraphs[0]` abre siempre con el acuse de recibo. Por eso no hay un campo
-// `lead`: antes lo había, decía "Gracias por escribir" en las cuatro variantes,
-// y las cuatro arrancaban el primer párrafo con "Recibí tu mensaje". En `hi` el
-// mensaje terminaba con tres agradecimientos seguidos.
+// El acuse no repite "recibí tu mensaje": el asunto, el preheader y el primer
+// párrafo antes decían lo mismo con otras palabras. Cada variante arranca directo
+// con lo que le importa a quien escribió. `hiring` dice el plazo solo en el
+// asunto y anuncia el CV una sola vez, en el `cvCallout`.
 const COPY: Record<ReasonKey, Variant> = {
   work: {
-    subject: { es: 'Recibí tu mensaje', en: 'I got your message' },
-    preheader: { es: 'Lo leí. Te cuento cómo lo encararía.', en: 'Read it. Here is how I would approach it.' },
+    subject: { es: 'Tu consulta', en: 'Your question' },
+    preheader: { es: 'Te leí con atención.', en: 'I read it carefully.' },
     paragraphs: [
       {
-        es: 'Recibí tu mensaje y lo leí. Cuando el problema viene de negocio y no de una pantalla, el primer paso casi nunca es escribir código: es entender qué está roto, quién lo usa y cómo se mide cuando quedó arreglado.',
-        en: 'I got your message and read it. When the problem comes from the business and not from a screen, the first step is almost never writing code: it is understanding what is broken, who uses it, and how you measure it once it is fixed.',
+        es: 'Cuando el problema viene de negocio y no de una pantalla, el primer paso casi nunca es escribir código: es entender qué está roto, quién lo usa y cómo se mide cuando quedó arreglado.',
+        en: 'When the problem comes from the business and not from a screen, the first step is almost never writing code: it is understanding what is broken, who uses it, and how you measure it once it is fixed.',
       },
       {
         es: 'Antes de proponer nada necesito el contexto completo: cómo funciona hoy, qué probaron y qué les gustaría que pasara.',
@@ -110,12 +110,12 @@ const COPY: Record<ReasonKey, Variant> = {
     close: { es: 'Quedo atento.', en: 'Looking forward to hearing from you.' },
   },
   product: {
-    subject: { es: 'Recibí tu mensaje', en: 'I got your message' },
+    subject: { es: 'Sobre lo que estás armando', en: 'About what you are building' },
     preheader: { es: 'Me interesa comparar notas.', en: 'I would like to compare notes.' },
     paragraphs: [
       {
-        es: 'Recibí tu mensaje y lo leí. La parte de producto es lo que más me gusta de mi trabajo, y charlarlo con alguien que está armando algo me resulta más interesante que contestarle a una plantilla.',
-        en: 'I got your message and read it. The product side of this is what I enjoy most about my work, and talking it through with someone who is building something interests me far more than replying from a template.',
+        es: 'La parte de producto es lo que más me gusta de mi trabajo, y charlarlo con alguien que está armando algo me resulta más interesante que contestarle a una plantilla.',
+        en: 'The product side of this is what I enjoy most about my work, and talking it through with someone who is building something interests me far more than replying from a template.',
       },
       {
         es: 'Contame qué estás armando y en qué punto estás. Si tengo algo para sumar, te lo digo con franqueza: {wa}.',
@@ -126,46 +126,41 @@ const COPY: Record<ReasonKey, Variant> = {
   },
   hiring: {
     subject: {
-      es: 'Recibí tu mensaje — te respondo en 48 horas hábiles',
-      en: 'I got your message — I reply within 48 business hours',
+      es: 'Gracias por escribir — respondo en 48 h',
+      en: 'Thanks for writing — I reply within 48 h',
     },
     preheader: {
-      es: 'Te adjunto mi CV. Respondo personalmente en 48 horas hábiles.',
-      en: 'My CV is attached. I reply personally within 48 business hours.',
+      es: 'Me interesa saber qué estás buscando.',
+      en: 'I would like to know what you are looking for.',
     },
     paragraphs: [
       {
-        es: 'Recibí tu consulta y ya está en mi bandeja. Leo todo personalmente, sin filtros ni formularios de candidatura.',
-        en: 'Your message landed in my inbox. I read everything personally, no filters and no application forms.',
+        es: 'Leo todo personalmente, sin filtros ni formularios de candidatura.',
+        en: 'I read everything personally, no filters and no application forms.',
       },
       {
         es: 'Diseño y desarrollo productos web de punta a punta. En cada proyecto documento las decisiones: qué se resolvió, qué se descartó y por qué. Es lo primero que muestro cuando entro a un equipo, porque se nota rápido si alguien puede explicar sus propios trade-offs.',
         en: 'I design and build web products end to end. On every project I document the decisions: what got solved, what got dropped, and why. That is the first thing I show when I join a team, because it shows quickly whether someone can explain their own trade-offs.',
       },
       {
-        // "y la prefiero antes" no tenía objeto y quedaba incompleto.
-        es: 'Voy a responderte personalmente en un plazo de 48 horas hábiles. Si la búsqueda tiene fecha límite y te sirve que te responda antes, decímelo en el mensaje y la acelero.',
-        en: 'I will reply to you personally within 48 business hours. If the search has a deadline and it would help you to hear from me earlier, say so in your message and I will move faster.',
-      },
-      {
-        // El link del CV no va acá: lo lleva el callout, para no repetir la URL.
-        es: 'Te adjunto mi CV en PDF y más abajo te dejo el archivo por si querés abrirlo en el navegador.',
-        en: 'I attached my CV as a PDF, and the file is further down if you would rather open it in the browser.',
+        // El plazo ya está en el asunto: acá solo va lo que le sirve al lector.
+        es: 'Si la búsqueda tiene fecha límite y te sirve que responda antes, decímelo en el mensaje y la acelero.',
+        en: 'If the search has a deadline and it would help you to hear from me earlier, say so in your message and I will move faster.',
       },
       {
         es: 'Si te resulta más cómodo, {wa}.',
         en: 'If it is easier, {wa}.',
       },
     ],
-    close: { es: 'Gracias de nuevo.', en: 'Thanks again.' },
+    close: { es: 'Saludos.', en: 'Best,' },
   },
   hi: {
-    subject: { es: 'Recibí tu mensaje', en: 'I got your message' },
-    preheader: { es: 'Gracias por escribir.', en: 'Thanks for reaching out.' },
+    subject: { es: '¡Hola!', en: 'Hi!' },
+    preheader: { es: 'Un gusto saludarte.', en: 'Good to hear from you.' },
     paragraphs: [
       {
-        es: 'Recibí tu mensaje y está en mi bandeja. Gracias por tomarte el tiempo.',
-        en: 'I got your message and it is in my inbox. Thanks for taking the time.',
+        es: 'Gracias por tomarte el tiempo.',
+        en: 'Thanks for taking the time.',
       },
       {
         // "escribime por acá o {wa}" se leía "escribime por acá o escribime por WhatsApp".
@@ -194,9 +189,13 @@ const UI = {
     es: 'Gonzalo Daniel Vega · Full Stack Developer',
     en: 'Gonzalo Daniel Vega · Full Stack Developer',
   },
+  // El `replyTo` del acuse apunta a la casilla del destinatario (ver sendAck en
+  // api/contact.ts), así que "respondé y me llega" es literalmente cierto. El
+  // origen del mensaje ya está claro en el resto del correo: no hace falta el
+  // disclaimer de "se envió desde el formulario".
   footerNote: {
-    es: 'Este mensaje se envió desde el formulario de gonzalodanielvega.com. Respondé a este correo y me llega directo.',
-    en: 'This message was sent from the contact form at gonzalodanielvega.com. Replying to this email reaches me directly.',
+    es: 'Respondé a este correo y me llega directo.',
+    en: 'Reply to this email and it reaches me directly.',
   },
 } satisfies Record<string, Bilingual>;
 
@@ -309,7 +308,18 @@ function cvCallout(lang: Lang, filename: string, cvUrl: string): string {
       </table>`);
 }
 
-function documentShell(lang: Lang, title: string, preheader: string, body: string): string {
+/**
+ * El pie del acuse dice que responder vuelve a Gonzalo, porque ahí el `replyTo`
+ * es su casilla. En la notificación el `replyTo` es quien escribió, así que se
+ * omite: el `replyHint` del cuerpo ya dice a dónde va la respuesta.
+ */
+function documentShell(
+  lang: Lang,
+  title: string,
+  preheader: string,
+  body: string,
+  footer = UI.footerNote[lang],
+): string {
   return `<!DOCTYPE html>
 <html lang="${lang}" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -376,13 +386,17 @@ ${preheaderBlock(preheader)}
             ${divider()}
           </td>
         </tr>
-        <tr>
+        ${
+          footer
+            ? `<tr>
           <td class="gutter" style="padding:14px 34px 30px 34px;">
             <p class="muted" style="margin:0;font-family:${SANS};font-size:11px;line-height:1.7;color:${C.muted};">${escapeHtml(
-              UI.footerNote[lang],
+              footer,
             )}</p>
           </td>
-        </tr>
+        </tr>`
+            : ''
+        }
       </table>
     </td>
   </tr>
@@ -463,7 +477,9 @@ export function buildAck(input: AckInput): BuiltMail {
     ${signatureBlock(lang)}
   `;
 
-  const subject = `${variant.subject[lang]}${plainName ? `, ${plainName}` : ''}`;
+  // El nombre ya va en el saludo del cuerpo. Agregarlo al asunto hacía que
+  // "Recibí tu mensaje, Alex" sonara a confirmación automática con nombre.
+  const subject = variant.subject[lang];
 
   const textLines = [
     `${UI.greeting[lang]}${plainName ? ` ${plainName},` : ''}`,
@@ -540,7 +556,10 @@ export function buildNotification(input: NotificationInput): BuiltMail {
 
   const rows: Array<[string, string]> = [
     [NOTIF_LABELS.from[lang], escapeHtml(name)],
-    [NOTIF_LABELS.email[lang], `<a href="mailto:${escapeHtml(email)}" style="color:${C.accent};">${escapeHtml(email)}</a>`],
+    [
+      NOTIF_LABELS.email[lang],
+      `<a href="mailto:${escapeHtml(email)}" style="color:${C.accent};">${escapeHtml(email)}</a>`,
+    ],
     [NOTIF_LABELS.reason[lang], escapeHtml(label)],
     [NOTIF_LABELS.language[lang], lang === 'en' ? 'English' : 'Español'],
     [NOTIF_LABELS.received[lang], formatTimestamp(receivedAt, lang)],
@@ -560,9 +579,7 @@ export function buildNotification(input: NotificationInput): BuiltMail {
   const body = `
     ${sectionLabel(NOTIF_LABELS.visitor[lang])}
     <h1 class="h1 ink" style="margin:10px 0 14px 0;font-family:${SERIF};font-size:28px;line-height:1.2;font-weight:normal;color:${C.ink};letter-spacing:-0.01em;">
-      ${escapeHtml(
-        NOTIF_LABELS.title[lang].replace('{name}', name),
-      )}
+      ${escapeHtml(NOTIF_LABELS.title[lang].replace('{name}', name))}
     </h1>
     <p style="margin:0 0 22px 0;">
       <span style="display:inline-block;background:${C.accentSoft};border:1px solid ${C.accent};color:${C.accent};font-family:${MONO};font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:5px 10px;border-radius:2px;">${escapeHtml(
@@ -605,12 +622,16 @@ export function buildNotification(input: NotificationInput): BuiltMail {
 
   return {
     subject,
-    html: documentShell(lang, subject, `${NOTIF_LABELS.visitor[lang]} — ${plainName}`, body),
+    html: documentShell(lang, subject, `${NOTIF_LABELS.visitor[lang]} — ${plainName}`, body, ''),
     text,
   };
 }
 
-export function buildPreview(reason: ReasonKey, lang: Lang, siteUrl: string): { ack: BuiltMail; notification: BuiltMail } {
+export function buildPreview(
+  reason: ReasonKey,
+  lang: Lang,
+  siteUrl: string,
+): { ack: BuiltMail; notification: BuiltMail } {
   const name = 'Alex Rivera';
   const email = 'alex.rivera@example.com';
   const message =
@@ -624,7 +645,10 @@ export function buildPreview(reason: ReasonKey, lang: Lang, siteUrl: string): { 
   const PREVIEW_REASON_LABEL: Record<ReasonKey, Bilingual> = {
     work: { es: 'Tengo un problema complejo', en: 'I have a complex problem' },
     product: { es: 'Quiero conversar sobre producto', en: 'I want to talk about product' },
-    hiring: { es: 'Quiero sumar tu criterio a un equipo', en: 'I want to add your judgment to a team' },
+    hiring: {
+      es: 'Quiero sumar tu criterio a un equipo',
+      en: 'I want to add your judgment to a team',
+    },
     hi: { es: 'Solo quería saludar', en: 'I just wanted to say hi' },
   };
 

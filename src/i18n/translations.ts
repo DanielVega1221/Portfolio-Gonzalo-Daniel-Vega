@@ -676,7 +676,20 @@ export const ui = {
     },
     session: { es: 'SESIÓN DE PESCA', en: 'FISHING SESSION' },
     newRecordTitle: { es: '¡Nuevo récord!', en: 'New best!' },
-    restTitle: { es: 'Buen descanso', en: 'Nice break' },
+    congratsTitle: { es: '¡Buen trabajo!', en: 'Nice work!' },
+    zeroTitle: { es: 'Hasta la próxima', en: 'Until next time' },
+    congratsScore: {
+      es: 'Lograste {score} puntos. Cada intento cuenta.',
+      en: 'You scored {score} points. Every attempt counts.',
+    },
+    zeroScore: {
+      es: 'Lograste 0 puntos. Volvé a probar: la barra verde es tu aliada.',
+      en: 'You scored 0 points. Give it another go: the green bar is your friend.',
+    },
+    congratsRecord: {
+      es: 'Además, es tu mejor puntuación hasta ahora. ¡Felicitaciones!',
+      en: "That's your best score so far. Congratulations!",
+    },
     pointsShort: { es: 'Puntaje', en: 'Score' },
     bestRecord: { es: 'Mejor récord', en: 'Personal best' },
     caught: { es: 'Atrapados', en: 'Caught' },

@@ -43,8 +43,8 @@ export default function Journal() {
         {isEmpty ? (
           <div className="border-t border-[#1a1a1a]/10 pt-20 pb-24 text-center">
             <BookOpen className="mx-auto text-[#a84432]/30 mb-4" size={40} />
-            <p className="font-serif text-xl text-[#777] font-light">{t(ui.journal.comingSoon)}</p>
-            <p className="font-mono text-sm text-[#888] mt-2">{t(ui.journal.comingSoonSub)}</p>
+            <p className="font-serif text-xl text-[#666] font-light">{t(ui.journal.comingSoon)}</p>
+            <p className="font-mono text-sm text-[#666] mt-2">{t(ui.journal.comingSoonSub)}</p>
           </div>
         ) : entries.length === 1 ? (
           <div className="border-t border-[#1a1a1a]/10">
