@@ -67,6 +67,22 @@ const checks = [
   ['/proyectos/zabira-studio', 'Zabira demo', 'Demo funcional / Prueba de concepto'],
   ['/en/proyectos/zabira-studio', 'Zabira demo EN', 'Functional demo / Proof of concept'],
   [
+    '/journal/salud-mental-y-trabajo',
+    'journal title nueva',
+    'Bajar un cambio también es saber decir "esto no hace falta"',
+  ],
+  [
+    '/en/journal/salud-mental-y-trabajo',
+    'journal title nueva EN',
+    'Slowing down also means knowing when to say "this isn\'t needed"',
+  ],
+  [
+    '/',
+    'home mantiene su nota destacada',
+    'Por qué 15 proyectos bien explicados valen más que 70 demos',
+  ],
+  ['/en', 'home mantiene su nota destacada EN', 'Why 15 well-explained projects beat 70 demos'],
+  [
     '/journal/el-problema-de-terminar',
     'journal title',
     'Por qué 15 proyectos bien explicados valen más que 70 demos',
@@ -87,6 +103,16 @@ const checks = [
 for (const [route, label, needle] of checks) {
   const html = fs.readFileSync(path.join(DIST, route, 'index.html'), 'utf8');
   check(html.includes(needle), `falta texto: ${label}`, route);
+}
+
+// La nota nueva se publica en /journal pero no debe robarle el bloque
+// "Última nota" de la home a "15 proyectos bien explicados".
+for (const [route, label, newTitle] of [
+  ['/', 'home ES', 'Bajar un cambio también es saber decir "esto no hace falta"'],
+  ['/en', 'home EN', 'Slowing down also means knowing when to say "this isn\'t needed"'],
+]) {
+  const html = fs.readFileSync(path.join(DIST, route, 'index.html'), 'utf8');
+  check(!html.includes(newTitle), `la home destaca la nota nueva (${label})`, route);
 }
 
 console.log(`\nAudit: ${files.length} rutas, ${problems} problemas.`);

@@ -29,10 +29,9 @@ export default function Home() {
   );
 
   const latestJournalEntry = useMemo(() => {
-    if (journalEntries.length === 0) return null;
-    return [...journalEntries].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-    )[0];
+    const featured = journalEntries.filter((entry) => entry.homeFeature !== false);
+    if (featured.length === 0) return null;
+    return featured.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
   }, []);
 
   return (

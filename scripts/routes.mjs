@@ -1,22 +1,28 @@
 // Single source of truth for routes shared by sitemap.mjs and prerender.mjs.
 // Keep in sync with src/data/projects.ts, src/data/projects-en-lookup.ts and src/data/journal.ts.
 
-export const PAGES = [
-  '',
-  '/proyectos',
-  '/journal',
-  '/sobre-mi',
-  '/dialogo',
-  '/zen',
-];
+export const PAGES = ['', '/proyectos', '/journal', '/sobre-mi', '/dialogo', '/zen'];
 
 export const PROJECTS = [
-  'brunn-studio', 'lumen', 'marea', 'stro-atelier', 'zabira-studio',
-  'content-studio', 'uxnicorp-academy', 'la-pagina-de-uxnicorp', 'myvisor',
-  'electropower', 'jimena-vilte', 'patagenda', 'ducksale', 'comercial-rio-hondo', 'isdep',
+  'brunn-studio',
+  'lumen',
+  'marea',
+  'stro-atelier',
+  'zabira-studio',
+  'content-studio',
+  'uxnicorp-academy',
+  'la-pagina-de-uxnicorp',
+  'myvisor',
+  'electropower',
+  'jimena-vilte',
+  'patagenda',
+  'ducksale',
+  'comercial-rio-hondo',
+  'isdep',
 ];
 
 export const JOURNAL = [
+  'salud-mental-y-trabajo',
   'el-problema-de-terminar',
   'como-empece-a-programar',
   'de-la-facultad-a-productos',
@@ -33,6 +39,6 @@ export const NO_COVER_PROJECTS = new Set([]);
 
 export const ROUTES = [
   ...PAGES,
-  ...PROJECTS.map(p => `/proyectos/${p}`),
-  ...JOURNAL.map(j => `/journal/${j}`),
+  ...PROJECTS.map((p) => `/proyectos/${p}`),
+  ...JOURNAL.map((j) => `/journal/${j}`),
 ];

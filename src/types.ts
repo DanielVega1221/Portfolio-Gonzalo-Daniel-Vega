@@ -53,4 +53,10 @@ export interface JournalEntry {
   taglineEn?: string;
   content: string;
   contentEn?: string;
+  /**
+   * false = la nota se publica en /journal pero no compite por el bloque
+   * "Última nota" de la home. Sin esto, cualquier nota con fecha nueva
+   * reemplazaba automáticamente a la que queremos dejar destacada ahí.
+   */
+  homeFeature?: boolean;
 }

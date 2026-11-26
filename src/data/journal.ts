@@ -28,6 +28,134 @@ import { JournalEntry } from '../types';
 
 export const journalEntries: JournalEntry[] = [
   {
+    id: 'salud-mental-y-trabajo',
+    title: 'Bajar un cambio también es saber decir "esto no hace falta"',
+    titleEn: 'Slowing down also means knowing when to say "this isn\'t needed"',
+    date: '2026-11-25',
+    category: 'Salud mental',
+    categoryEn: 'Mental health',
+    tagline:
+      'Salud mental y criterio: frenar la cinta que yo aceleraba y decir "esto no hace falta" en un proyecto nos permitió entregar antes.',
+    taglineEn:
+      'Mental health and judgment: slowing down the treadmill I was accelerating and saying "this isn\'t needed" on a project helped us ship sooner.',
+    // Publicada en /journal, pero la home sigue destacando "15 proyectos...".
+    homeFeature: false,
+    content: `Venía bajando un cambio con todo, y no por una frase linda que leí en internet. Era cansancio. Estaba haciendo las cosas en automático, pendiente de demasiadas cosas al mismo tiempo, con la sensación de que siempre tenía que dar un poco más: un proyecto más, unas horas más, más energía. Y la meta nunca llegaba porque yo la movía cada vez que me acercaba.
+
+La cinta de caminar esa no la puso nadie. La regulaba yo. Cada vez que llegaba a donde quería, subía un poco más la velocidad. Hasta que un día me pregunté para qué estaba corriendo.
+
+No tengo una respuesta elegante. Pero sí una decisión que se me repitió en dos lugares: en mi rutina y en un proyecto que arrancó como una landing simple.
+
+### La cinta la manejaba yo
+
+Durante un tiempo sentí que estar bien era una cuestión de disciplina. Si rendía más, iba a estar mejor. Si terminaba una cosa, ya podía arrancar la otra. Y así, siempre un poco más.
+
+El problema era que la vara no venía de afuera. Nadie me pedía ese ritmo. Yo mismo lo iba subiendo: un proyecto más para el portfolio, una hora más frente a la computadora, una meta más para "cuando termine esto". Cuando lo miraba de lejos, parecía compromiso. De cerca, era cansancio y dificultad para estar presente en lo que estaba haciendo.
+
+Me costó darme cuenta de que podía querer mejorar y, al mismo tiempo, dejar de tratarme como si siempre estuviera en deuda.
+
+### Tres cambios que no eran de rendimiento
+
+**Pausas y límites.** Termino el día a una hora y apago las notificaciones. Fuera de ese horario no reviso el mail ni LinkedIn. El límite es de horario, no de compromiso: si algo se complica, aviso antes.
+
+**Una cosa a la vez.** Antes de empezar decido cuándo doy algo por terminado. Si ya está, lo suelto y paso a lo siguiente. En el portfolio se me vio rápido: dejé de querer sumar proyectos y empecé a explicar para qué existe cada uno. Es el mismo criterio que uso para estimar un trabajo: prefiero decir tres semanas y cumplir, que prometer una y quedar mal.
+
+**Movimiento sin meta.** Salgo a caminar sin contar pasos ni escuchar nada para aprovechar el tiempo. Caminar, simplemente. Es el momento del día en el que menos pienso en rendimiento.
+
+Nada de eso es menos compromiso. Es lo contrario: cuando no estoy agotado, escucho mejor, explico mejor y sostengo mejor lo que me toca hacer.
+
+### El proyecto que se nos fue de alcance
+
+El cambio de "una cosa a la vez" se probó de verdad en ese proyecto. Habíamos acordado una landing simple. Después aparecieron tres pedidos nuevos: un login para que los alumnos accedieran a los programas, esos programas alojados dentro del sitio, y un backend para el formulario de contacto que sanitizara los datos y dejara registro de todo.
+
+Les propusimos dos alternativas mejores: un login real con base de datos y un backend propio con registro persistido. El presupuesto no alcanzaba para ninguna de las dos. Aceptar sin más habría sido dejar que el precio decidiera la arquitectura por nosotros. Preferimos poner el freno antes de que esos cambios dejaran de ser pedidos y se convirtieran en otro proyecto.
+
+> No era decir que no. Era elegir qué problema resolver primero.
+
+### La tercera vía
+
+Los programas quedaron detrás de una contraseña predefinida que llevaba a un Drive. La contraseña no era un login de verdad: era una barrera. El control de acceso real lo tenía el Drive, con sus permisos.
+
+El formulario lo resolvimos con una Vercel Function propia: sanitizaba los datos y los enviaba por mail. El registro quedaba en la casilla, no en una base. Sin instancia de backend, sin base que mantener.
+
+Esa decisión tuvo una razón que no era solo técnica. Un backend propio con pruebas, control y registro nos habría llevado tiempo que el proyecto no tenía. Elegimos salir al público antes que trabajar a contra reloj para entregar algo que todavía no estábamos en condiciones de sostener.
+
+### Lo que ganamos y lo que no
+
+Ganamos tiempo, simplicidad y un alcance que podíamos cumplir. El cliente vio la web publicada y quedó conforme.
+
+Perdimos granularidad: no había usuarios ni permisos por persona, y el registro de consultas vivía en un mail, no en una tabla consultable. Si el proyecto creciera, esa solución se quedaría corta. Está bien decirlo: no era la arquitectura ideal para escalar, era la correcta para ese momento.
+
+### Cómo se lo contamos
+
+Avisamos antes qué quedaba afuera y por qué. No fuimos con un "no se puede": fuimos con las alternativas, el costo de cada una y la decisión que tomamos para no cambiar el tipo de proyecto a mitad de camino. El cliente entendió el recorte porque veía el razonamiento, no solo el resultado.
+
+Es lo mismo que aprendí en mi rutina: el límite no era de compromiso, era de alcance. Saber dónde parar también es una forma de cuidar el trabajo.
+
+### Cómo me cambió en el trabajo
+
+Ahora calculo los tiempos con más calma y cumplo lo que digo. Pregunto antes de pasar una semana en algo que quizá no hace falta. Trabajo con equipos remotos, así que prefiero escribir las cosas con claridad antes que darlas por dichas.
+
+Sigo queriendo ser bueno en esto. Solo que dejé de pensar que para eso tenía que estar agotado, y que un proyecto valiera más cuanto más creciera.`,
+    contentEn: `I'd been slowing down with everything, and not because of some nice quote I read online. It was tiredness, plain and simple. I was going through the motions, paying attention to too many things at once, with the feeling that I always had to give a bit more: one more project, a few more hours, more energy. And the goal never arrived because I moved it every time I got close.
+
+Nobody set that treadmill to that speed. I did. Every time I reached where I wanted, I turned it up a little. Until one day I asked myself what I was running for.
+
+I don't have an elegant answer. But I do have one decision that showed up in two places: in my routine and in a project that started as a simple landing page.
+
+### I was the one running the treadmill
+
+For a while I thought being okay was a matter of discipline. If I produced more, I'd feel better. If I finished one thing, I could start the next. And so it went, always a little more.
+
+The thing was, the bar wasn't coming from outside. Nobody was asking me for that pace. I kept raising it myself: one more project for the portfolio, one more hour at the computer, one more goal for "when I'm done with this". From a distance it looked like commitment. Up close, it was tiredness and a hard time being present in what I was doing.
+
+It took me a while to realize I could want to improve and, at the same time, stop treating myself as if I were always behind.
+
+### Three changes that weren't about output
+
+**Breaks and limits.** I end the day at a set time and turn off notifications. Outside those hours I don't check email or LinkedIn. The limit is about hours, not commitment: if something looks like it might slip, I flag it early.
+
+**One thing at a time.** Before I start, I decide when I'll call something done. Once it is, I let it go and move on. In my portfolio it showed up quickly: I stopped trying to add more projects and started explaining what each one exists for. It's the same criterion I use to estimate work: I'd rather say three weeks and deliver than promise one and fall short.
+
+**Movement without a goal.** I go for a walk without counting steps or listening to anything to "make the most of the time". Just walking. It's the part of the day when I think least about performance.
+
+None of that is less commitment. It's the opposite: when I'm not exhausted, I listen better, explain better and follow through better.
+
+### The project that grew out of scope
+
+The "one thing at a time" change got tested for real on that project. We had agreed on a simple landing page. Then three new requests came in: a login so students could reach the programs, those programs hosted inside the site, and a backend for the contact form that would sanitize the data and keep a record of everything.
+
+We proposed two better alternatives: a real login with a database, and our own backend with a persisted record. The budget didn't cover either. Accepting them anyway would have let the price decide the architecture for us. We chose to put the brake on before those requests stopped being requests and turned into a different project.
+
+> It wasn't saying no. It was choosing which problem to solve first.
+
+### The third way
+
+The programs ended up behind a predefined password that led to a Drive. That password wasn't a real login: it was a barrier. Access control lived in the Drive, with its own permissions.
+
+We handled the form with our own Vercel Function: it sanitized the data and sent it by email. The record lived in the inbox, not in a database. No backend instance, no database to maintain.
+
+That decision wasn't only technical. A backend of our own with tests, control and a record would have taken time the project didn't have. We chose to ship rather than work against the clock delivering something we couldn't yet support.
+
+### What we gained and what we didn't
+
+We gained time, simplicity and a scope we could actually meet. The client saw the site published and was happy with it.
+
+We gave up granularity: there were no per-person users or permissions, and the enquiry record lived in an email, not in a queryable table. If the project grew, that solution would fall short. It's fine to say it: it wasn't the ideal architecture for scaling. It was the right one for that moment.
+
+### How we explained it
+
+We flagged it early: what was left out and why. We didn't come with a flat "we can't". We came with the alternatives, the cost of each and the decision we made so the project wouldn't change shape halfway through. The client understood the cut because they could see the reasoning, not just the result.
+
+It's the same thing I learned in my routine: the limit wasn't about commitment, it was about scope. Knowing where to stop is also a way of taking care of the work.
+
+### How it changed my work
+
+Now I estimate timelines more calmly and do what I say. I ask before spending a week on something that may not be needed. I work with remote teams, so I'd rather write things down clearly than assume they're understood.
+
+I still want to be good at this. I just stopped thinking I had to be exhausted to get there, or that a project was worth more the more it grew.`,
+  },
+  {
     id: 'el-problema-de-terminar',
     title: 'Por qué 15 proyectos bien explicados valen más que 70 demos',
     titleEn: 'Why 15 well-explained projects beat 70 demos',

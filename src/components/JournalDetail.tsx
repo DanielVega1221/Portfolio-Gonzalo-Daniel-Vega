@@ -68,13 +68,16 @@ export default function JournalDetail() {
 
       if (trimmed.startsWith('###')) {
         return (
-          <h4
+          // h2 y no h4: después del h1 del título, un h4 salta dos niveles y
+          // Lighthouse marca heading-order en todas las notas. Las clases son
+          // las mismas, así que el aspecto no cambia.
+          <h2
             key={index}
             className="text-serif text-2xl font-light text-[#1a1a1a] mt-12 mb-6 tracking-tight border-b border-[#1a1a1a]/10 pb-2"
           >
             <span className="text-[#a84432] mr-2">§ </span>
             {trimmed.replace('###', '').trim()}
-          </h4>
+          </h2>
         );
       }
 
