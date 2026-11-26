@@ -90,6 +90,9 @@ export default function DevBadge({
 }: DevBadgeProps) {
   const t = useT();
   const [isFlipped, setIsFlipped] = useState(false);
+  // Algunos navegadores ignoran backface-visibility en caras sin transform.
+  // Mostramos una sola cara según el ángulo real de la animación.
+  const [showBack, setShowBack] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
   const [qrSvg, setQrSvg] = useState<string | null>(null);
@@ -304,12 +307,27 @@ export default function DevBadge({
             <motion.div
               animate={{ rotateY: isFlipped ? 180 : 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              onUpdate={(latest) => {
+                const rotateY =
+                  typeof latest.rotateY === 'number'
+                    ? latest.rotateY
+                    : Number.parseFloat(String(latest.rotateY ?? '0'));
+                setShowBack(Math.abs(Number.isFinite(rotateY) ? rotateY : 0) > 90);
+              }}
               style={{ transformStyle: 'preserve-3d', transformOrigin: 'top center' }}
               className="w-full h-full relative"
             >
-              {/* FRONT: photo to the edges, gradient into the paper */}
+              {/* FRONT: photo to the edges, gradient into the paper.
+                  Firefox ignora backface-visibility en un hijo sin transform de
+                  un padre preserve-3d; rotateX(0deg) lo hace participar del
+                  contexto 3D y muestra el dorado en vez de la frente espejada. */}
               <div
-                style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+                style={{
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                  transform: 'rotateX(0deg)',
+                  visibility: showBack ? 'hidden' : 'visible',
+                }}
                 className={`${CARD_FACE} flex flex-col`}
               >
                 <div className={SLOT} />
@@ -411,6 +429,7 @@ export default function DevBadge({
                   backfaceVisibility: 'hidden',
                   WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
+                  visibility: showBack ? 'visible' : 'hidden',
                 }}
                 className={`${CARD_FACE} flex flex-col p-4`}
               >

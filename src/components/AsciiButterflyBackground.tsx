@@ -23,6 +23,8 @@ export interface AsciiButterflyBackgroundProps {
   /** Render cap, para liberar el main thread mientras hay un panel animando */ fps?: number;
   /** Global canvas opacity (0.1 - 1) */ opacity?: number;
   /** Allow clicking empty background to interact/spawn */ spawnOnClick?: boolean;
+  /** Entities live in document coordinates and follow the scroll (weather modes stay fixed) */
+  scrollWithContent?: boolean;
   className?: string;
 }
 interface PaletteColors {
@@ -997,6 +999,7 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
   fps = 60,
   opacity = 1,
   spawnOnClick = true,
+  scrollWithContent = false,
   className = '',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -1054,20 +1057,6 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
   }, [species]);
   useEffect(() => {
     const canvas = canvasRef.current;
-    const width = canvas ? canvas.clientWidth || window.innerWidth : window.innerWidth;
-    const height = canvas ? canvas.clientHeight || window.innerHeight : window.innerHeight;
-    const list = creaturesRef.current;
-    const target = Math.max(1, Math.min(40, count));
-    if (list.length < target) {
-      while (list.length < target) {
-        list.push(createCreature(width, height, species, list.length));
-      }
-    } else if (list.length > target) {
-      list.length = target;
-    }
-  }, [count, species]);
-  useEffect(() => {
-    const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -1077,12 +1066,48 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
     const gridBackdropCanvas = document.createElement('canvas');
     const gridBackdropCtx = gridBackdropCanvas.getContext('2d');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // El scroll también es movimiento: con reduced-motion volvemos al fondo fijo.
+    const scrollLinked = scrollWithContent && !prefersReducedMotion;
     let width = window.innerWidth;
     let height = window.innerHeight;
+    // Coordenadas de documento para las criaturas; el canvas sigue siendo del viewport.
+    let sceneHeight = height;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let cols = 1;
     let rows = 1;
     let lastBackdropKey = '';
+    const entityHeightFor = (kind: WildlifeCreature) =>
+      scrollLinked && kind !== 'rain' && kind !== 'snow' ? sceneHeight : height;
+    // Mantenemos la densidad visible aunque el documento sea más alto: las
+    // entidades fuera del viewport se descartan al dibujar, no al actualizar.
+    const desiredCount = (kind: WildlifeCreature) => {
+      const base = Math.max(1, Math.min(40, configRef.current.count));
+      if (!scrollLinked || kind === 'rain' || kind === 'snow') return base;
+      const ratio = entityHeightFor(kind) / Math.max(1, height);
+      return Math.max(base, Math.min(120, Math.round(base * ratio)));
+    };
+    const syncEntityCount = (kind: WildlifeCreature) => {
+      const target = desiredCount(kind);
+      const list = creaturesRef.current;
+      if (list.length < target) {
+        while (list.length < target) {
+          list.push(
+            createCreature(width, entityHeightFor(kind), configRef.current.species, list.length),
+          );
+        }
+      } else if (list.length > target) {
+        list.length = target;
+      }
+    };
+    const updateSceneHeight = () => {
+      sceneHeight = scrollLinked ? Math.max(height, document.documentElement.scrollHeight) : height;
+    };
+    // El canvas sigue pintando solo el viewport: las entidades se guardan en
+    // coordenadas de documento y se desplazan con un offset al dibujar.
+    const getScrollY = () =>
+      scrollLinked ? Math.max(0, Math.min(window.scrollY, Math.max(0, sceneHeight - height))) : 0;
+    const kindOffsetY = (kind: WildlifeCreature) =>
+      scrollLinked && kind !== 'rain' && kind !== 'snow' ? -getScrollY() : 0;
     const rebuildGridBackdrop = (
       currentCell: number,
       currentTheme: 'dark' | 'light',
@@ -1130,9 +1155,10 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
       }
     };
     const resize = () => {
-      // El canvas es fixed: debe medir el viewport, no el contenido del padre.
+      // El canvas sigue siendo fixed y mide el viewport; la escena usa scrollHeight.
       width = window.innerWidth;
       height = window.innerHeight;
+      updateSceneHeight();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
@@ -1147,10 +1173,13 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
     };
     resize();
     window.addEventListener('resize', resize);
+    const bodyObserver =
+      scrollLinked && typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(updateSceneHeight)
+        : null;
+    bodyObserver?.observe(document.body);
     if (creaturesRef.current.length === 0) {
-      for (let i = 0; i < configRef.current.count; i++) {
-        creaturesRef.current.push(createCreature(width, height, configRef.current.species, i));
-      }
+      syncEntityCount(configRef.current.creature);
     }
     if (blobsRef.current.length === 0) {
       const hues = [
@@ -1163,7 +1192,7 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
       for (let i = 0; i < 6; i++) {
         blobsRef.current.push({
           x: Math.random() * width,
-          y: Math.random() * height,
+          y: Math.random() * entityHeightFor(configRef.current.creature),
           vx: (Math.random() - 0.5) * 16,
           vy: (Math.random() - 0.5) * 16,
           radius: 190 + Math.random() * 190,
@@ -1190,8 +1219,10 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
       }
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      // El pointer llega en coordenadas de viewport; las entidades con scroll
+      // viven en el documento. El offset es 0 para lluvia/nieve (fijas).
       const cfg = configRef.current;
+      const y = e.clientY - rect.top - kindOffsetY(cfg.creature);
       const rippleColor =
         cfg.creature === 'petals'
           ? T.accent
@@ -1343,6 +1374,7 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
     let lastTime = performance.now();
     let lastRender = 0;
     let elapsed = 0;
+    let lastEntityTarget = -1;
     const renderFrame = (now: number) => {
       const cfg = configRef.current;
       const frameInterval = 1000 / Math.max(1, Math.min(60, cfg.fps));
@@ -1369,6 +1401,16 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
       const list = creaturesRef.current;
       const ptr = pointerRef.current;
       const kind = cfg.creature;
+      const offsetY = kindOffsetY(kind);
+      const sceneH = entityHeightFor(kind);
+      // Si cambia la altura del documento, ajustamos la densidad sin agrandar el canvas.
+      if (scrollLinked && kind !== 'rain' && kind !== 'snow') {
+        const target = desiredCount(kind);
+        if (target !== lastEntityTarget) {
+          lastEntityTarget = target;
+          syncEntityCount(kind);
+        }
+      }
       if (dt > 0) {
         for (let i = interactivePtsRef.current.length - 1; i >= 0; i--) {
           interactivePtsRef.current[i].life -= dt;
@@ -1487,7 +1529,7 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
           }
           if (ptr.active && cfg.interactionMode !== 'calm') {
             const dx = b.x - ptr.x;
-            const dy = b.y - ptr.y;
+            const dy = b.y - (ptr.y - offsetY);
             const distSq = dx * dx + dy * dy;
             const radius = cfg.interactionMode === 'breeze' ? 190 : 280;
             if (distSq < radius * radius && distSq > 4) {
@@ -1526,10 +1568,10 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
             wrapped = true;
           }
           if (b.y < -margin) {
-            b.y = height + margin;
+            b.y = sceneH + margin;
             wrapped = true;
           }
-          if (b.y > height + margin) {
+          if (b.y > sceneH + margin) {
             b.y = -margin;
             wrapped = true;
           }
@@ -1538,10 +1580,15 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
           }
           // Si un entity se queda fuera del viewport (por deriva o resize), lo
           // devolvemos al área visible en lugar de dejar la escena vacía.
-          const outside = b.x < 0 || b.x > width || b.y < 0 || b.y > height;
+          const sy = b.y + offsetY;
+          const scrollMapped = scrollLinked && kind !== 'snow';
+          // Con scroll-linked, casi todas las entidades están fuera del viewport
+          // a propósito: no las devolvemos todas a la zona visible.
+          const outside =
+            b.x < 0 || b.x > width || (!scrollMapped && (sy < 0 || sy > height));
           b.offscreenFor = outside ? b.offscreenFor + dt : 0;
           if (b.offscreenFor > 3.5) {
-            respawnCreature(b, width, height);
+            respawnCreature(b, width, scrollMapped ? sceneH : height);
           }
           const maxTrail = kind === 'comets' ? 18 : 11;
           if (Math.floor((elapsed * 26) % 2) === 0 || b.trail.length === 0) {
@@ -1586,8 +1633,8 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
           blob.y += blob.vy * dt;
           if (blob.x < -blob.radius) blob.x = width + blob.radius;
           if (blob.x > width + blob.radius) blob.x = -blob.radius;
-          if (blob.y < -blob.radius) blob.y = height + blob.radius;
-          if (blob.y > height + blob.radius) blob.y = -blob.radius;
+          if (blob.y < -blob.radius) blob.y = sceneH + blob.radius;
+          if (blob.y > sceneH + blob.radius) blob.y = -blob.radius;
         }
         for (let i = ripplesRef.current.length - 1; i >= 0; i--) {
           const rp = ripplesRef.current[i];
@@ -1602,12 +1649,14 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
       sceneCtx.clearRect(0, 0, width, height);
       if (cfg.showAmbientParticles) {
         for (const blob of blobsRef.current) {
+          const bsy = blob.y + offsetY;
+          if (bsy + blob.radius < 0 || bsy - blob.radius > height) continue;
           const grad = sceneCtx.createRadialGradient(
             blob.x,
-            blob.y,
+            bsy,
             0,
             blob.x,
-            blob.y,
+            bsy,
             blob.radius,
           );
           grad.addColorStop(0, blob.hue);
@@ -1620,6 +1669,8 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
         }
       }
       for (const pt of interactivePtsRef.current) {
+        const psy = pt.y + offsetY;
+        if (psy + pt.radius < -20 || psy - pt.radius > height + 20) continue;
         const fade = Math.min(1, pt.life * 0.45);
         sceneCtx.globalAlpha = fade;
         if (kind === 'hummingbirds') {
@@ -1629,7 +1680,7 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
             sceneCtx.beginPath();
             sceneCtx.arc(
               pt.x + Math.cos(ang) * pt.radius * 0.55,
-              pt.y + Math.sin(ang) * pt.radius * 0.55,
+              psy + Math.sin(ang) * pt.radius * 0.55,
               pt.radius * 0.45,
               0,
               Math.PI * 2,
@@ -1638,12 +1689,12 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
           }
           sceneCtx.fillStyle = T.pollen;
           sceneCtx.beginPath();
-          sceneCtx.arc(pt.x, pt.y, pt.radius * 0.3, 0, Math.PI * 2);
+          sceneCtx.arc(pt.x, psy, pt.radius * 0.3, 0, Math.PI * 2);
           sceneCtx.fill();
         } else {
           sceneCtx.fillStyle = pt.color;
           sceneCtx.beginPath();
-          sceneCtx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
+          sceneCtx.arc(pt.x, psy, pt.radius, 0, Math.PI * 2);
           sceneCtx.fill();
         }
       }
@@ -1657,6 +1708,10 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
       }
       for (let i = 0; i < list.length; i++) {
         const b = list[i];
+        const sy = b.y + offsetY;
+        // Dibujamos solo lo que cae en el viewport; el canvas sigue siendo chico.
+        const drawMargin = b.size * cfg.scale * 1.7 + 44;
+        if (sy < -drawMargin || sy > height + drawMargin) continue;
         if (
           kind !== 'comets' &&
           kind !== 'rain' &&
@@ -1672,7 +1727,7 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
             sceneCtx.beginPath();
             sceneCtx.arc(
               pt.x,
-              pt.y,
+              pt.y + offsetY,
               b.size * cfg.scale * (kind === 'koi' ? 0.18 : 0.22) * ratio,
               0,
               Math.PI * 2,
@@ -1683,18 +1738,18 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
         sceneCtx.globalAlpha = 1;
         if (kind === 'koi') {
           const koiPal = getKoiPalette(cfg.species, b, cfg.theme);
-          drawKoiFish(sceneCtx, b.x, b.y, b.angle, b.size * cfg.scale * 1.25, b.phase, koiPal);
+          drawKoiFish(sceneCtx, b.x, sy, b.angle, b.size * cfg.scale * 1.25, b.phase, koiPal);
         } else if (kind === 'butterflies') {
           const pal = PALETTES[b.paletteKey][cfg.theme];
           const isGliding = b.glideTimer < 0 && b.excitement < 0.2;
           const flapCompression = isGliding ? 0.96 : 0.24 + 0.76 * ((Math.sin(b.phase) + 1) * 0.5);
-          drawButterflyShape(sceneCtx, b.x, b.y, b.angle, b.size * cfg.scale, flapCompression, pal);
+          drawButterflyShape(sceneCtx, b.x, sy, b.angle, b.size * cfg.scale, flapCompression, pal);
         } else if (kind === 'hummingbirds') {
           const pal = getAccentPalette(kind, cfg.species, b, cfg.theme);
           drawHummingbirdShape(
             sceneCtx,
             b.x,
-            b.y,
+            sy,
             b.angle,
             b.size * cfg.scale * 0.92,
             b.phase,
@@ -1702,31 +1757,35 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
           );
         } else if (kind === 'petals') {
           const pal = getAccentPalette(kind, cfg.species, b, cfg.theme);
-          drawPetalShape(sceneCtx, b.x, b.y, b.angle, b.size * cfg.scale * 0.72, b.phase, pal);
+          drawPetalShape(sceneCtx, b.x, sy, b.angle, b.size * cfg.scale * 0.72, b.phase, pal);
         } else if (kind === 'comets') {
           const pal = getAccentPalette(kind, cfg.species, b, cfg.theme);
+          const cometTrail =
+            offsetY === 0
+              ? b.trail
+              : b.trail.map((pt) => ({ x: pt.x, y: pt.y + offsetY, color: pt.color }));
           drawCometShape(
             sceneCtx,
             b.x,
-            b.y,
+            sy,
             b.angle,
             b.size * cfg.scale * 0.85,
             b.phase,
-            b.trail,
+            cometTrail,
             pal,
           );
         } else if (kind === 'turtles') {
           const pal = getAccentPalette(kind, cfg.species, b, cfg.theme);
-          drawSeaTurtleShape(sceneCtx, b.x, b.y, b.angle, b.size * cfg.scale * 0.98, b.phase, pal);
+          drawSeaTurtleShape(sceneCtx, b.x, sy, b.angle, b.size * cfg.scale * 0.98, b.phase, pal);
         } else if (kind === 'rain') {
           const pal = getAccentPalette(kind, cfg.species, b, cfg.theme);
-          drawRaindropStreak(sceneCtx, b.x, b.y, b.angle, b.size * cfg.scale * 0.62, pal);
+          drawRaindropStreak(sceneCtx, b.x, sy, b.angle, b.size * cfg.scale * 0.62, pal);
         } else if (kind === 'snow') {
           const pal = getAccentPalette(kind, cfg.species, b, cfg.theme);
           drawSnowflakeShape(
             sceneCtx,
             b.x,
-            b.y,
+            sy,
             b.angle,
             b.size * cfg.scale * 0.78,
             b.phase,
@@ -1735,15 +1794,17 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
           );
         } else if (kind === 'jellyfish') {
           const pal = getAccentPalette(kind, cfg.species, b, cfg.theme);
-          drawJellyfishShape(sceneCtx, b.x, b.y, b.angle, b.size * cfg.scale * 0.95, b.phase, pal);
+          drawJellyfishShape(sceneCtx, b.x, sy, b.angle, b.size * cfg.scale * 0.95, b.phase, pal);
         }
       }
       for (const rp of ripplesRef.current) {
+        const rsy = rp.y + offsetY;
+        if (rsy + rp.radius < 0 || rsy - rp.radius > height) continue;
         sceneCtx.globalAlpha = rp.alpha * 0.75;
         sceneCtx.strokeStyle = rp.color || T.accent;
         sceneCtx.lineWidth = Math.max(cs * 1.35, 13);
         sceneCtx.beginPath();
-        sceneCtx.arc(rp.x, rp.y, rp.radius, 0, Math.PI * 2);
+        sceneCtx.arc(rp.x, rsy, rp.radius, 0, Math.PI * 2);
         sceneCtx.stroke();
       }
       if (ptr.active && cfg.interactionMode !== 'calm') {
@@ -1814,12 +1875,13 @@ export const AsciiButterflyBackground: React.FC<AsciiButterflyBackgroundProps> =
     rafId = requestAnimationFrame(renderFrame);
     return () => {
       cancelAnimationFrame(rafId);
+      bodyObserver?.disconnect();
       window.removeEventListener('resize', resize);
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerleave', handlePointerLeave);
       window.removeEventListener('pointerdown', handlePointerDown);
     };
-  }, [spawnOnClick]);
+  }, [spawnOnClick, scrollWithContent]);
   return (
     <canvas
       ref={canvasRef}
