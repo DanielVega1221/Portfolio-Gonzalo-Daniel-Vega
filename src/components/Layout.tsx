@@ -134,7 +134,6 @@ export default function Layout() {
             fps={atmosphereFps}
             opacity={1}
             spawnOnClick={false}
-            scrollWithContent
           />
         )}
       </AnimatePresence>
